@@ -1,0 +1,13 @@
+# general dirs we don't want git to handle at all.
+.vs/
+build/
+deploy/
+.vscode/
+src/lib/*
+!src/lib/.gitkeep
+src/external/soil/build/
+src/external/soil/src/lib/*.lib
+util/*.exe
+*.vcxproj.user
+*.obj
+*.aps
