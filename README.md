@@ -1,18 +1,18 @@
 # OxyWare
 
+This is mainly a build so that the cheat supports non-steam build 8684 which the original doesn't support non-steam.
+
+This is just for fun, everything should work fine. I will maybe update it sometimes but don't expect anything. All credits go to oxiKKK.
+
 OxyWare is a Windows client for Counter-Strike 1.6 non-Steam build 8684. It requires the OpenGL renderer.
 
 The interface uses the Segoe UI fonts installed with Windows. Font files are not included in the source or release package.
 
+Please star this, if you have any questions/suggestions message me on discord: kakacko
+
 ## Download and run
 
 Download the Windows ZIP from the repository's **Releases** page and extract the entire archive. Keep `OxyWare.exe` and the DLLs together in the extracted folder. Start Counter-Strike with the OpenGL renderer, run `OxyWare.exe`, then select **Start cheat**. Focus the game and press **Insert** to open the menu.
-
-Triggerbot's **Toggle key** option switches the bound key between hold and press-to-toggle behavior. Turning it on disables **Always active**.
-
-The Triggerbot tab is under **Miscellaneous**. Enable it, bind a key using the button beside **Enable**, and set the delay range in milliseconds. **Always active** works without a key. **Head only** uses the player's rendered head hitbox; **Enemy only** is enabled by default.
-
-ESP shows current player positions only while the server sends them. Sound ESP can show a recent sound location when a player is outside the visibility set.
 
 ## Build
 
