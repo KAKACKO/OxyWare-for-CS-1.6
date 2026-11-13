@@ -26,10 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// NetchanSequenceHistory.cpp -- A simple sequence counter with timestamps, so that
-//								 we can backtrack into the past while fakelagging.
-//
 
 #include "precompiled.h"
 
@@ -56,7 +52,6 @@ void CNetchanSequenceHistory::update()
 
 		m_sequences.emplace_front(incoming_sequence, realtime);
 
-//		CConsole::the().dinfo("sequence: #{}, time {}", incoming_sequence, realtime);
 
 		m_last_incoming = incoming_sequence;
 	}
@@ -72,11 +67,11 @@ void CNetchanSequenceHistory::flush()
 
 void CNetchanSequenceHistory::generate_fake_latency()
 {
-	// dig into past and find the right entry that suits our settings
+
 	auto entry = find_sequence_entry();
 	if (!entry.has_value())
 	{
-		return; // didn't find any yet, need to wait a little bit so that we generate enough history records.
+		return;
 	}
 
 	CMemoryHookMgr::the().cls()->netchan.incoming_sequence = entry.value().seq;
@@ -86,10 +81,9 @@ std::optional<netseq_t> CNetchanSequenceHistory::find_sequence_entry()
 {
 	float realtime = CMemoryHookMgr::the().cl().get()->time;
 
-	// point in time to look for
+
 	float desired_latency = (float)fake_latency_amount.get_value() / 1000.0f;
 
-	// linear search.. ouch
 
 	for (auto& seq : m_sequences)
 	{
@@ -99,7 +93,7 @@ std::optional<netseq_t> CNetchanSequenceHistory::find_sequence_entry()
 		{
 			m_desired_fake_latency = delta;
 
-			// found it
+
 			return seq;
 		}
 	}

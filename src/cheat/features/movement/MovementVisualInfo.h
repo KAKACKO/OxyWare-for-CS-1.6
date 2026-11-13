@@ -47,7 +47,7 @@ private:
 	void render_values();
 	void render_keys();
 
-	// helpers
+
 	void render_unit(const EngineFont& font, const CColor& color, const std::string& label, const std::string& value, const std::string& unit);
 	void render_text(const EngineFont& font, const Vector2D& pos, const CColor& color, const std::string& label);
 
@@ -56,4 +56,4 @@ private:
 	bool m_background;
 };
 
-#endif // MOVEMENTVISUALINFO_H
+#endif

@@ -33,7 +33,7 @@ bool InjectedDllCommunicationInterface::write_ipc_block(LPVOID where)
 	if (!write_generic<IPCInterface_t>(
 		where, &m_ipc_block))
 	{
-		return false; // sudden target process crash or mapped dll unload
+		return false;
 	}
 
 	return true;
@@ -47,10 +47,10 @@ bool InjectedDllCommunicationInterface::listen_to_injected_dll(EClient2Injector&
 		return false;
 	}
 
-	// keep in date with the data that is modified by the mapped dll
+
 	m_ipc_block = ipc;
 
-	// send heartbeat to parent client dll
+
 	if (!send_heartbeat())
 	{
 		return false;
@@ -69,7 +69,7 @@ bool InjectedDllCommunicationInterface::tell_to(EInjector2Client code)
 		&code))
 	{
 		CConsole::the().error("Couldn't write to target process memory while trying to communicate with it.");
-		return false; // sudden target process crash or mapped dll unload
+		return false;
 	}
 
 	CConsole::the().info("I2C: wrote {}", (int)code);
@@ -81,7 +81,7 @@ bool InjectedDllCommunicationInterface::listen_from(EClient2Injector& code)
 	IPCInterface_t ipc;
 	if (!read_block(&ipc))
 	{
-		return false; // sudden target process crash or mapped dll unload
+		return false;
 	}
 
 	code = ipc.m_c2m;
@@ -97,10 +97,9 @@ bool InjectedDllCommunicationInterface::send_heartbeat()
 		&m_ipc_block.m_heartbeat_sequence))
 	{
 		CConsole::the().error("Couldn't write to target process memory while trying to communicate with it.");
-		return false; // sudden target process crash or mapped dll unload
+		return false;
 	}
 
-//	CConsole::the().info("beat {}", comm.m_heartbeat_sequence);
 
 	return true;
 }
@@ -111,7 +110,7 @@ bool InjectedDllCommunicationInterface::read_block(IPCInterface_t* ipc)
 		(PVOID)get_target_process_ipc_block_addr(), ipc))
 	{
 		CConsole::the().error("Couldn't read target process memory while trying to communicate with it.");
-		return false; // sudden target process crash or mapped dll unload
+		return false;
 	}
 
 	return true;

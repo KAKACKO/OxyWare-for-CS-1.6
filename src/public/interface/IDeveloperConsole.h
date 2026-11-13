@@ -52,11 +52,10 @@ enum class EOutputCategory : unsigned int
 };
 constexpr unsigned k_num_output_categories = (unsigned)EOutputCategory::COUNT;
 
-// Modules that want to use the console output must be added here.
-// !!! As well as at the color palette.
+
 enum class EOutputModule : unsigned int
 {
-	UNSPECIFIED, // when the module hasn't been set yet
+	UNSPECIFIED,
 
 	GUI,
 	LOADER,
@@ -64,7 +63,7 @@ enum class EOutputModule : unsigned int
 	CHEAT,
 	UTIL,
 
-	// used by input inside the console 
+
 	CONSOLE,
 
 	COUNT
@@ -86,7 +85,7 @@ public:
 	virtual void unregister_module(EOutputModule which) = 0;
 
 	virtual std::filesystem::path get_logfile_path() = 0;
-	virtual std::filesystem::path get_logfile_path_fancy() = 0; // with %appdata% instead of the actual directory
+	virtual std::filesystem::path get_logfile_path_fancy() = 0;
 
 	virtual void enable_tooltip(bool enable) = 0;
 
@@ -101,15 +100,15 @@ protected:
 	using category_print_color_t = print_color_t<EOutputCategory>;
 	using module_print_color_t = print_color_t<EOutputModule>;
 
-	// Predefined colors for each category
+
 	inline static category_print_color_t s_category_color_table[(int)EOutputCategory::COUNT] =
 	{
-		{ EOutputCategory::INFO,		{  44,  44,  44, 255 }}, // Should be in sync with GUICLR_Text*
+		{ EOutputCategory::INFO,		{  44,  44,  44, 255 }},
 		{ EOutputCategory::ERROR,		{ 220,  20,  60, 255 }},
 		{ EOutputCategory::WARNING,		{ 255, 145,   0, 255 }},
 	};
 
-	// and for each module
+
 	inline static module_print_color_t s_module_color_table[k_num_output_modules] =
 	{
 		{ EOutputModule::UNSPECIFIED,	{ 220, 220, 220, 255 }},
@@ -156,4 +155,4 @@ extern IDeveloperConsole* g_devconsole_i;
 
 #define IDEVELOPERCONSOLE_INTERFACEID "IDeveloperConsole"
 
-#endif // IDEVELOPERCONSOLE_H
+#endif

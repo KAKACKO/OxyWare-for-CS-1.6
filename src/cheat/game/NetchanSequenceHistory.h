@@ -33,11 +33,11 @@
 extern VarBoolean fake_latency;
 extern VarInteger fake_latency_amount;
 
-// sequence record
+
 struct netseq_t
 {
-	int		seq;		// sequence number
-	float	timestamp;	// sequence arrival time
+	int		seq;
+	float	timestamp;
 };
 
 class CNetchanSequenceHistory
@@ -49,7 +49,7 @@ public:
 	void update();
 	void flush();
 
-	// in seconds
+
 	inline float get_desired_fake_latency() const { return m_desired_fake_latency; }
 
 private:
@@ -64,7 +64,7 @@ private:
 	
 	float m_desired_fake_latency;
 
-	inline static constexpr int k_max_sequences = 1000; // 1 s to the past
+	inline static constexpr int k_max_sequences = 1000;
 };
 
-#endif // NETCHANSEQUENCEHISTORY_H
+#endif

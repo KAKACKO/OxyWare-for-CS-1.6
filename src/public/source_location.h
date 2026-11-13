@@ -70,4 +70,4 @@ private:
 	const char* m_function = "";
 };
 
-#endif // SOURCE_LOCATION_H
+#endif

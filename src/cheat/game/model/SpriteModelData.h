@@ -46,4 +46,4 @@ private:
 	hl::msprite_t* m_spritehdr;
 };
 
-#endif // SPRITEMODELDATA_H
+#endif

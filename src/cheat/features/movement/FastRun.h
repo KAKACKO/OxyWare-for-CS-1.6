@@ -44,10 +44,10 @@ public:
 	void update();
 
 private:
-	void faster_run();	// with nsdn
-	void slower_run();	// without nsdn
+	void faster_run();
+	void slower_run();
 
 	bool fast_walk();
 };
 
-#endif // FASTRUN_H
+#endif

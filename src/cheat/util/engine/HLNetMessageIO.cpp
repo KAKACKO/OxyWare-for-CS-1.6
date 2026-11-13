@@ -30,12 +30,12 @@
 
 bool CHLNetMessageIO::install_hooks()
 {
-	// net message & others
+
 	net_message().install();
 	msg_readcount().install();
 	bfread().install();
 
-	// bit reading
+
 	MSG_StartBitReading().install();
 	MSG_EndBitReading().install();
 	MSG_ReadBits().install();
@@ -43,13 +43,13 @@ bool CHLNetMessageIO::install_hooks()
 	MSG_ReadBitCoord().install();
 	MSG_ReadBitVec3Coord().install();
 
-	// bit writing
+
 	MSG_StartBitWriting().install();
 	MSG_EndBitWriting().install();
 	MSG_WriteBits().install();
 	MSG_WriteBitData().install();
 
-	// reading
+
 	MSG_ReadChar().install();
 	MSG_ReadByte().install();
 	MSG_ReadShort().install();
@@ -59,7 +59,7 @@ bool CHLNetMessageIO::install_hooks()
 	MSG_ReadString().install();
 	MSG_ReadCoord().install();
 
-	// writing
+
 	MSG_WriteChar().install();
 	MSG_WriteByte().install();
 	MSG_WriteShort().install();
@@ -75,7 +75,6 @@ bool CHLNetMessageIO::install_hooks()
 	return true;
 }
 
-//----------------------------------------------------------------------
 
 void CHLNetMessageIO::begin_silent_bit_reading()
 {
@@ -92,7 +91,6 @@ void CHLNetMessageIO::end_silent_bit_reading()
 {
 	assert(m_in_bit_read && "not in bit-reading mode! forgot to call begin_silent_bit_reading()?");
 
-	// no need to even call MSG_EndBitReading, because we'll be setting back the bfread buffer anyways. (+ if we did, it would break up the net.)
 
 	restore_engine_internal_bitreadstate();
 
@@ -141,13 +139,12 @@ void CHLNetMessageIO::write_bit_data(void* data, int num_bits)
 	MSG_WriteBitData().call(data, num_bits);
 }
 
-//----------------------------------------------------------------------
 
 void CHLNetMessageIO::begin_silent_reading()
 {
 	assert(!m_in_read && "already in reading mode! forgot to call end_silent_reading()?");
 
-	// save engine state so we can then restore it after we're done reading.
+
 	save_engine_internal_readcount();
 	m_in_read = true;
 }
@@ -156,7 +153,7 @@ void CHLNetMessageIO::end_silent_reading()
 {
 	assert(m_in_read && "not in reading mode! forgot to call begin_silent_reading()?");
 
-	// restore engine reading data.
+
 	restore_engine_internal_readcount();
 	m_in_read = false;
 }
@@ -165,7 +162,6 @@ void CHLNetMessageIO::end_silent_reading_no_restore()
 {
 	assert(m_in_read && "not in reading mode! forgot to call begin_silent_reading()?");
 
-	// don't restore engine read data.
 
 	m_in_read = false;
 }
@@ -210,7 +206,6 @@ float CHLNetMessageIO::read_coord()
 	return MSG_ReadCoord().call(net_message().get());
 }
 
-//----------------------------------------------------------------------
 
 void CHLNetMessageIO::write_char(int8_t i8)
 {
@@ -257,7 +252,6 @@ void CHLNetMessageIO::write_buf(int iSize, void* buf)
 	write_buf(&CMemoryHookMgr::the().cls()->netchan.message, iSize, buf);
 }
 
-//----------------------------------------------------------------------
 
 void CHLNetMessageIO::write_char(hl::sizebuf_t* sb, int8_t i8)
 {
@@ -304,7 +298,6 @@ void CHLNetMessageIO::write_buf(hl::sizebuf_t* sb, int iSize, void* buf)
 	MSG_WriteBuf().call(sb, iSize, buf);
 }
 
-//----------------------------------------------------------------------
 
 bool MSG_StartBitReadingFnHook_t::install()
 {
@@ -342,7 +335,6 @@ bool MSG_ReadBitVec3CoordFnHook_t::install()
 	return install_using_bytepattern(0);
 }
 
-//----------------------------------------------------------------------
 
 bool MSG_StartBitWritingFnHook_t::install()
 {
@@ -368,7 +360,6 @@ bool MSG_WriteBitDataFnHook_t::install()
 	return install_using_bytepattern(0);
 }
 
-//----------------------------------------------------------------------
 
 bool MSG_ReadCharFnHook_t::install()
 {
@@ -418,7 +409,6 @@ bool MSG_ReadCoordFnHook_t::install()
 	return install_using_bytepattern(0);
 }
 
-//----------------------------------------------------------------------
 
 bool MSG_WriteCharFnHook_t::install()
 {
@@ -474,7 +464,6 @@ bool MSG_WriteBufFnHook_t::install()
 	return install_using_bytepattern(0);
 }
 
-//----------------------------------------------------------------------
 
 bool net_messageHook::install()
 {

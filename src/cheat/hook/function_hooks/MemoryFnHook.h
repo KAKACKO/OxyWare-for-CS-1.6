@@ -26,9 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// MemoryHook.h -- Resposibility of hooking a function on an address inside memory of another dll.
-//
 
 #ifndef MEMORYFNHOOK_H
 #define MEMORYFNHOOK_H
@@ -42,9 +39,7 @@ protected:
 	inline auto as_func() const { return reinterpret_cast<U>(m_address); };
 
 public:
-	//
-	// testing
-	//
+
 
 	virtual void add_to_test() override
 	{
@@ -52,7 +47,6 @@ public:
 	}
 };
 
-//---------------------------------------------------------------------------------
 
 template<typename T = void, typename ...Args>
 struct GenericMemoryFnHook_cdecl : public GenericMemoryFnHook<uintptr_t>
@@ -78,24 +72,21 @@ struct GenericMemoryFnHook_fastcall : public GenericMemoryFnHook<uintptr_t>
 	inline T __fastcall call(Args... args) const { return (as_func<T(__fastcall*)(Args...)>())(args...); }
 };
 
-//---------------------------------------------------------------------------------
 
-// bool __cdecl VGuiWrap2_IsConsoleVisible()
 struct VGuiWrap2_IsConsoleVisible_FnHook_t final : public GenericMemoryFnHook_cdecl<hl::qboolean> { bool install(); };
 
-// void __cdecl VGuiWrap2_ConPrintf(const char *msg)
+
 struct VGuiWrap2_ConPrintf_FnHook_t final : public GenericMemoryFnHook_cdecl<void, const char *> { bool install(); };
 
-// void ClearIOStates()
+
 struct ClearIOStates_FnHook_t final : public GenericMemoryFnHook_cdecl<int> { bool install(); };
 
-// int R_GetStudioBounds(const char* filename, float* mins, float* maxs)
+
 struct R_GetStudioBounds_FnHook_t final : public GenericMemoryFnHook_cdecl<int, const char*, float*, float*> { bool install(); };
 
-// int MD5_Hash_File(unsigned char* digest, char* pszFileName, BOOL bUsefopen, BOOL bSeed, unsigned int* seed)
+
 struct MD5_Hash_File_FnHook_t final : public GenericMemoryFnHook_cdecl<int, unsigned char*, char*, BOOL, BOOL, unsigned int*> { bool install(); };
 
-//---------------------------------------------------------------------------------
 
 class CMemoryFnHookMgr
 {
@@ -105,9 +96,6 @@ public:
 public:
 	bool install_hooks();
 
-	//
-	// individual hooks
-	//
 
 	inline auto& VGuiWrap2_IsConsoleVisible() { static VGuiWrap2_IsConsoleVisible_FnHook_t hook; return hook; }
 	inline auto& VGuiWrap2_ConPrintf() { static VGuiWrap2_ConPrintf_FnHook_t hook; return hook; }
@@ -116,4 +104,4 @@ public:
 	inline auto& MD5_Hash_File() { static MD5_Hash_File_FnHook_t hook; return hook; }
 };
 
-#endif // MEMORYFNHOOK_H
+#endif

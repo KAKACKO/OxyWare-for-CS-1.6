@@ -30,11 +30,7 @@
 #define PRECOMPILED_H
 #pragma once
 
-//-------------------------------------------------------------------
-//
-// Public headers
-// 
-//-------------------------------------------------------------------
+
 #include <commondefs.h>
 #include <interface.h>
 
@@ -46,28 +42,16 @@
 
 #include <ByteBuffer.h>
 
-//-------------------------------------------------------------------
-//
-// Shared
-// 
-//-------------------------------------------------------------------
+
 #include "Console.h"
 #include "BaseVariable.h"
 
-//-------------------------------------------------------------------
-//
-// C++ Standard
-// 
-//-------------------------------------------------------------------
+
 #include <filesystem>
 #include <unordered_map>
 #include <TlHelp32.h>
 
-//-------------------------------------------------------------------
-//
-// Current project
-// 
-//-------------------------------------------------------------------
+
 #include <injection/IBaseInjector.h>
 #include <injection/BaseInjector.h>
 #include <injection/PortableExecutableObject.h>
@@ -76,4 +60,4 @@
 
 #include "RtlIIFT_bytepattern_search.h"
 
-#endif // PRECOMPILED_H
+#endif

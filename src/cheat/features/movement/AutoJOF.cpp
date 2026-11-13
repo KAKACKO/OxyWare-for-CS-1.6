@@ -73,9 +73,8 @@ void CMovementAutoJOF::update(float frametime)
 
 	if (should_jump && (GetTickCount() - timer) > movement_auto_jof_interval.get_value())
 	{
-		//CMemoryFnDetourMgr::the().Key_Event().call(VK_SPACE, true);
+
 		CClientMovementPacket::the().set_button_bit(IN_JUMP, true);
 		timer = GetTickCount();
 	}
 }
-

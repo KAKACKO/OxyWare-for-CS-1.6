@@ -47,9 +47,7 @@ public:
 	}
 
 public:
-	//
-	// testing
-	//
+
 
 	virtual void add_to_test() override
 	{
@@ -61,7 +59,7 @@ private:
 	{
 		CConsole::the().info("Searching for SVC: '{}'", m_svc_name);
 
-		// find the right entry
+
 		auto svc_func = &CMemoryHookMgr::the().cl_parsefuncs().get()[m_svc_id];
 
 		if (detour_using_memory_address((uintptr_t*)m_pfn, (uintptr_t*)svc_func->pfnParse))
@@ -79,7 +77,6 @@ private:
 	int m_svc_id;
 };
 
-//-------------------------------------------------------------------------------------------
 
 class CSVCFuncDetourMgr
 {
@@ -90,7 +87,7 @@ public:
 	bool install_hooks();
 	void uninstall_hooks();
 
-	// detoured SVC hooks
+
 	inline auto& svc_sound_fn() { static SVC_FnDetour_t fnhook; return fnhook; }
 	inline auto& svc_time_fn() { static SVC_FnDetour_t fnhook; return fnhook; }
 	inline auto& svc_sendcvarvalue_fn() { static SVC_FnDetour_t fnhook; return fnhook; }
@@ -105,4 +102,4 @@ private:
 	static void svc_stufftext_f();
 };
 
-#endif // SVCFUNCDETOUR_H
+#endif

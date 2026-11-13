@@ -26,9 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// loaderui.h -- Loader UI implementation
-//
 
 #ifndef LOADERUI_H
 #define LOADERUI_H
@@ -45,7 +42,7 @@ public:
 private:
 	void initialize();
 
-	// tabs
+
 	void render_tab_main();
 	void render_tab_console();
 	void render_tab_debug();
@@ -53,4 +50,4 @@ private:
 	bool m_allow_to_load_again = true;
 };
 
-#endif // LOADERUI_H
+#endif

@@ -59,12 +59,12 @@ void CEnvironmentalEffects::initialize()
 
 	auto cl_enginefuncs = CMemoryHookMgr::the().cl_enginefuncs();
 
-	// sounds
+
 	m_thunder_timer = cl_enginefuncs->pfnGetClientTime() + cl_enginefuncs->pfnRandomLong(60, 60 * 3);
 
 	precache_sprites();
 
-	// wind
+
 	initialize_wind_variables();
 
 	if (m_initialized_for_the_first_time)
@@ -114,9 +114,6 @@ void CEnvironmentalEffects::render()
 		return;
 	}
 
-	//
-	// sound - has to run even if disabled (in order to disable sound when env_enable is off)
-	//
 
 	if (m_initialized)
 	{
@@ -135,8 +132,7 @@ void CEnvironmentalEffects::render()
 		initialize();
 	}
 
-	// TODO: Figure out a better way of doing this, since this respawns all particles, it doesn't
-	//		 just stop rendering them..
+
 	if (CAntiScreen::the().hide_visuals() || CPanic::the().panicking())
 	{
 		shutdown();
@@ -168,9 +164,7 @@ void CEnvironmentalEffects::render()
 
 	update_wind_variables();
 
-	//
-	// rendering
-	//
+
 	
 	if (env_rain.get_value())
 	{
@@ -192,8 +186,8 @@ void CEnvironmentalEffects::render()
 
 void CEnvironmentalEffects::reset_particles()
 {
-	// TODO: Without this the game crashes on unload however, also, after calling this, 
-	//		 every other live particle will die (e.g. a smoke)
+
+
 	auto iparticleman = CHLInterfaceHook::the().IParticleMan();
 	if (iparticleman)
 	{
@@ -205,7 +199,7 @@ void CEnvironmentalEffects::begin_emulation()
 {
 	if (m_failed_emulation)
 	{
-		return; // don't try again if we've failed.
+		return;
 	}
 
 	if (!CParticlemanMiniMemEmulation::the().emulate())
@@ -239,7 +233,7 @@ void CEnvironmentalEffects::render_rain()
 		Vector origin_to_generate = m_weather_origin;
 		Vector endpos;
 
-		float radius = (float)env_radius.get_value() + 100.0f; // add a little bit more to rain
+		float radius = (float)env_radius.get_value() + 100.0f;
 		origin_to_generate.x += local_velocity.x + cl_enginefuncs->pfnRandomFloat(-radius, radius);
 		origin_to_generate.y += local_velocity.y + cl_enginefuncs->pfnRandomFloat(-radius, radius);
 		origin_to_generate.z += local_velocity.z + cl_enginefuncs->pfnRandomFloat(100.0f, 300.0f);
@@ -255,7 +249,7 @@ void CEnvironmentalEffects::render_rain()
 
 		char* traced_texture = (char*)cl_enginefuncs->pEventAPI->EV_TraceTexture(skytrace.ent, origin_to_generate, skytrace.endpos);
 
-		// create rain only from sky
+
 		if (traced_texture && strncmp(traced_texture, "sky", 3) == 0)
 		{
 			create_raindrop(origin_to_generate);
@@ -292,7 +286,7 @@ void CEnvironmentalEffects::render_snow()
 
 		char* traced_texture = (char*)cl_enginefuncs->pEventAPI->EV_TraceTexture(skytrace.ent, origin_to_generate, skytrace.endpos);
 
-		// create snow only from sky
+
 		if (traced_texture && strncmp(traced_texture, "sky", 3) == 0)
 		{
 			create_snow_flake(origin_to_generate);
@@ -314,7 +308,7 @@ void CEnvironmentalEffects::render_ground_fog()
 		Vector origin_to_generate = m_weather_origin;
 		Vector endpos;
 
-		float radius = (float)env_radius.get_value() + 100.0f; // add a little bit more to rain
+		float radius = (float)env_radius.get_value() + 100.0f;
 		origin_to_generate.x += local_velocity.x + cl_enginefuncs->pfnRandomFloat(-radius, radius);
 		origin_to_generate.y += local_velocity.y + cl_enginefuncs->pfnRandomFloat(-radius, radius);
 		origin_to_generate.z += local_velocity.z + cl_enginefuncs->pfnRandomFloat(100.0f, 300.0f);
@@ -330,7 +324,7 @@ void CEnvironmentalEffects::render_ground_fog()
 
 		char* traced_texture = (char*)cl_enginefuncs->pEventAPI->EV_TraceTexture(skytrace.ent, origin_to_generate, skytrace.endpos);
 
-		// create fog only from sky
+
 		if (traced_texture && strncmp(traced_texture, "sky", 3) == 0)
 		{
 			endpos.z = -4096.0f;
@@ -355,7 +349,7 @@ void CEnvironmentalEffects::create_raindrop(const Vector& origin)
 	auto p = new hl::CPartRainDrop();
 	if (!p)
 	{
-		return; // couldn't alloc more particles
+		return;
 	}
 
 	p->InitializeSprite(origin, g_vecZero, m_rain_sprite, 2.0f, 1.0f);
@@ -391,7 +385,7 @@ void CEnvironmentalEffects::create_snow_flake(const Vector& origin)
 	auto p = new hl::CPartSnowFlake();
 	if (!p)
 	{
-		return; // couldn't alloc more particles
+		return;
 	}
 
 	p->InitializeSprite(origin, g_vecZero, m_snow_sprite, cl_enginefuncs->pfnRandomFloat(2.0, 2.5), 1.0);
@@ -453,7 +447,7 @@ void CEnvironmentalEffects::create_wind_particle(const Vector& origin, float max
 	auto p = new hl::CPartWind();
 	if (!p)
 	{
-		return; // couldn't alloc more particles
+		return;
 	}
 
 	auto cl_enginefuncs = CMemoryHookMgr::the().cl_enginefuncs();
@@ -504,7 +498,7 @@ void CEnvironmentalEffects::update_wind_variables()
 
 	static float last_speed = env_wind_speed.get_value();
 
-	// change direction of the rain if it's time
+
 	if (m_next_wind_change_time <= cl_enginefuncs->pfnGetClientTime() || last_speed != env_wind_speed.get_value())
 	{
 		float speed = 80.0f * env_wind_speed.get_value();
@@ -559,7 +553,7 @@ void CEnvironmentalEffects::play_ambient_rain_sound()
 
 	play_ambient_looped_sound_helper(&env_rain, &env_rain_ambient, &env_rain_ambient_volume, &prev_vol_rain, &m_rain_sound_played, "sound/ambience/rain.wav");
 	play_ambient_looped_sound_helper(&env_snow, &env_snow_ambient, &env_snow_ambient_volume, &prev_vol_snow, &m_snow_sound_played, "sound/de_torn/torn_ambience.wav");
-	// NOTE: If you add more ambient sounds, don't forget to add them below.
+
 
 	if (env_enable.get_value() && env_rain.get_value() && env_rain_ambient_thunder.get_value())
 	{
@@ -582,13 +576,13 @@ void CEnvironmentalEffects::stop_all_ambient_sound()
 	CEngineSoundPlayer::the().stop_sound("sound/de_torn/torn_ambience.wav");
 	m_snow_sound_played = false;
 
-	// NOTE: Add all ambient sounds here.
+
 }
 
 void CEnvironmentalEffects::play_ambient_looped_sound_helper(VarBoolean* env_effect_enabled, VarBoolean* sound_enabled,
 															 VarFloat* sound_volume, float* prev_volume, bool* sound_played, const char* sound_file)
 {
-	// TODO: Figure out a better way of doing this, this is pretty sus and looks like shit...
+
 
 	bool env_enabled = env_enable.get_value();
 	bool rain_enabled = env_effect_enabled->get_value();
@@ -599,23 +593,20 @@ void CEnvironmentalEffects::play_ambient_looped_sound_helper(VarBoolean* env_eff
 	{
 		CEngineSoundPlayer::the().play_ambient_sound_unique(0, Vector(0, 0, 0), sound_file,
 															volume, AMBIENT_EVERYWHERE, true);
-//		CConsole::the().info("played");
+
 		*sound_played = true;
 	}
 
 	if ((!ambient_enabled || !env_enabled || !rain_enabled || *prev_volume != volume) && *sound_played)
 	{
 		CEngineSoundPlayer::the().stop_sound(sound_file);
-//		CConsole::the().info("stopped");
+
 		*sound_played = false;
 		*prev_volume = volume;
 	}
 
 }
 
-//--------------------------------------------------------------------------------------------------
-// Particle methods
-//
 
 namespace hl
 {
@@ -669,7 +660,7 @@ void CPartSnowFlake::Think(float time)
 	if (m_bSpiral && !m_bTouched)
 	{
 		flFrametime = time - CEnvironmentalEffects::the().get_old_time();
-		fastFreq = sin(flFrametime * 5.0f + (float)(int)this); // TODO: Hmmm, this is weird
+		fastFreq = sin(flFrametime * 5.0f + (float)(int)this);
 
 		m_vOrigin = m_vOrigin + m_vVelocity * flFrametime;
 		m_vOrigin.x += (fastFreq * fastFreq) * 0.3f;
@@ -715,8 +706,7 @@ void CPartSnowFlake::Touch(Vector pos, Vector normal, int index)
 	m_flTimeCreated = cl_enginefuncs->pfnGetClientTime();
 }
 
-// TRUE if in water and returns vecResult.
-// utility function
+
 static hl::qboolean water_entry_point(hl::pmtrace_t* pTrace, const Vector& vecSrc, Vector& vecResult)
 {
 	Vector	result;
@@ -738,7 +728,7 @@ static hl::qboolean water_entry_point(hl::pmtrace_t* pTrace, const Vector& vecSr
 	fTolerance = 4.0f;
 	while (vecDir.Length() > fTolerance)
 	{
-		vecDir /= 2.0f; // half the distance each iteration
+		vecDir /= 2.0f;
 
 		c = a + vecDir;
 
@@ -791,15 +781,13 @@ void CPartRainDrop::Touch(Vector pos, Vector normal, int index)
 
 	CMath::the().vector_angles(angles, vRippleAngles);
 
-	//
-	// see if we dropped into water
-	//
+
 	if (water_entry_point(&tr, start, pt))
 	{
 		p = new CBaseParticle();
 		if (!p)
 		{
-			return; // couldn't alloc more particles
+			return;
 		}
 
 		pSprite = CEnvironmentalEffects::the().get_ripple_sprite();
@@ -821,7 +809,7 @@ void CPartRainDrop::Touch(Vector pos, Vector normal, int index)
 		p = new CBaseParticle();
 		if (!p)
 		{
-			return; // couldn't alloc more particles
+			return;
 		}
 
 		pSprite = CEnvironmentalEffects::the().get_splash_sprite();
@@ -873,4 +861,4 @@ void CPartWind::Think(float flTime)
 	CBaseParticle::Think(flTime);
 }
 
-} // namespace hl
+}

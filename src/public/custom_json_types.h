@@ -26,11 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// custom_json_types.h -- custom types for nh::json
-// 
-// NOTE: You don't have to include this file directly, json.h already does.
-//
 
 #ifndef JSONCUSTOMTYPES_H
 #define JSONCUSTOMTYPES_H
@@ -42,20 +37,18 @@
     inline void to_json(nh::json& nlohmann_json_j, const Type& nlohmann_json_t) { NLOHMANN_JSON_EXPAND(NLOHMANN_JSON_PASTE(NLOHMANN_JSON_TO, __VA_ARGS__)) } \
     inline void from_json(const nh::json& nlohmann_json_j, Type& nlohmann_json_t) { Type nlohmann_json_default_obj; NLOHMANN_JSON_EXPAND(NLOHMANN_JSON_PASTE(NLOHMANN_JSON_FROM_WITH_DEFAULT, __VA_ARGS__)) }
 
-//
-// CColor
-//
+
 inline void to_json(nh::json& j, const CColor& p) {
-	// as_u32 wants 0-1 based.
+
 	auto ul = p.as_u32();
 	j = std::format("#{:08X}", ul);
 }
 
 inline void from_json(const nh::json& j, CColor& p) {
 	auto clr_str = j.get<std::string>();
-	clr_str = "0x" + clr_str.substr(1); // skip the hash
+	clr_str = "0x" + clr_str.substr(1);
 	auto ul = std::stoul(clr_str, NULL, 16);
 	p = CColor(ul);
 }
 
-#endif // JSONCUSTOMTYPES_H
+#endif

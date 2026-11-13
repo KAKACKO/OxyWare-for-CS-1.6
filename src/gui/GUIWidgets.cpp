@@ -26,13 +26,10 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// GUIWidgets.cpp -- Implementation of the IGLFWApp interface
-//
 
 #include "precompiled.h"
 
-// We'll use internal imgui here, so we can create new widgets etc..
+
 #include <imgui_internal.h>
 
 using namespace ImGui;
@@ -45,9 +42,6 @@ public:
 	CGUIWidgets();
 	~CGUIWidgets();
 
-	//
-	// Windows
-	//
 
 	void set_next_window_size(const Vector2D& size, ImGuiCond condition);
 	void set_next_window_pos(const Vector2D& pos, ImGuiCond condition);
@@ -69,9 +63,6 @@ public:
 
 	void show_font_atlas();
 
-	//
-	// Properties
-	//
 
 	void push_disabled();
 	void pop_disabled();
@@ -124,9 +115,6 @@ public:
 	void push_id(int id);
 	void pop_id();
 
-	//
-	// Widgets
-	//
 
 	void add_text(const std::string& text, ETextProperties properties = TEXTPROP_None, ImFont* font = nullptr);
 	void add_bullet_text(const std::string& text, ETextProperties properties = TEXTPROP_None, ImFont* font = nullptr);
@@ -182,20 +170,12 @@ public:
 
 	void add_image(ImTextureID id, const Vector2D& size);
 
-	//
-	// Tables/lists/columns
-	//
+
 	
-	// Adds new imgui table
+
 	void add_table(const std::string& name, uint32_t columns, ImGuiTableFlags flags, const std::function<void()>& header_callback, const std::function<void()>& body_callback);
 
-	// Use for simple tables such as:
-	// 
-	// name       value
-	// name1      value1
-	// ...
-	// nameN      valueN
-	//
+
 	void add_undecorated_simple_table(const std::string& name, uint32_t columns, const std::function<void()>& body_callback);
 
 	void table_setup_column_fixed_width(const std::string& name, float width, ImGuiTableColumnFlags flags = ImGuiTableColumnFlags_None);
@@ -205,7 +185,7 @@ public:
 
 	void table_headers_row();
 
-	// columns using tables api
+
 	bool begin_columns(const std::string& label, int count_columns, ImGuiTableFlags flags);
 	void end_columns();
 	void setup_column_fixed_width(float width, ImGuiTableColumnFlags flags = ImGuiTableColumnFlags_None);
@@ -213,29 +193,18 @@ public:
 	void goto_next_column();
 	void goto_next_row();
 
-	//
-	// Input text buffer operations
-	//
 
 	void delete_chars_on_textinput_buffer(ImGuiInputTextCallbackData* data, int pos, int bytes_count);
 	void insert_chars_to_textinput_buffer(ImGuiInputTextCallbackData* data, int pos, const char* text, const char* text_end = NULL);
 
-	//
-	// Tabs
-	//
 
 	void begin_tab(const std::string& label, ImGuiTabBarFlags flags);
 	void add_tab_item(const std::string& label, bool border, const Vector2D& size, const std::function<void()>& pfn_contents, const Vector2D& child_padding);
 	void end_tab();
 
-	//
-	// Custom widgets
-	//
+
 	void add_console();
 
-	//
-	// rendering
-	//
 
 	void render_arrow(const Vector2D& pos, const CColor& color, EArrowDirection direction);
 
@@ -262,7 +231,7 @@ private:
 	template<typename T>
 	bool add_slider_internal(const char* label, T* value, T* min, T* max, const char* format, ImGuiDataType data_type, bool no_label, ImGuiSliderFlags flags = ImGuiSliderFlags_None);
 
-	// helpers
+
 	template<EGUIColorId clr> requires(clr > GUICLR_Invalid && clr < GUICLR_MAX)
 	const CColor& get_color() const { return g_gui_thememgr_i->get_current_theme()->get_color<clr>(); }
 	template<EGUIColorId clr> requires(clr > GUICLR_Invalid && clr < GUICLR_MAX)
@@ -276,11 +245,6 @@ private:
 CGUIWidgets g_gui_widgets;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CGUIWidgets, IGUIWidgets, IGUIWIDGETS_INTERFACEID, g_gui_widgets);
 
-//-------------------------------------------------------------------------------
-//
-// CGUIWidgets implementation
-// 
-//-------------------------------------------------------------------------------
 
 CGUIWidgets::CGUIWidgets()
 {
@@ -309,7 +273,7 @@ void CGUIWidgets::set_next_window_size_constrains(const Vector2D& min, const Vec
 
 void CGUIWidgets::center_next_window_pos(ImGuiCond condition)
 {
-	// Always center this window when appearing
+
 	ImVec2 center = GetMainViewport()->GetCenter();
 	SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 }
@@ -341,7 +305,7 @@ void CGUIWidgets::create_new_window(const std::string& name, ImGuiWindowFlags fl
 	{
 		if (should_disable_all_interaction)
 		{
-			// like.. this is really dumb, but whatever dude xd
+
 			SetWindowFocus("popup_window");
 		}
 
@@ -607,9 +571,7 @@ void CGUIWidgets::pop_id()
 
 void CGUIWidgets::add_text(const std::string& text, ETextProperties properties, ImFont* font)
 {
-	//
-	// decorations
-	//
+
 
 	if (font)
 	{
@@ -626,9 +588,6 @@ void CGUIWidgets::add_text(const std::string& text, ETextProperties properties, 
 		BeginDisabled();
 	}
 
-	//
-	// colors
-	//
 
 	if (properties & TEXTPROP_ColorWhite)
 	{
@@ -647,9 +606,6 @@ void CGUIWidgets::add_text(const std::string& text, ETextProperties properties, 
 		PushStyleColor(ImGuiCol_Text, g_gui_thememgr_i->get_current_theme()->get_color<GUICLR_TextBlack>());
 	}
 
-	//
-	// other
-	//
 
 	if (properties & TEXTPROP_Wrapped)
 	{
@@ -741,7 +697,7 @@ bool CGUIWidgets::add_toggle_button(const std::string& label, const Vector2D& si
 	if (disabled)
 		push_disabled();
 
-	// use the default button color as hover color and disable the default one.
+
 	auto prev_default_color = g_gui_thememgr_i->get_current_theme()->get_color<GUICLR_Button>();
 	g_gui_thememgr_i->push_color(GUICLR_Button, unselected_color);
 	g_gui_thememgr_i->push_color(GUICLR_FrameBgHovered, prev_default_color);
@@ -786,7 +742,7 @@ bool CGUIWidgets::add_invisible_button_behaviour(const std::string& label, const
 	if (window->SkipItems)
 		return false;
 
-	// Cannot use zero-size for InvisibleButton(). Unlike Button() there is not way to fallback using the label size.
+
 	assert(size.x != 0.0f && size.y != 0.0f);
 
 	const ImGuiID id = window->GetID(label.c_str());
@@ -826,7 +782,7 @@ bool CGUIWidgets::add_url_text(const std::string& label)
 	bool hovered, held;
 	bool pressed = ButtonBehavior(bb, id, &hovered, &held, ImGuiButtonFlags_None);
 
-	// Render
+
 	CColor color_4f;
 	if (held && hovered)
 	{
@@ -907,7 +863,7 @@ bool CGUIWidgets::add_color_edit(const std::string& label, float rgba[4], bool i
 	bool ret = color_edit_4_internal(buffer, rgba, input_values,
 									 flags |
 									 ImGuiColorEditFlags_NoInputs |
-//									 ImGuiColorEditFlags_NoOptions |
+
 									 ImGuiColorEditFlags_NoTooltip |
 									 ImGuiColorEditFlags_NoLabel |
 									 ImGuiColorEditFlags_NoDragDrop);
@@ -1142,7 +1098,7 @@ void CGUIWidgets::add_progress_bar(const std::string& id, const Vector2D& size, 
 	auto clr = get_color<GUICLR_FrameActive>();
 	auto clr1 = get_color<GUICLR_FrameActive>();
 
-	//clr.a = (current / max);
+
 	clr1.a = 0.1f;
 
 	RenderFrame(bb.Min, bb.Max, clr.as_u32(), true, 4.0f);
@@ -1195,7 +1151,7 @@ bool CGUIWidgets::add_simple_listbox(const std::string & label, int* value, cons
 				break;
 			}
 
-			// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+
 			if (selected)
 				set_item_default_focus();
 		}
@@ -1206,9 +1162,9 @@ bool CGUIWidgets::add_simple_listbox(const std::string & label, int* value, cons
 		end_listbox();
 	}
 
-	//if (edited)
+
 	{
-		// to close the list box after we select an item.
+
 		close_current_popup();
 	}
 
@@ -1241,7 +1197,7 @@ bool CGUIWidgets::add_floating_button(const std::string& label, const Vector2D& 
 			}
 		});
 
-	pop_stylevar(1); // WindowPadding
+	pop_stylevar(1);
 	set_cursor_pos(last_cursor_pos);
 	return ret;
 }
@@ -1286,7 +1242,7 @@ void CGUIWidgets::add_separated_heading(const std::string& label)
 
 	PushStyleColor(ImGuiCol_Text, g_gui_thememgr_i->get_current_theme()->get_color(GUICLR_TextLight));
 
-	// section title
+
 	RenderText(pos + Vector2D(3.0f, 0.0f), label.c_str());
 
 	PopStyleColor();
@@ -1295,7 +1251,7 @@ void CGUIWidgets::add_separated_heading(const std::string& label)
 
 	auto separator_color = g_gui_thememgr_i->get_current_theme()->get_color(GUICLR_Separator);
 
-	// separator underneath
+
 	window->DrawList->AddLine(pos, pos + Vector2D(item_size.x, 0.0f), separator_color.as_u32());
 }
 
@@ -1312,7 +1268,7 @@ void CGUIWidgets::add_table(const std::string& name, uint32_t columns, ImGuiTabl
 		if (header_callback)
 		{
 			header_callback();
-			//TableHeadersRow();
+
 		}
 
 		if (body_callback)
@@ -1388,7 +1344,7 @@ void CGUIWidgets::add_tab_item(const std::string& label, bool border, const Vect
 
 		if (!child_padding.IsZero())
 		{
-			PopStyleVar(); // padding
+			PopStyleVar();
 		}
 
 		EndTabItem();
@@ -1410,10 +1366,6 @@ void CGUIWidgets::render_arrow(const Vector2D& pos, const CColor& color, EArrowD
 	RenderArrow(GetWindowDrawList(), pos, color.as_u32(), direction);
 }
 
-//-----------------------------------------------------------------------------------------------------------------
-//
-//	Internal API
-//
 
 void CGUIWidgets::add_bullet_text_internal(const std::string& text, ETextProperties properties, ImFont* font)
 {
@@ -1463,7 +1415,7 @@ bool CGUIWidgets::add_button_internal(const char* label, const Vector2D& size, b
 	bool hovered, held;
 	bool pressed = ButtonBehavior(bb, id, &hovered, &held, flags);
 
-	// Render
+
 	CColor color_4f;
 	if (held && hovered)
 	{
@@ -1548,7 +1500,7 @@ bool CGUIWidgets::add_checkbox_internal(const char* label, T* value)
 	RenderNavHighlight(total_bb, id);
 	RenderFrame(check_bb.Min, check_bb.Max, color_4f.as_u32(), false, 4.0f);
 
-	// Only handle hovered state when not selected
+
 	if (!*value)
 	{
 		if (hovered)
@@ -1570,8 +1522,8 @@ bool CGUIWidgets::add_checkbox_internal(const char* label, T* value)
 	bool mixed_value = (g.LastItemData.InFlags & ImGuiItemFlags_MixedValue) != 0;
 	if (mixed_value)
 	{
-		// Undocumented tristate/mixed/indeterminate checkbox (#2644)
-		// This may seem awkwardly designed because the aim is to make ImGuiItemFlags_MixedValue supported by all widgets (not just checkbox)
+
+
 		ImVec2 pad(ImMax(1.0f, IM_FLOOR(square_sz / 3.6f)), ImMax(1.0f, IM_FLOOR(square_sz / 3.6f)));
 		window->DrawList->AddRectFilled(check_bb.Min + pad, check_bb.Max - pad, check_col, style.FrameRounding);
 	}
@@ -1581,7 +1533,7 @@ bool CGUIWidgets::add_checkbox_internal(const char* label, T* value)
 		RenderCheckMark(window->DrawList, check_bb.Min + ImVec2(pad, pad), check_col, square_sz - pad * 2.0f);
 	}
 
-	// - 1.f due to not perfect center alignment.
+
 	ImVec2 label_pos = ImVec2(check_bb.Max.x + style.ItemInnerSpacing.x, check_bb.Min.y + style.FramePadding.y - 1.f);
 	if (label_size.x > 0.0f)	
 	{
@@ -1629,7 +1581,7 @@ bool CGUIWidgets::add_checkbox_with_color_internal(const char* label, float* val
 void CGUIWidgets::add_text_wrapped(const char* text)
 {
 	ImGuiContext& g = *GImGui;
-	const bool need_backup = (g.CurrentWindow->DC.TextWrapPos < 0.0f);  // Keep existing wrap position if one is already set
+	const bool need_backup = (g.CurrentWindow->DC.TextWrapPos < 0.0f);
 	if (need_backup)
 		PushTextWrapPos(0.0f);
 	TextEx(text, NULL, ImGuiTextFlags_NoWidthForLargeClippedText);
@@ -1664,12 +1616,12 @@ bool CGUIWidgets::color_button_internal(const char* desc_id, const ImVec4& col, 
 
 	ImVec4 col_rgb_without_alpha(col_rgb.x, col_rgb.y, col_rgb.z, 1.0f);
 	float grid_step = ImMin(size.x, size.y) / 2.99f;
-	float rounding = /*ImMin(g.Style.FrameRounding, grid_step * 0.5f)*/20.0f; // oxware: we do "circle"-like rounded color buttons.
+	float rounding = /*ImMin(g.Style.FrameRounding, grid_step * 0.5f)*/20.0f;
 	ImRect bb_inner = bb;
 	float off = 0.0f;
 	if ((flags & ImGuiColorEditFlags_NoBorder) == 0)
 	{
-		off = -0.75f; // The border (using Col_FrameBg) tends to look off when color is near-opaque and rounding is enabled. This offset seemed like a good middle ground to reduce those artifacts.
+		off = -0.75f;
 		bb_inner.Expand(off);
 	}
 	if ((flags & ImGuiColorEditFlags_AlphaPreviewHalf) && col_rgb.w < 1.0f)
@@ -1680,7 +1632,7 @@ bool CGUIWidgets::color_button_internal(const char* desc_id, const ImVec4& col, 
 	}
 	else
 	{
-		// Because GetColorU32() multiplies by the global style Alpha and we don't want to display a checkerboard if the source code had no alpha
+
 		ImVec4 col_source = (flags & ImGuiColorEditFlags_AlphaPreview) ? col_rgb : col_rgb_without_alpha;
 		window->DrawList->AddRectFilled(bb_inner.Min, bb_inner.Max, GetColorU32(col_source), rounding);
 	}
@@ -1699,12 +1651,11 @@ bool CGUIWidgets::color_button_internal(const char* desc_id, const ImVec4& col, 
 		}
 		else
 		{
-			window->DrawList->AddRect(bb.Min, bb.Max, GetColorU32(ImGuiCol_FrameBg), rounding); // Color button are often in need of some sort of border
+			window->DrawList->AddRect(bb.Min, bb.Max, GetColorU32(ImGuiCol_FrameBg), rounding);
 		}
 	}
 
-	// Drag and Drop Source
-	// NB: The ActiveId test is merely an optional micro-optimization, BeginDragDropSource() does the same test.
+
 	if (g.ActiveId == id && !(flags & ImGuiColorEditFlags_NoDragDrop) && BeginDragDropSource())
 	{
 		if (flags & ImGuiColorEditFlags_NoAlpha)
@@ -1717,7 +1668,7 @@ bool CGUIWidgets::color_button_internal(const char* desc_id, const ImVec4& col, 
 		EndDragDropSource();
 	}
 
-	// Tooltip
+
 	if (!(flags & ImGuiColorEditFlags_NoTooltip) && hovered)
 		ColorTooltip(desc_id, &col.x, flags & (ImGuiColorEditFlags_InputMask_ | ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_AlphaPreview | ImGuiColorEditFlags_AlphaPreviewHalf));
 
@@ -1730,13 +1681,13 @@ bool CGUIWidgets::begin_combo_internal(const char* label, const char* preview_la
 	ImGuiWindow* window = GetCurrentWindow();
 
 	ImGuiNextWindowDataFlags backup_next_window_data_flags = g.NextWindowData.Flags;
-	g.NextWindowData.ClearFlags(); // We behave like Begin() and need to consume those values
+	g.NextWindowData.ClearFlags();
 	if (window->SkipItems)
 		return false;
 
 	const ImGuiStyle& style = g.Style;
 	const ImGuiID id = window->GetID(label);
-	IM_ASSERT((flags & (ImGuiComboFlags_NoArrowButton | ImGuiComboFlags_NoPreview)) != (ImGuiComboFlags_NoArrowButton | ImGuiComboFlags_NoPreview)); // Can't use both flags together
+	IM_ASSERT((flags & (ImGuiComboFlags_NoArrowButton | ImGuiComboFlags_NoPreview)) != (ImGuiComboFlags_NoArrowButton | ImGuiComboFlags_NoPreview));
 
 	const float height_factor = 0.3f;
 	const ImVec2 arrow_size = { (flags & ImGuiComboFlags_NoArrowButton) ? 0.0f : GetFrameHeight(), GetFrameHeight() * height_factor };
@@ -1749,7 +1700,7 @@ bool CGUIWidgets::begin_combo_internal(const char* label, const char* preview_la
 	if (!ItemAdd(total_bb, id, &bb))
 		return false;
 
-	// Open on click
+
 	bool hovered, held;
 	bool pressed = ButtonBehavior(bb, id, &hovered, &held);
 	const ImGuiID popup_id = ImHashStr("##ComboPopup", 0, id);
@@ -1760,7 +1711,7 @@ bool CGUIWidgets::begin_combo_internal(const char* label, const char* preview_la
 		popup_open = true;
 	}
 
-	// Render shape
+
 	const ImU32 frame_col = get_color<GUICLR_ListBoxBackground>().as_u32();
 	const float value_x2 = ImMax(bb.Min.x, bb.Max.x - arrow_size.x);
 	RenderNavHighlight(bb, id);
@@ -1795,7 +1746,7 @@ bool CGUIWidgets::begin_combo_internal(const char* label, const char* preview_la
 	PopStyleVar(1);
 	PopStyleColor(1);
 
-	// Custom preview
+
 	if (flags & ImGuiComboFlags_CustomPreview)
 	{
 		g.ComboPreviewData.PreviewRect = ImRect(bb.Min.x, bb.Min.y, value_x2, bb.Max.y);
@@ -1805,7 +1756,7 @@ bool CGUIWidgets::begin_combo_internal(const char* label, const char* preview_la
 
 	PushFont(g_gui_fontmgr_i->get_font(FID_SegoeUI, FSZ_16px, FDC_Regular));
 
-	// Render preview and label
+
 	if (preview_label != NULL && !(flags & ImGuiComboFlags_NoPreview))
 	{
 		if (g.LogEnabled)
@@ -1843,16 +1794,16 @@ bool CGUIWidgets::color_edit_4_internal(const char * label, float rgba[4], bool 
 	if (set_current_color_edit_id)
 		g.ColorEditCurrentID = window->IDStack.back();
 
-	// If we're not showing any slider there's no point in doing any HSV conversions
+
 	const ImGuiColorEditFlags flags_untouched = flags;
 	if (flags & ImGuiColorEditFlags_NoInputs)
 		flags = (flags & (~ImGuiColorEditFlags_DisplayMask_)) | ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_NoOptions;
 
-	// Context menu: display and modify options (before defaults are applied)
+
 	if (!(flags & ImGuiColorEditFlags_NoOptions))
 		ColorEditOptionsPopup(rgba, flags);
 
-	// Read stored options
+
 	if (!(flags & ImGuiColorEditFlags_DisplayMask_))
 		flags |= (g.ColorEditOptions & ImGuiColorEditFlags_DisplayMask_);
 	if (!(flags & ImGuiColorEditFlags_DataTypeMask_))
@@ -1862,20 +1813,20 @@ bool CGUIWidgets::color_edit_4_internal(const char * label, float rgba[4], bool 
 	if (!(flags & ImGuiColorEditFlags_InputMask_))
 		flags |= (g.ColorEditOptions & ImGuiColorEditFlags_InputMask_);
 	flags |= (g.ColorEditOptions & ~(ImGuiColorEditFlags_DisplayMask_ | ImGuiColorEditFlags_DataTypeMask_ | ImGuiColorEditFlags_PickerMask_ | ImGuiColorEditFlags_InputMask_));
-	IM_ASSERT(ImIsPowerOfTwo(flags & ImGuiColorEditFlags_DisplayMask_)); // Check that only 1 is selected
-	IM_ASSERT(ImIsPowerOfTwo(flags & ImGuiColorEditFlags_InputMask_));   // Check that only 1 is selected
+	IM_ASSERT(ImIsPowerOfTwo(flags & ImGuiColorEditFlags_DisplayMask_));
+	IM_ASSERT(ImIsPowerOfTwo(flags & ImGuiColorEditFlags_InputMask_));
 
 	const bool alpha = (flags & ImGuiColorEditFlags_NoAlpha) == 0;
 	const bool hdr = (flags & ImGuiColorEditFlags_HDR) != 0;
 	const int components = alpha ? 4 : 3;
 
-	// Convert to the formats we need
+
 	float f[4] = { rgba[0], rgba[1], rgba[2], alpha ? rgba[3] : 1.0f };
 	if ((flags & ImGuiColorEditFlags_InputHSV) && (flags & ImGuiColorEditFlags_DisplayRGB))
 		ColorConvertHSVtoRGB(f[0], f[1], f[2], f[0], f[1], f[2]);
 	else if ((flags & ImGuiColorEditFlags_InputRGB) && (flags & ImGuiColorEditFlags_DisplayHSV))
 	{
-		// Hue is lost when converting from grayscale rgb (saturation=0). Restore it.
+
 		ColorConvertRGBtoHSV(f[0], f[1], f[2], f[0], f[1], f[2]);
 		ColorEditRestoreHS(rgba, &f[0], &f[1], &f[2]);
 	}
@@ -1890,7 +1841,7 @@ bool CGUIWidgets::color_edit_4_internal(const char * label, float rgba[4], bool 
 
 	if (input_values && (flags & (ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_DisplayHSV)) != 0 && (flags & ImGuiColorEditFlags_NoInputs) == 0)
 	{
-		// RGB/HSV 0..255 Sliders
+
 		const float w_item_one = ImMax(1.0f, IM_FLOOR((w_inputs - (style.ItemInnerSpacing.x) * (components - 1)) / (float)components));
 		const float w_item_last = ImMax(1.0f, IM_FLOOR(w_inputs - (w_item_one + style.ItemInnerSpacing.x) * (components - 1)));
 
@@ -1898,13 +1849,13 @@ bool CGUIWidgets::color_edit_4_internal(const char * label, float rgba[4], bool 
 		static const char* ids[4] = { "##X", "##Y", "##Z", "##W" };
 		static const char* fmt_table_int[2][4] =
 		{
-			{   "%3d",   "%3d",   "%3d",   "%3d" }, // Short display
-			{ "R:%3d", "G:%3d", "B:%3d", "A:%3d" }, // Long display for RGBA
+			{   "%3d",   "%3d",   "%3d",   "%3d" },
+			{ "R:%3d", "G:%3d", "B:%3d", "A:%3d" },
 		};
 		static const char* fmt_table_float[3][4] =
 		{
-			{   "%0.3f",   "%0.3f",   "%0.3f",   "%0.3f" }, // Short display
-			{ "R:%0.3f", "G:%0.3f", "B:%0.3f", "A:%0.3f" }, // Long display for RGBA
+			{   "%0.3f",   "%0.3f",   "%0.3f",   "%0.3f" },
+			{ "R:%0.3f", "G:%0.3f", "B:%0.3f", "A:%0.3f" },
 		};
 		const int fmt_idx = hide_prefix ? 0 : 1;
 
@@ -1914,7 +1865,7 @@ bool CGUIWidgets::color_edit_4_internal(const char * label, float rgba[4], bool 
 				SameLine(0, style.ItemInnerSpacing.x);
 			SetNextItemWidth((n + 1 < components) ? w_item_one : w_item_last);
 
-			// FIXME: When ImGuiColorEditFlags_HDR flag is passed HS values snap in weird ways when SV values go below 0.
+
 			if (flags & ImGuiColorEditFlags_Float)
 			{
 				value_changed |= DragFloat(ids[n], &f[n], 1.0f / 255.0f, 0.0f, hdr ? 0.0f : 1.0f, fmt_table_float[fmt_idx][n]);
@@ -1930,7 +1881,7 @@ bool CGUIWidgets::color_edit_4_internal(const char * label, float rgba[4], bool 
 	}
 	else if (input_values && (flags & ImGuiColorEditFlags_DisplayHex) != 0 && (flags & ImGuiColorEditFlags_NoInputs) == 0)
 	{
-		// RGB Hexadecimal Input
+
 		char buf[64];
 		if (alpha)
 			ImFormatString(buf, IM_ARRAYSIZE(buf), "#%02X%02X%02X%02X", ImClamp(i[0], 0, 255), ImClamp(i[1], 0, 255), ImClamp(i[2], 0, 255), ImClamp(i[3], 0, 255));
@@ -1944,13 +1895,13 @@ bool CGUIWidgets::color_edit_4_internal(const char * label, float rgba[4], bool 
 			while (*p == '#' || ImCharIsBlankA(*p))
 				p++;
 			i[0] = i[1] = i[2] = 0;
-			i[3] = 0xFF; // alpha default to 255 is not parsed by scanf (e.g. inputting #FFFFFF omitting alpha)
+			i[3] = 0xFF;
 			int r;
 			if (alpha)
-				r = sscanf(p, "%02X%02X%02X%02X", (unsigned int*)&i[0], (unsigned int*)&i[1], (unsigned int*)&i[2], (unsigned int*)&i[3]); // Treat at unsigned (%X is unsigned)
+				r = sscanf(p, "%02X%02X%02X%02X", (unsigned int*)&i[0], (unsigned int*)&i[1], (unsigned int*)&i[2], (unsigned int*)&i[3]);
 			else
 				r = sscanf(p, "%02X%02X%02X", (unsigned int*)&i[0], (unsigned int*)&i[1], (unsigned int*)&i[2]);
-			IM_UNUSED(r); // Fixes C6031: Return value ignored: 'sscanf'.
+			IM_UNUSED(r);
 		}
 		if (!(flags & ImGuiColorEditFlags_NoOptions))
 			OpenPopupOnItemClick("context", ImGuiPopupFlags_MouseButtonRight);
@@ -1967,7 +1918,7 @@ bool CGUIWidgets::color_edit_4_internal(const char * label, float rgba[4], bool 
 		{
 			if (!(flags & ImGuiColorEditFlags_NoPicker))
 			{
-				// Store current color and open a picker
+
 				g.ColorPickerRef = col_v4;
 				OpenPopup("picker");
 				SetNextWindowPos(g.LastItemData.Rect.GetBL() + ImVec2(0.0f, style.ItemSpacing.y));
@@ -1988,7 +1939,7 @@ bool CGUIWidgets::color_edit_4_internal(const char * label, float rgba[4], bool 
 				}
 				ImGuiColorEditFlags picker_flags_to_forward = ImGuiColorEditFlags_DataTypeMask_ | ImGuiColorEditFlags_PickerMask_ | ImGuiColorEditFlags_InputMask_ | ImGuiColorEditFlags_HDR | ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_AlphaBar;
 				ImGuiColorEditFlags picker_flags = (flags_untouched & picker_flags_to_forward) | ImGuiColorEditFlags_DisplayMask_ | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaPreviewHalf;
-				SetNextItemWidth(square_sz * 12.0f); // Use 256 + bar sizes?
+				SetNextItemWidth(square_sz * 12.0f);
 				value_changed |= color_picker_4_internal("##picker", rgba, input_values, picker_flags, &g.ColorPickerRef.x);
 			}
 			EndPopup();
@@ -1997,14 +1948,14 @@ bool CGUIWidgets::color_edit_4_internal(const char * label, float rgba[4], bool 
 
 	if (label != label_display_end && !(flags & ImGuiColorEditFlags_NoLabel))
 	{
-		// Position not necessarily next to last submitted button (e.g. if style.ColorButtonPosition == ImGuiDir_Left),
-		// but we need to use SameLine() to setup baseline correctly. Might want to refactor SameLine() to simplify this.
+
+
 		SameLine(0.0f, style.ItemInnerSpacing.x);
 		window->DC.CursorPos.x = pos.x + ((flags & ImGuiColorEditFlags_NoInputs) ? w_button : w_full + style.ItemInnerSpacing.x);
 		TextEx(label, label_display_end);
 	}
 
-	// Convert back
+
 	if (value_changed && picker_active_window == NULL)
 	{
 		if (!value_changed_as_float)
@@ -2033,14 +1984,13 @@ bool CGUIWidgets::color_edit_4_internal(const char * label, float rgba[4], bool 
 	PopID();
 	EndGroup();
 
-	// Drag and Drop Target
-	// NB: The flag test is merely an optional micro-optimization, BeginDragDropTarget() does the same test.
+
 	if ((g.LastItemData.StatusFlags & ImGuiItemStatusFlags_HoveredRect) && !(flags & ImGuiColorEditFlags_NoDragDrop) && BeginDragDropTarget())
 	{
 		bool accepted_drag_drop = false;
 		if (const ImGuiPayload* payload = AcceptDragDropPayload(IMGUI_PAYLOAD_TYPE_COLOR_3F))
 		{
-			memcpy((float*)rgba, payload->Data, sizeof(float) * 3); // Preserve alpha if any //-V512 //-V1086
+			memcpy((float*)rgba, payload->Data, sizeof(float) * 3);
 			value_changed = accepted_drag_drop = true;
 		}
 		if (const ImGuiPayload* payload = AcceptDragDropPayload(IMGUI_PAYLOAD_TYPE_COLOR_4F))
@@ -2049,17 +1999,17 @@ bool CGUIWidgets::color_edit_4_internal(const char * label, float rgba[4], bool 
 			value_changed = accepted_drag_drop = true;
 		}
 
-		// Drag-drop payloads are always RGB
+
 		if (accepted_drag_drop && (flags & ImGuiColorEditFlags_InputHSV))
 			ColorConvertRGBtoHSV(rgba[0], rgba[1], rgba[2], rgba[0], rgba[1], rgba[2]);
 		EndDragDropTarget();
 	}
 
-	// When picker is being actively used, use its active id so IsItemActive() will function on color_edit_4_internal().
+
 	if (picker_active_window && g.ActiveId != 0 && g.ActiveIdWindow == picker_active_window)
 		g.LastItemData.ID = g.ActiveId;
 
-	if (value_changed && g.LastItemData.ID != 0) // In case of ID collision, the second EndGroup() won't catch g.ActiveId
+	if (value_changed && g.LastItemData.ID != 0)
 		MarkItemEdited(g.LastItemData.ID);
 
 	return value_changed;
@@ -2088,27 +2038,27 @@ bool CGUIWidgets::color_picker_4_internal(const char * label, float rgba[4], boo
 	if (!(flags & ImGuiColorEditFlags_NoSidePreview))
 		flags |= ImGuiColorEditFlags_NoSmallPreview;
 
-	// Context menu: display and store options.
+
 	if (!(flags & ImGuiColorEditFlags_NoOptions))
 		color_picker_options_popup(rgba, input_values, flags);
 
-	// Read stored options
+
 	if (!(flags & ImGuiColorEditFlags_PickerMask_))
 		flags |= ((g.ColorEditOptions & ImGuiColorEditFlags_PickerMask_) ? g.ColorEditOptions : ImGuiColorEditFlags_DefaultOptions_) & ImGuiColorEditFlags_PickerMask_;
 	if (!(flags & ImGuiColorEditFlags_InputMask_))
 		flags |= ((g.ColorEditOptions & ImGuiColorEditFlags_InputMask_) ? g.ColorEditOptions : ImGuiColorEditFlags_DefaultOptions_) & ImGuiColorEditFlags_InputMask_;
-	IM_ASSERT(ImIsPowerOfTwo(flags & ImGuiColorEditFlags_PickerMask_)); // Check that only 1 is selected
-	IM_ASSERT(ImIsPowerOfTwo(flags & ImGuiColorEditFlags_InputMask_));  // Check that only 1 is selected
+	IM_ASSERT(ImIsPowerOfTwo(flags & ImGuiColorEditFlags_PickerMask_));
+	IM_ASSERT(ImIsPowerOfTwo(flags & ImGuiColorEditFlags_InputMask_));
 	if (!(flags & ImGuiColorEditFlags_NoOptions))
 		flags |= (g.ColorEditOptions & ImGuiColorEditFlags_AlphaBar);
 
-	// Setup
+
 	int components = (flags & ImGuiColorEditFlags_NoAlpha) ? 3 : 4;
 	bool alpha_bar = (flags & ImGuiColorEditFlags_AlphaBar) && !(flags & ImGuiColorEditFlags_NoAlpha);
 	ImVec2 picker_pos = window->DC.CursorPos;
 	float square_sz = GetFrameHeight();
-	float bars_width = square_sz; // Arbitrary smallish width of Hue/Alpha picking bars
-	float sv_picker_size = ImMax(bars_width * 1, width - (alpha_bar ? 2 : 1) * (bars_width + style.ItemInnerSpacing.x)); // Saturation/Value picking box
+	float bars_width = square_sz;
+	float sv_picker_size = ImMax(bars_width * 1, width - (alpha_bar ? 2 : 1) * (bars_width + style.ItemInnerSpacing.x));
 	float bar0_pos_x = picker_pos.x + sv_picker_size + style.ItemInnerSpacing.x;
 	float bar1_pos_x = bar0_pos_x + bars_width + style.ItemInnerSpacing.x;
 	float bars_triangles_half_sz = IM_FLOOR(bars_width * 0.20f);
@@ -2121,17 +2071,17 @@ bool CGUIWidgets::color_picker_4_internal(const char * label, float rgba[4], boo
 	float wheel_r_inner = wheel_r_outer - wheel_thickness;
 	ImVec2 wheel_center(picker_pos.x + (sv_picker_size + bars_width) * 0.5f, picker_pos.y + sv_picker_size * 0.5f);
 
-	// Note: the triangle is displayed rotated with triangle_pa pointing to Hue, but most coordinates stays unrotated for logic.
+
 	float triangle_r = wheel_r_inner - (int)(sv_picker_size * 0.027f);
-	ImVec2 triangle_pa = ImVec2(triangle_r, 0.0f); // Hue point.
-	ImVec2 triangle_pb = ImVec2(triangle_r * -0.5f, triangle_r * -0.866025f); // Black point.
-	ImVec2 triangle_pc = ImVec2(triangle_r * -0.5f, triangle_r * +0.866025f); // White point.
+	ImVec2 triangle_pa = ImVec2(triangle_r, 0.0f);
+	ImVec2 triangle_pb = ImVec2(triangle_r * -0.5f, triangle_r * -0.866025f);
+	ImVec2 triangle_pc = ImVec2(triangle_r * -0.5f, triangle_r * +0.866025f);
 
 	float H = rgba[0], S = rgba[1], V = rgba[2];
 	float R = rgba[0], G = rgba[1], B = rgba[2];
 	if (flags & ImGuiColorEditFlags_InputRGB)
 	{
-		// Hue is lost when converting from grayscale rgb (saturation=0). Restore it.
+
 		ColorConvertRGBtoHSV(R, G, B, H, S, V);
 		ColorEditRestoreHS(rgba, &H, &S, &V);
 	}
@@ -2145,7 +2095,7 @@ bool CGUIWidgets::color_picker_4_internal(const char * label, float rgba[4], boo
 	PushItemFlag(ImGuiItemFlags_NoNav, true);
 	if (flags & ImGuiColorEditFlags_PickerHueWheel)
 	{
-		// Hue wheel + SV triangle logic
+
 		InvisibleButton("hsv", ImVec2(sv_picker_size + style.ItemInnerSpacing.x + bars_width, sv_picker_size));
 		if (IsItemActive())
 		{
@@ -2154,7 +2104,7 @@ bool CGUIWidgets::color_picker_4_internal(const char * label, float rgba[4], boo
 			float initial_dist2 = ImLengthSqr(initial_off);
 			if (initial_dist2 >= (wheel_r_inner - 1) * (wheel_r_inner - 1) && initial_dist2 <= (wheel_r_outer + 1) * (wheel_r_outer + 1))
 			{
-				// Interactive with Hue wheel
+
 				H = ImAtan2(current_off.y, current_off.x) / IM_PI * 0.5f;
 				if (H < 0.0f)
 					H += 1.0f;
@@ -2164,7 +2114,7 @@ bool CGUIWidgets::color_picker_4_internal(const char * label, float rgba[4], boo
 			float sin_hue_angle = ImSin(-H * 2.0f * IM_PI);
 			if (ImTriangleContainsPoint(triangle_pa, triangle_pb, triangle_pc, ImRotate(initial_off, cos_hue_angle, sin_hue_angle)))
 			{
-				// Interacting with SV triangle
+
 				ImVec2 current_off_unrotated = ImRotate(current_off, cos_hue_angle, sin_hue_angle);
 				if (!ImTriangleContainsPoint(triangle_pa, triangle_pb, triangle_pc, current_off_unrotated))
 					current_off_unrotated = ImTriangleClosestPoint(triangle_pa, triangle_pb, triangle_pc, current_off_unrotated);
@@ -2180,19 +2130,19 @@ bool CGUIWidgets::color_picker_4_internal(const char * label, float rgba[4], boo
 	}
 	else if (flags & ImGuiColorEditFlags_PickerHueBar)
 	{
-		// SV rectangle logic
+
 		InvisibleButton("sv", ImVec2(sv_picker_size, sv_picker_size));
 		if (IsItemActive())
 		{
 			S = ImSaturate((io.MousePos.x - picker_pos.x) / (sv_picker_size - 1));
 			V = 1.0f - ImSaturate((io.MousePos.y - picker_pos.y) / (sv_picker_size - 1));
-			ColorEditRestoreH(rgba, &H); // Greatly reduces hue jitter and reset to 0 when hue == 255 and color is rapidly modified using SV square.
+			ColorEditRestoreH(rgba, &H);
 			value_changed = value_changed_sv = true;
 		}
 		if (!(flags & ImGuiColorEditFlags_NoOptions))
 			OpenPopupOnItemClick("context", ImGuiPopupFlags_MouseButtonRight);
 
-		// Hue bar logic
+
 		SetCursorScreenPos(ImVec2(bar0_pos_x, picker_pos.y));
 		InvisibleButton("hue", ImVec2(bars_width, sv_picker_size));
 		if (IsItemActive())
@@ -2202,7 +2152,7 @@ bool CGUIWidgets::color_picker_4_internal(const char * label, float rgba[4], boo
 		}
 	}
 
-	// Alpha bar logic
+
 	if (alpha_bar)
 	{
 		SetCursorScreenPos(ImVec2(bar1_pos_x, picker_pos.y));
@@ -2213,7 +2163,7 @@ bool CGUIWidgets::color_picker_4_internal(const char * label, float rgba[4], boo
 			value_changed = true;
 		}
 	}
-	PopItemFlag(); // ImGuiItemFlags_NoNav
+	PopItemFlag();
 
 	if (!(flags & ImGuiColorEditFlags_NoSidePreview))
 	{
@@ -2257,7 +2207,7 @@ bool CGUIWidgets::color_picker_4_internal(const char * label, float rgba[4], boo
 		EndGroup();
 	}
 
-	// Convert back color to RGB
+
 	if (value_changed_h || value_changed_sv)
 	{
 		if (flags & ImGuiColorEditFlags_InputRGB)
@@ -2276,7 +2226,7 @@ bool CGUIWidgets::color_picker_4_internal(const char * label, float rgba[4], boo
 		}
 	}
 
-	// R,G,B and H,S,V slider color editor
+
 	bool value_changed_fix_hue_wrap = false;
 	if ((flags & ImGuiColorEditFlags_NoInputs) == 0)
 	{
@@ -2286,8 +2236,8 @@ bool CGUIWidgets::color_picker_4_internal(const char * label, float rgba[4], boo
 		if (flags & ImGuiColorEditFlags_DisplayRGB || (flags & ImGuiColorEditFlags_DisplayMask_) == 0)
 			if (color_edit_4_internal("##rgb", rgba, input_values, sub_flags | ImGuiColorEditFlags_DisplayRGB))
 			{
-				// FIXME: Hackily differentiating using the DragInt (ActiveId != 0 && !ActiveIdAllowOverlap) vs. using the InputText or DropTarget.
-				// For the later we don't want to run the hue-wrap canceling code. If you are well versed in HSV picker please provide your input! (See #2050)
+
+
 				value_changed_fix_hue_wrap = (g.ActiveId != 0 && !g.ActiveIdAllowOverlap);
 				value_changed = true;
 			}
@@ -2298,7 +2248,7 @@ bool CGUIWidgets::color_picker_4_internal(const char * label, float rgba[4], boo
 		PopItemWidth();
 	}
 
-	// Try to cancel hue wrap (after color_edit_4_internal call), if any
+
 	if (value_changed_fix_hue_wrap && (flags & ImGuiColorEditFlags_InputRGB))
 	{
 		float new_H, new_S, new_V;
@@ -2320,7 +2270,7 @@ bool CGUIWidgets::color_picker_4_internal(const char * label, float rgba[4], boo
 			G = rgba[1];
 			B = rgba[2];
 			ColorConvertRGBtoHSV(R, G, B, H, S, V);
-			ColorEditRestoreHS(rgba, &H, &S, &V);   // Fix local Hue as display below will use it immediately.
+			ColorEditRestoreHS(rgba, &H, &S, &V);
 		}
 		else if (flags & ImGuiColorEditFlags_InputHSV)
 		{
@@ -2339,14 +2289,14 @@ bool CGUIWidgets::color_picker_4_internal(const char * label, float rgba[4], boo
 
 	ImVec4 hue_color_f(1, 1, 1, style.Alpha); ColorConvertHSVtoRGB(H, 1, 1, hue_color_f.x, hue_color_f.y, hue_color_f.z);
 	ImU32 hue_color32 = ColorConvertFloat4ToU32(hue_color_f);
-	ImU32 user_col32_striped_of_alpha = ColorConvertFloat4ToU32(ImVec4(R, G, B, style.Alpha)); // Important: this is still including the main rendering/style alpha!!
+	ImU32 user_col32_striped_of_alpha = ColorConvertFloat4ToU32(ImVec4(R, G, B, style.Alpha));
 
 	ImVec2 sv_cursor_pos;
 
 	if (flags & ImGuiColorEditFlags_PickerHueWheel)
 	{
-		// Render Hue Wheel
-		const float aeps = 0.5f / wheel_r_outer; // Half a pixel arc length in radians (2pi cancels out).
+
+		const float aeps = 0.5f / wheel_r_outer;
 		const int segment_per_arc = ImMax(4, (int)wheel_r_outer / 12);
 		for (int n = 0; n < 6; n++)
 		{
@@ -2357,13 +2307,13 @@ bool CGUIWidgets::color_picker_4_internal(const char * label, float rgba[4], boo
 			draw_list->PathStroke(col_white, 0, wheel_thickness);
 			const int vert_end_idx = draw_list->VtxBuffer.Size;
 
-			// Paint colors over existing vertices
+
 			ImVec2 gradient_p0(wheel_center.x + ImCos(a0) * wheel_r_inner, wheel_center.y + ImSin(a0) * wheel_r_inner);
 			ImVec2 gradient_p1(wheel_center.x + ImCos(a1) * wheel_r_inner, wheel_center.y + ImSin(a1) * wheel_r_inner);
 			ShadeVertsLinearColorGradientKeepAlpha(draw_list, vert_start_idx, vert_end_idx, gradient_p0, gradient_p1, col_hues[n], col_hues[n + 1]);
 		}
 
-		// Render Cursor + preview on Hue Wheel
+
 		float cos_hue_angle = ImCos(H * 2.0f * IM_PI);
 		float sin_hue_angle = ImSin(H * 2.0f * IM_PI);
 		ImVec2 hue_cursor_pos(wheel_center.x + cos_hue_angle * (wheel_r_inner + wheel_r_outer) * 0.5f, wheel_center.y + sin_hue_angle * (wheel_r_inner + wheel_r_outer) * 0.5f);
@@ -2373,7 +2323,7 @@ bool CGUIWidgets::color_picker_4_internal(const char * label, float rgba[4], boo
 		draw_list->AddCircle(hue_cursor_pos, hue_cursor_rad + 1, col_midgrey, hue_cursor_segments);
 		draw_list->AddCircle(hue_cursor_pos, hue_cursor_rad, col_white, hue_cursor_segments);
 
-		// Render SV triangle (rotated according to hue)
+
 		ImVec2 tra = wheel_center + ImRotate(triangle_pa, cos_hue_angle, sin_hue_angle);
 		ImVec2 trb = wheel_center + ImRotate(triangle_pb, cos_hue_angle, sin_hue_angle);
 		ImVec2 trc = wheel_center + ImRotate(triangle_pc, cos_hue_angle, sin_hue_angle);
@@ -2390,14 +2340,14 @@ bool CGUIWidgets::color_picker_4_internal(const char * label, float rgba[4], boo
 	}
 	else if (flags & ImGuiColorEditFlags_PickerHueBar)
 	{
-		// Render SV Square
+
 		draw_list->AddRectFilledMultiColor(picker_pos, picker_pos + ImVec2(sv_picker_size, sv_picker_size), col_white, hue_color32, hue_color32, col_white);
 		draw_list->AddRectFilledMultiColor(picker_pos, picker_pos + ImVec2(sv_picker_size, sv_picker_size), 0, 0, col_black, col_black);
 		RenderFrameBorder(picker_pos, picker_pos + ImVec2(sv_picker_size, sv_picker_size), 0.0f);
-		sv_cursor_pos.x = ImClamp(IM_ROUND(picker_pos.x + ImSaturate(S) * sv_picker_size), picker_pos.x + 2, picker_pos.x + sv_picker_size - 2); // Sneakily prevent the circle to stick out too much
+		sv_cursor_pos.x = ImClamp(IM_ROUND(picker_pos.x + ImSaturate(S) * sv_picker_size), picker_pos.x + 2, picker_pos.x + sv_picker_size - 2);
 		sv_cursor_pos.y = ImClamp(IM_ROUND(picker_pos.y + ImSaturate(1 - V) * sv_picker_size), picker_pos.y + 2, picker_pos.y + sv_picker_size - 2);
 
-		// Render Hue Bar
+
 		for (int i = 0; i < 6; ++i)
 			draw_list->AddRectFilledMultiColor(ImVec2(bar0_pos_x, picker_pos.y + i * (sv_picker_size / 6)), ImVec2(bar0_pos_x + bars_width, picker_pos.y + (i + 1) * (sv_picker_size / 6)), col_hues[i], col_hues[i], col_hues[i + 1], col_hues[i + 1]);
 		float bar0_line_y = IM_ROUND(picker_pos.y + H * sv_picker_size);
@@ -2405,13 +2355,13 @@ bool CGUIWidgets::color_picker_4_internal(const char * label, float rgba[4], boo
 		RenderArrowsForVerticalBar(draw_list, ImVec2(bar0_pos_x - 1, bar0_line_y), ImVec2(bars_triangles_half_sz + 1, bars_triangles_half_sz), bars_width + 2.0f, style.Alpha);
 	}
 
-	// Render cursor/preview circle (clamp S/V within 0..1 range because floating points colors may lead HSV values to be out of range)
+
 	float sv_cursor_rad = value_changed_sv ? 10.0f : 6.0f;
 	draw_list->AddCircleFilled(sv_cursor_pos, sv_cursor_rad, user_col32_striped_of_alpha, 12);
 	draw_list->AddCircle(sv_cursor_pos, sv_cursor_rad + 1, col_midgrey, 12);
 	draw_list->AddCircle(sv_cursor_pos, sv_cursor_rad, col_white, 12);
 
-	// Render alpha bar
+
 	if (alpha_bar)
 	{
 		float alpha = ImSaturate(rgba[3]);
@@ -2427,7 +2377,7 @@ bool CGUIWidgets::color_picker_4_internal(const char * label, float rgba[4], boo
 
 	if (value_changed && memcmp(backup_initial_col, rgba, components * sizeof(float)) == 0)
 		value_changed = false;
-	if (value_changed && g.LastItemData.ID != 0) // In case of ID collision, the second EndGroup() won't catch g.ActiveId
+	if (value_changed && g.LastItemData.ID != 0)
 		MarkItemEdited(g.LastItemData.ID);
 
 	if (set_current_color_edit_id)
@@ -2446,18 +2396,18 @@ void CGUIWidgets::color_picker_options_popup(const float* ref_col, bool input_va
 	ImGuiContext& g = *GImGui;
 	if (allow_opt_picker)
 	{
-		ImVec2 picker_size(g.FontSize * 8, ImMax(g.FontSize * 8 - (GetFrameHeight() + g.Style.ItemInnerSpacing.x), 1.0f)); // FIXME: Picker size copied from main picker function
+		ImVec2 picker_size(g.FontSize * 8, ImMax(g.FontSize * 8 - (GetFrameHeight() + g.Style.ItemInnerSpacing.x), 1.0f));
 		PushItemWidth(picker_size.x);
 		for (int picker_type = 0; picker_type < 2; picker_type++)
 		{
-			// Draw small/thumbnail version of each picker type (over an invisible button for selection)
+
 			if (picker_type > 0) Separator();
 			PushID(picker_type);
 			ImGuiColorEditFlags picker_flags = ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoOptions | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_NoSidePreview | (flags & ImGuiColorEditFlags_NoAlpha);
 			if (picker_type == 0) picker_flags |= ImGuiColorEditFlags_PickerHueBar;
 			if (picker_type == 1) picker_flags |= ImGuiColorEditFlags_PickerHueWheel;
 			ImVec2 backup_pos = GetCursorScreenPos();
-			if (Selectable("##selectable", false, 0, picker_size)) // By default, Selectable() is closing popup
+			if (Selectable("##selectable", false, 0, picker_size))
 				g.ColorEditOptions = (g.ColorEditOptions & ~ImGuiColorEditFlags_PickerMask_) | (picker_flags & ImGuiColorEditFlags_PickerMask_);
 			SetCursorScreenPos(backup_pos);
 			ImVec4 previewing_ref_col;
@@ -2519,11 +2469,11 @@ bool CGUIWidgets::add_slider_internal(const char* label, T* value, T* min, T* ma
 	if (!ItemAdd(total_bb, id, &frame_bb, false))
 		return false;
 
-	// Default format string when passing NULL
+
 	if (format == NULL)
 		format = DataTypeGetInfo(data_type)->PrintFmt;
 
-	// Tabbing or CTRL-clicking on Slider turns it into an input box
+
 	const bool hovered = ItemHoverable(frame_bb, id);
 	const bool clicked = hovered && IsMouseClicked(0, id);
 	const bool make_active = (clicked);
@@ -2538,11 +2488,11 @@ bool CGUIWidgets::add_slider_internal(const char* label, T* value, T* min, T* ma
 		g.ActiveIdUsingNavDirMask |= (1 << ImGuiDir_Left) | (1 << ImGuiDir_Right);
 	}
 
-	// - 1.f due to not perfect center alignment.
+
 	if (label_size.x > 0.0f)
 		RenderText(ImVec2(window->DC.CursorPos.x, frame_bb.Min.y + style.FramePadding.y - 3.f), label_fixed);
 
-	// Slider behavior
+
 	ImRect grab_bb;
 	const bool value_changed = SliderBehavior(frame_bb, id, data_type, value, min, max, format, flags, &grab_bb);
 	if (value_changed)
@@ -2553,7 +2503,7 @@ bool CGUIWidgets::add_slider_internal(const char* label, T* value, T* min, T* ma
 		(grab_bb.Max.x - grab_bb.Min.x) / 2.f,
 		(grab_bb.Max.y - grab_bb.Min.y) / 2.f };
 
-	// Draw frame
+
 	CColor frame_col;
 
 	if (hovered || g.ActiveId == id)
@@ -2571,17 +2521,17 @@ bool CGUIWidgets::add_slider_internal(const char* label, T* value, T* min, T* ma
 	ImVec2 frame_bb_thin_size = frame_bb_thin_max - frame_bb_thin_min;
 	RenderFrame(frame_bb_thin_min, frame_bb_thin_max, frame_col.as_u32(), false, 1.f);
 
-	// Render grab
+
 	if (grab_bb.Max.x > grab_bb.Min.x)
 		window->DrawList->AddCircleFilled(grab_bb.Min + grab_bb_size, grab_bb_size.x + grab_bb_oversize_add,
 										  get_color_u32<GUICLR_FrameActive>(), 12);
 
-	// Render blue active field behind grab
+
 	RenderFrame(frame_bb_thin_min,
 				{ grab_bb.Min.x + grab_bb_size.x, frame_bb_thin_max.y },
 				get_color_u32<GUICLR_FrameActive>(), false, 1.f);
 
-	// Display value using user-provided display format so user can add prefix/suffix/decorations to the value.
+
 	char value_buf[64];
 	const char* value_buf_end = value_buf + DataTypeFormatString(value_buf, IM_ARRAYSIZE(value_buf), data_type, value, format);
 

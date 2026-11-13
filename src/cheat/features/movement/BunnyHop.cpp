@@ -72,12 +72,12 @@ void CMovementBunnyHop::update(float frametime)
 
 	if (bhop_mode == BHOPMODE_Legit)
 	{
-		// unlike rage, legit bhop provides a lot of funcionality and settings that you can tweak.
+
 		legit_bhop(frametime);
 	}
 	else if (bhop_mode == BHOPMODE_Rage)
 	{ 
-		// rage bhop is far more obvious but on the other hand, perfect.
+
 		rage_bhop(frametime);
 	}
 }
@@ -89,8 +89,7 @@ void CMovementBunnyHop::rage_bhop(float frametime)
 		return;
 	}
 
-	// activates only the frame when on ground. This is extremely obvious when someone analyzes
-	// your demo, but on the otherhand this creates almost no-slow-down effect.
+
 	bool jump = perfect_condition_for_jump();
 
 	if (jump)
@@ -116,11 +115,10 @@ void CMovementBunnyHop::legit_bhop(float frametime)
 		return;
 	}
 
-	// jump if we satisfy following conditions:
+
 	bool perform_jump = (is_onground || gnd_dist < m_simul_start_gnddist);
 
-	// block the jump randomly unless we're really near the ground. this creates sort of a randomization
-	// pattern for jumps.
+
 	bool block_jump = false;
 	if (randomize_jump_pattern(is_onground))
 	{
@@ -131,7 +129,7 @@ void CMovementBunnyHop::legit_bhop(float frametime)
 	{
 		if (bhop_eff == BHOPEFF_RandomFOGBased)
 		{
-			// randomize this as well
+
 			static int cnt = 0;
 			if (++cnt % cl_enginefuncs->pfnRandomLong(1, 10) == 0)
 			{
@@ -151,27 +149,6 @@ void CMovementBunnyHop::legit_bhop(float frametime)
 			reset_jump_time();
 		}
 
-		// TODO: animation breakings and illusion from HPP
-		//if (m_fog_counter > 0 && !CClientMovementPacket::the().is_in(IN_DUCK) && CClientMovementPacket::the().is_in(IN_JUMP))
-		//{
-		//	CClientMovementPacket::the().set_button_bit(IN_DUCK, true);
-		//}
-
-		//static int nFramesInDuck;
-
-		//if (m_fog_counter == 0)
-		//{
-		//	if (nFramesInDuck)
-		//	{
-		//		nFramesInDuck--;
-		//		CClientMovementPacket::the().set_button_bit(IN_DUCK, true);
-		//	}
-		//}
-		//else
-		//{
-		//	// Minimum frames for change to duck state
-		//	nFramesInDuck = 2;
-		//}
 
 		m_fog_counter++;
 	}
@@ -202,14 +179,14 @@ void CMovementBunnyHop::determine_random_gnddist_for_jump_simul(bool on_ground)
 		int min = movement_bhop_legit_ground_dist_min.get_value();
 		int max = movement_bhop_legit_ground_dist_max.get_value();
 
-		// randomize the value each time we hit/leave ground
+
 		if (on_ground)
 		{
-			m_simul_start_gnddist = (float)cl_enginefuncs->pfnRandomLong(min, max); // ground leaving distance
+			m_simul_start_gnddist = (float)cl_enginefuncs->pfnRandomLong(min, max);
 		}
 		else
 		{
-			m_simul_start_gnddist = (float)cl_enginefuncs->pfnRandomLong(min, max); // ground entering distance
+			m_simul_start_gnddist = (float)cl_enginefuncs->pfnRandomLong(min, max);
 		}
 
 		was_on_ground = on_ground;
@@ -218,11 +195,11 @@ void CMovementBunnyHop::determine_random_gnddist_for_jump_simul(bool on_ground)
 
 bool CMovementBunnyHop::hop_helper(float frametime)
 {
-	// try to predict if we'll be on ground next frame. this is a hard one.
+
 	if (predicted_nextframe_on_ground(frametime))
 	{
-		// releasae the cmd button just in case it wasn't - therefore we can do the +jump at the exact frame
-		// where we land on ground.
+
+
 		CClientMovementPacket::the().set_button_bit(IN_JUMP, false);
 		return true;
 	}
@@ -261,7 +238,7 @@ bool CMovementBunnyHop::predicted_nextframe_on_ground(float frametime)
 
 	if (is_onground)
 	{
-		// already on ground
+
 		return false;
 	}
 
@@ -270,7 +247,7 @@ bool CMovementBunnyHop::predicted_nextframe_on_ground(float frametime)
 		return false;
 	}
 
-	// try to predict if we'll be on ground next frame. this is far from perfect, but should work most of the time.
+
 	return fall_vel > 0.0f && ((fall_vel * frametime) * 2.0f > gnd_dist);
 }
 

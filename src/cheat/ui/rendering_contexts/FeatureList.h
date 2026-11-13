@@ -47,4 +47,4 @@ public:
 	void on_destroy();
 };
 
-#endif // UIFEATURELIST_H
+#endif

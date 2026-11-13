@@ -45,7 +45,7 @@ public:
 	const char* read_string(EKeyType type, const char* key, const char* default_value = nullptr);
 	void write_string(EKeyType type, const char* key, const char* value);
 
-	// if not found, NULL is returned.
+
 	HKEY get_key(EKeyType type);
 
 private:
@@ -60,11 +60,6 @@ private:
 CRegistry g_registry;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CRegistry, IRegistry, IREGISTRY_INTERFACEID, g_registry);
 
-//-------------------------------------------------------------------------------
-//
-// CRegistry implementation
-//
-//-------------------------------------------------------------------------------
 
 CRegistry::CRegistry()
 {
@@ -78,7 +73,7 @@ CRegistry::~CRegistry()
 
 void CRegistry::initialize()
 {
-	// default settings subkey for Valve games
+
 	if (!add_new_key(HKEY_CURRENT_USER, "Software\\Valve\\Half-Life\\Settings", REG_VALVE))
 	{
 		return;
@@ -130,12 +125,12 @@ int CRegistry::read_int(EKeyType type, const char* key, int default_value)
 	}
 
 	st = RegQueryValueExA(
-		hkey,				// handle to key	
-		key,				// value name
-		NULL,				// reserved
-		&reg_type,			// type buffer
-		(LPBYTE)&value,		// data buffer
-		&size);				// size of data buffer
+		hkey,
+		key,
+		NULL,
+		&reg_type,
+		(LPBYTE)&value,
+		&size);
 
 	if (st == ERROR_FILE_NOT_FOUND)
 	{
@@ -169,12 +164,12 @@ void CRegistry::write_int(EKeyType type, const char* key, int value)
 	}
 
 	LONG st = RegSetValueExA(
-		hkey,			// handle to key
-		key,			// value name
-		0,				// reserved
-		REG_DWORD,		// type buffer
-		(LPBYTE)&value,	// data buffer
-		size);			// size of data buffer
+		hkey,
+		key,
+		0,
+		REG_DWORD,
+		(LPBYTE)&value,
+		size);
 
 	if (st != ERROR_SUCCESS)
 	{
@@ -198,12 +193,12 @@ const char* CRegistry::read_string(EKeyType type, const char* key, const char* d
 	}
 
 	st = RegQueryValueExA(
-		hkey,					// handle to key	
-		key,					// value name
-		NULL,					// reserved
-		&reg_type,				// type buffer
-		(unsigned char*)&value,	// data buffer
-		&size);					// size of data buffer
+		hkey,
+		key,
+		NULL,
+		&reg_type,
+		(unsigned char*)&value,
+		&size);
 
 	if (st != ERROR_SUCCESS)
 	{
@@ -232,12 +227,12 @@ void CRegistry::write_string(EKeyType type, const char* key, const char* value)
 	}
 
 	LONG st = RegSetValueExA(
-		hkey,			// handle to key
-		key,			// value name
-		0,				// reserved
-		REG_SZ,			// type buffer
-		(LPBYTE)value,	// data buffer
-		size);			// size of data buffer
+		hkey,
+		key,
+		0,
+		REG_SZ,
+		(LPBYTE)value,
+		size);
 
 	if (st != ERROR_SUCCESS)
 	{
@@ -257,15 +252,15 @@ bool CRegistry::add_new_key(HKEY key, const char* subkey, EKeyType type)
 	HKEY new_key;
 
 	st = RegCreateKeyExA(
-		key,						// handle of open key 
-		subkey,						// address of name of subkey to open 
-		0,							// reserved 
-		NULL,						// Type of value
-		REG_OPTION_NON_VOLATILE,	// Store permanently in reg.
-		KEY_ALL_ACCESS,				// security access mask 
+		key,
+		subkey,
+		0,
 		NULL,
-		&new_key,					// Key we are creating
-		NULL);						// Type of creation
+		REG_OPTION_NON_VOLATILE,
+		KEY_ALL_ACCESS,
+		NULL,
+		&new_key,
+		NULL);
 
 	if (st != ERROR_SUCCESS)
 	{

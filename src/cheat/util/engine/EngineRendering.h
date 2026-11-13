@@ -48,7 +48,7 @@ public:
 	int render_text(const Vector2D& where, bool background, const std::string& text) const;
 	int render_text_colored(const Vector2D& where, bool background, const CColor& color, const std::string& text) const;
 
-	// we do need to calculate the text width because it's not monospaced however, the height is always the same, hence the naming.
+
 	int calc_text_width(const std::string& text) const;
 	int get_text_height() const { return m_font_height; }
 
@@ -58,9 +58,9 @@ private:
 	void initialize();
 
 private:
-	hl::vgui2::HFont m_handle = NULL; // font handle
+	hl::vgui2::HFont m_handle = NULL;
 
-	// we can't precompute this, it doesn't change
+
 	int m_font_height = 0;
 };
 
@@ -76,16 +76,10 @@ public:
 	const EngineFont& console_font() const { return m_console_font; }
 	const EngineFont& credits_font() const { return m_credits_font; }
 
-	//
-	// utils
-	//
 
 	int calc_char_width(hl::vgui2::HFont font_handle, wchar_t ch);
 	int get_char_height(hl::vgui2::HFont font_handle);
 
-	//
-	// debug
-	//
 
 	enum ESide { LEFT, RIGHT, NUMSIDES };
 
@@ -95,7 +89,7 @@ public:
 		render_debug_impl(std::vformat(_Fmt.get(), std::make_format_args(_Args...)));
 	}
 
-	// call this in CL_CreateMove
+
 	void render_information();
 
 	void push_render_side(ESide side)
@@ -139,12 +133,9 @@ public:
 	void initialize();
 	void repaint();
 
-	//
-	// utils
-	//
 
 	void render_circle_opengl(float cx, float cy, float radius, int num_segments, float width, bool blend, int r, int g, int b, int a);
 	void render_line_opengl(const Vector2D& from, const Vector2D& to, float width, bool blend, int r, int g, int b, int a);
 };
 
-#endif // ENGINERENDERING_H
+#endif

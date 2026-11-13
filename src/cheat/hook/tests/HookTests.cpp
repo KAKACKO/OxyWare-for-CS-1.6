@@ -41,7 +41,7 @@ void CHookTests::execute_tests()
 
 		for (const auto& test : hook)
 		{
-			test->default_test_hook(); // common for every hook
+			test->default_test_hook();
 			test->test_hook();
 		}
 	}

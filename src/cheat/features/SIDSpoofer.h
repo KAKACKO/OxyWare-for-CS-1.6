@@ -44,4 +44,4 @@ public:
 	std::optional<int> spoof(void* pAuthBlob, int cbLength);
 };
 
-#endif // SIDSPOOFER_H
+#endif

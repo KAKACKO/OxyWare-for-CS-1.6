@@ -30,7 +30,7 @@
 
 bool CMemoryFnHookMgr::install_hooks()
 {
-	// let's install individual hooks.
+
 	if (!VGuiWrap2_IsConsoleVisible().install()) return false;
 	if (!VGuiWrap2_ConPrintf().install()) return false;
 	if (!ClearIOStates().install()) return false;
@@ -40,7 +40,6 @@ bool CMemoryFnHookMgr::install_hooks()
 	return true;
 }
 
-//-----------------------------------------------------------------------------
 
 bool VGuiWrap2_IsConsoleVisible_FnHook_t::install()
 {
@@ -48,7 +47,6 @@ bool VGuiWrap2_IsConsoleVisible_FnHook_t::install()
 	return install_using_bytepattern(0);
 }
 
-//-----------------------------------------------------------------------------
 
 bool VGuiWrap2_ConPrintf_FnHook_t::install()
 {
@@ -56,7 +54,6 @@ bool VGuiWrap2_ConPrintf_FnHook_t::install()
 	return install_using_bytepattern(0);
 }
 
-//-----------------------------------------------------------------------------
 
 bool ClearIOStates_FnHook_t::install()
 {
@@ -64,7 +61,6 @@ bool ClearIOStates_FnHook_t::install()
 	return install_using_bytepattern(0);
 }
 
-//-----------------------------------------------------------------------------
 
 bool R_GetStudioBounds_FnHook_t::install()
 {
@@ -72,7 +68,6 @@ bool R_GetStudioBounds_FnHook_t::install()
 	return install_using_bytepattern(0);
 }
 
-//-----------------------------------------------------------------------------
 
 bool MD5_Hash_File_FnHook_t::install()
 {

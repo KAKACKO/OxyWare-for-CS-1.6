@@ -38,7 +38,7 @@ public:
 	bool process_file(const std::filesystem::path& file_in, reconstructed_blob_module_info_t& info, uint32_t filesize);
 
 private:
-	// Allocation and deallocation of the file buffer
+
 	bool allocate_buffer(uint32_t size);
 	void deallocate_buffer();
 

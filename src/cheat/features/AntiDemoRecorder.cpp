@@ -32,7 +32,7 @@ VarBoolean anti_demo_recorder_enable("anti_demo_recorder_enable", "Blocks when s
 
 bool CAntiDemoRecorder::allow_demo_to_be_recorded()
 {
-	// called inside svc_stufftext
+
 
 	if (!anti_demo_recorder_enable.get_value())
 	{
@@ -46,7 +46,7 @@ bool CAntiDemoRecorder::allow_demo_to_be_recorded()
 	size_t record_command = cmd_buffer.find("record");
 	if (record_command != std::string::npos)
 	{
-		// parse out e.g.: record "PPC-ZONE HNS"
+
 		std::string record_command_str_begin = cmd_buffer.substr(record_command);
 		auto tokens = CGameUtil::the().tokenize_goldsrc_command(record_command_str_begin.c_str());
 

@@ -48,7 +48,7 @@ public:
 	inline auto IFileSystem() const { return m_IFileSystem; }
 	inline auto IParticleMan() const { return m_IParticleMan; }
 
-	// steam
+
 	inline auto ISteamClient() const { return m_ISteamClient; }
 	inline auto ISteamFriends() const { return m_ISteamFriends; }
 	inline auto ISteamUtils() const { return m_ISteamUtils; }
@@ -71,7 +71,7 @@ private:
 	hl::IFileSystem* m_IFileSystem;
 	hl::IParticleMan* m_IParticleMan;
 
-	// steam
+
 	hl::ISteamClient* m_ISteamClient = nullptr;
 	hl::ISteamFriends* m_ISteamFriends = nullptr;
 	hl::ISteamUtils* m_ISteamUtils = nullptr;
@@ -100,4 +100,4 @@ inline bool CHLInterfaceHook::install_single_hook(T** hook, const wchar_t* dll_n
 	return true;
 }
 
-#endif // HLINTERFACEHOOK_H
+#endif

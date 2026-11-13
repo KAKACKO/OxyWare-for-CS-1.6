@@ -26,9 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// custom_format.h -- custom types for std::format
-//
 
 #include "Color.h"
 #include "vector.h"
@@ -37,7 +34,7 @@
 #include <format>
 #include <filesystem>
 
-// CColor
+
 template <>
 struct std::formatter<CColor> : std::formatter<std::string> {
 	auto format(const CColor& clr, std::format_context& ctx) const {
@@ -46,7 +43,7 @@ struct std::formatter<CColor> : std::formatter<std::string> {
 	}
 };
 
-// Vector
+
 template <>
 struct std::formatter<Vector> : std::formatter<std::string> {
 	auto format(const Vector& vec, std::format_context& ctx) const {
@@ -55,7 +52,7 @@ struct std::formatter<Vector> : std::formatter<std::string> {
 	}
 };
 
-// Vector2D
+
 template <>
 struct std::formatter<Vector2D> : std::formatter<std::string> {
 	auto format(const Vector2D& vec, std::format_context& ctx) const {
@@ -64,7 +61,7 @@ struct std::formatter<Vector2D> : std::formatter<std::string> {
 	}
 };
 
-// KeyValue
+
 template <>
 struct std::formatter<KeyValue> : std::formatter<std::string> {
 	auto format(const KeyValue& kv, std::format_context& ctx) const {
@@ -73,7 +70,7 @@ struct std::formatter<KeyValue> : std::formatter<std::string> {
 	}
 };
 
-// std::filesystem::path
+
 template <>
 struct std::formatter<std::filesystem::path> : std::formatter<std::string> {
 	auto format(const std::filesystem::path& p, std::format_context& ctx) const {

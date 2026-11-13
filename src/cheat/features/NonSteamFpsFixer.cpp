@@ -46,17 +46,11 @@ void CNonSteamFpsFixer::fix_fps()
 	double host_frametime = CLocalState::the().get_engine_frametime();
 	auto cl = CMemoryHookMgr::the().cl().get();
 
-	//
-	// mirrors 8684 implementation.. thanks, random guy
-	//https://github.com/ValveSoftware/halflife/issues/1940#issuecomment-13052903
-	//
-	// fun fact: valve acutally used this code and copy-pasted it into CL_Move.. poor Valve...
-	//
 
 	double dmsec = host_frametime * 1000.0;
-	int msec = (int)dmsec; // take the base part without a fraction.
+	int msec = (int)dmsec;
 
-	frametime_remainder += dmsec - msec; // increment by the fraction
+	frametime_remainder += dmsec - msec;
 
 	if (frametime_remainder > 1.0)
 	{

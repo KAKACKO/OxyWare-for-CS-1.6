@@ -48,4 +48,4 @@ extern IAppDataManager* g_appdata_mgr_i;
 
 #define IAPPDATAMANAGER_INTERFACEID "IAppDataManager"
 
-#endif // IAPPDATAMANAGER_H
+#endif

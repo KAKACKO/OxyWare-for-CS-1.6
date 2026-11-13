@@ -41,33 +41,33 @@ bool CFrameSkipper::skip_current_frame()
 		return false;
 	}
 
-	// skip N frames
+
 	int N = frame_skip_amount.get_value();
 
 	int type = frame_skip_type.get_value();
 	static uint32_t frames = 0;
 	switch (type)
 	{
-		case 0: // skip every N frames
+		case 0:
 		{
 			if (++frames % N != 0)
 			{
-				//CConsole::the().info("yes");
-				return true; // skip
+
+				return true;
 			}
 			break;
 		}
-		case 1: // skip every Nth frame
+		case 1:
 		{
 			if (++frames % N == 0)
 			{
-				//CConsole::the().info("yes");
-				return true; // skip
+
+				return true;
 			}
 			break;
 		}
 	}
 
-	//CConsole::the().info("no");
-	return false; // don't skip
+
+	return false;
 }

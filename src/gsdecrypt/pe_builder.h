@@ -41,11 +41,11 @@ public:
 	DECL_BASIC_CLASS(CPEBuilder);
 
 public:
-	// Reconstructs the PE header for new image from the blob data that we have
+
 	reconstructed_blob_module_info_t build_pe_header(uint8_t* filebuffer, blob_hdr_t* blob_hdr, blob_section_t* blob_sections);
 	
 private:
-	// Building data directories from OptionalHeader
+
 	void build_data_directories(uint8_t* filebuffer, blob_hdr_t* blob_hdr, blob_section_t* blob_sections);
 	void print_data_directory(const char* name, PIMAGE_DATA_DIRECTORY idd);
 
@@ -55,11 +55,11 @@ private:
 
 	uint32_t rva_to_u32_offset(blob_section_t* sectionbase, uint16_t num_sections, uint32_t rva);
 
-	// Little utility function to convert FileHeader's timestamp into actual readable string
+
 	std::string timestamp_as_string(std::time_t timestamp);
 
 private:
-	reconstructed_blob_module_info_t info; // current info
+	reconstructed_blob_module_info_t info;
 };
 
 #endif

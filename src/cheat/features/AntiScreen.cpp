@@ -50,25 +50,23 @@ void CAntiScreen::update()
 
 		if (!m_disable_visual_features)
 		{
-//			CConsole::the().dinfo("Time's up. Waiting {} frames.", n_frames_to_wait);
+
 		}
 
-		// someone has enforced this, don't change it.
+
 		if (!m_forced_disable_visuals)
 		{
 			m_disable_visual_features = true;
 		}
 
-		// wait a little bit in order to have a clean frame
+
 		if (++m_nth_frame > n_frames_to_wait)
 		{
-			//
-			// now everything should be disabled, grab clean pixels
-			//
+
 
 			grab_clean_pixels();
 
-			// reset stuff
+
 			m_nth_frame = 0;
 			if (!m_forced_disable_visuals)
 			{
@@ -83,22 +81,20 @@ void CAntiScreen::update()
 
 void CAntiScreen::detour_pixels(uint8_t* pixels)
 {
-	// return artifical clean pixels we've stored a while ago
+
 	memcpy(pixels, m_clean_screen_pixel_buffer.data(), m_clean_screen_pixel_buffer.size());
 }
 
 void CAntiScreen::grab_clean_pixels()
 {
-	// the snapshot/screenshot cvars take the entire screen into a count (including blackbars)
+
 	auto screen_size_full = CVideoModeUtil::the().get_full_screen_size();
 
-	// pixels + 3 color channels (RGB)
+
 	m_clean_screen_pixel_buffer.clear();
 	m_clean_screen_pixel_buffer.resize((size_t)(screen_size_full.x * screen_size_full.y * 3.0f));
 
-//	CConsole::the().dinfo("Grabbing clean pixels ({}x{})", (int)screen_size_full.x, (int)screen_size_full.y);
 
-	// retreive clean pixels
 	m_antiscreen_reading_pixels = true;
 	glReadPixels(0, 0, (int)screen_size_full.x, (int)screen_size_full.y, GL_RGB, GL_UNSIGNED_BYTE, m_clean_screen_pixel_buffer.data());
 	m_antiscreen_reading_pixels = false;

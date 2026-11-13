@@ -58,4 +58,4 @@ extern IBytePatternBank* g_bytepattern_bank_i;
 
 #define IBYTEPATTERNBANK_INTERFACEID "IBytePatternBank"
 
-#endif // IGUIWIDGETS_H
+#endif

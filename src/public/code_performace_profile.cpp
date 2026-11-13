@@ -32,20 +32,20 @@
 
 #include "tier/GenericUtil.h"
 
-// so that we create an instance per module.
+
 ModuleProfileReport g_module_profile_report;
 
 void ModuleProfileReport::add_code_profile(const std::string& name, const ScopeProfileReport& report)
 {
 	if (!collect_samples)
 	{
-		// someone has stopped the collection.
+
 		return;
 	}
 
 	auto& report_entry = m_code_profile_reports[name];
 
-	// check if overflowed. we need to keep a count so we don't run out of memory.
+
 	if (report_entry.size() > k_max_code_reports)
 	{	
 		report_entry.pop_front();
@@ -53,7 +53,7 @@ void ModuleProfileReport::add_code_profile(const std::string& name, const ScopeP
 
 	report_entry.push_back(report);
 
-#if 0 // too verbose
+#if 0
 	CConsole::the().info("Profile '{}' ({} ms) inside {}:{}", 
 						 name,
 						 report.get_milliseconds(),

@@ -26,9 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// BytePatternBank.cpp -- Provides api around cs/engine builds & byte patterns.
-//
 
 #include "precompiled.h"
 
@@ -83,7 +80,7 @@ private:
 
 	std::set<int> m_supported_builds;
 
-	// picked depending on the situation (e.g. current build)
+
 	const BytePatternContainer* m_active_bytepattern_container = nullptr;
 
 	int m_current_build = -1;
@@ -92,17 +89,12 @@ private:
 CBytePatternBank g_bytepattern_bank;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CBytePatternBank, IBytePatternBank, IBYTEPATTERNBANK_INTERFACEID, g_bytepattern_bank);
 
-//-------------------------------------------------------------------------------
-//
-// CBytePatternBank implementation
-//
-//-------------------------------------------------------------------------------
 
 CBytePatternBank::CBytePatternBank()
 {
 	g_bytepattern_bank_i = this;
 
-	// If you add a new build, you need to register it here!!!
+
 	m_supported_builds.insert(8684);
 	m_supported_builds.insert(4554);
 	m_supported_builds.insert(3266);
@@ -120,7 +112,7 @@ bool CBytePatternBank::initialize(int build_number)
 
 	m_current_build = build_number;
 
-	// try to pick the best build.
+
 	decide_on_build_container();
 
 	CConsole::the().info("BytePatternBank initialized.");
@@ -174,7 +166,7 @@ void CBytePatternBank::decide_on_build_container()
 
 	if (!need_to_pick_closest)
 	{
-		// we have the exact build available, choose it
+
 		switch (m_current_build)
 		{
 			case 8684: m_active_bytepattern_container = &bytepattern_container_8684; break;
@@ -184,7 +176,7 @@ void CBytePatternBank::decide_on_build_container()
 	}
 	else
 	{
-		// user uses build that we don't have available. Pick the closest one to the ones we have.
+
 
 		int closest_build = get_closest_build_number_supported();
 
@@ -195,7 +187,7 @@ void CBytePatternBank::decide_on_build_container()
 			   closest_build);
 
 		m_current_build = closest_build;
-		decide_on_build_container(); // call recursively.
+		decide_on_build_container();
 	}
 }
 
@@ -204,42 +196,38 @@ int CBytePatternBank::get_closest_build_number_supported()
 	int c = 0;
 	int l = 0, h = 99999;
 	int d = m_current_build;
-	for (int b : m_supported_builds) // find closest smaller
+	for (int b : m_supported_builds)
 	{
 		if (l < b && b < d)
 			l = b;
 	}
 
-	for (int b : m_supported_builds) // find closest bigger
+	for (int b : m_supported_builds)
 	{
 		if (h > b && b > d)
 			h = b;
 	}
 
-	//
-	// find who is closer
-	//
 
-	if (h == l) // equal, doesn't matter who
+	if (h == l)
 	{
 		c = l;
 	}
-	// lean to the bigger version, if we're using the one from 2013. These versions received
-	// huge update to the surface code and it make more sense to choose the higher builds for 
-	// these, because the byte patterns from <6000 would not work.
+
+
 	else if (d >= FIRST_SDL_BUILD)
 	{
 		c = h;
 	}
-	else if (d - l < h - d) // lower is closer
+	else if (d - l < h - d)
 	{
 		c = l;
 	}
-	else if (h - d < d - l) // higher is closer
+	else if (h - d < d - l)
 	{
 		c = h;
 	}
-	else if (d - l == h - d) // equaly close, select higher
+	else if (d - l == h - d)
 	{
 		c = h;
 	}

@@ -26,9 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// ManualMappedDll.cpp -- Defines a ManualMap injector interface.
-// 
 
 #include "precompiled.h"
 
@@ -50,7 +47,7 @@ bool CManualMappedDllCurrentProcess::start_injection()
 
 void CManualMappedDllCurrentProcess::unload(bool tell_client_dll)
 {
-	// NOTE: before calling this function, let the dll know that we're unloading it! We don't have the communication capabilities here...
+
 
 	CConsole::the().info("Unloading... {}", m_dll_filepath.string());
 
@@ -71,7 +68,7 @@ bool CManualMappedDllCurrentProcess::communicate_with_injected_dll(EClient2Injec
 		return false;
 	}
 
-	// see if the module has responded within a defined time. if not, it failed to sucessfully initialize.
+
 	if (c2m == C2I_None)
 	{
 		if (calc_current_load_and_init_threshold_seconds() > k_load_and_init_threshold_seconds)
@@ -81,7 +78,7 @@ bool CManualMappedDllCurrentProcess::communicate_with_injected_dll(EClient2Injec
 		}
 	}
 
-	// we told the module that we're unloading and now we're waiting for it to respond..
+
 	if (m_requested_injected_dll_unload)
 	{
 		if (calc_time_elapsed_since_unload_request_seconds() > k_seconds_for_the_client_dll_to_unload)
@@ -89,7 +86,7 @@ bool CManualMappedDllCurrentProcess::communicate_with_injected_dll(EClient2Injec
 			m_requested_injected_dll_unload = false;
 
 			CConsole::the().error("Client dll failed to acknowledge its unload within {} seconds. Unloading...", (int)k_seconds_for_the_client_dll_to_unload);
-			code = C2I_Unloading; // manually force DLL unload
+			code = C2I_Unloading;
 			return true;
 		}
 	}
@@ -161,7 +158,7 @@ bool CManualMappedDllCurrentProcess::map_dll_to()
 
 	on_successfull_initialize();
 
-	// successfully injected in current process memory
+
 	return true;
 }
 
@@ -172,7 +169,7 @@ bool CManualMappedDllCurrentProcess::read_execution_context_back(manualmap_shell
 		(PVOID)get_target_process_shellcode_execution_context_addr(), sec))
 	{
 		CConsole::the().error("Couldn't read target process memory while trying to communicate with it.");
-		return false; // sudden target process crash or mapped dll unload
+		return false;
 	}
 
 	return true;
@@ -184,7 +181,7 @@ bool CManualMappedDllCurrentProcess::allocate_memory()
 
 	CConsole::the().info("Total allocation size: {} bytes", total_allocation_block_size);
 
-	// Allocate space for the DLL image.
+
 	m_allocation_block_ptr = CVirtualMemoryManager::the().allocate<uint8_t>(
 		nullptr, total_allocation_block_size, PAGE_EXECUTE_READWRITE);
 	if (!m_allocation_block_ptr)
@@ -210,10 +207,10 @@ void CManualMappedDllCurrentProcess::deallocate_all_memory()
 
 bool CManualMappedDllCurrentProcess::copy_dll_image_data()
 {
-	// Copy NT & DOS headers
+
 	memcpy(m_allocation_block_ptr, m_dll_to_be_injected.get_byte_buffer().get_raw(), m_dll_to_be_injected.get_size_of_headers());
 
-	// Copy image sections
+
 	auto first_section = m_dll_to_be_injected.get_image_first_section();
 	for (uint16_t i = 0; i < m_dll_to_be_injected.get_num_of_sections(); i++)
 	{
@@ -235,7 +232,7 @@ bool CManualMappedDllCurrentProcess::copy_dll_image_data()
 
 	CConsole::the().info("Created write-able DLL memory image.");
 
-	// then write the communication interface block
+
 	if (is_communicative_dll())
 	{
 		if (!write_ipc_block((LPVOID)get_target_process_ipc_block_addr()))
@@ -251,11 +248,11 @@ bool CManualMappedDllCurrentProcess::copy_dll_image_data()
 
 bool CManualMappedDllCurrentProcess::relocate_dll_image_data()
 {
-	// relocate only if the base address specified by the DLL doesn't corespond to the real base address. Then everything needs to be relocated.
+
 	uintptr_t* amount_to_relocate = (uintptr_t*)(m_allocation_block_ptr - m_dll_to_be_injected.get_image_base());
 	if (amount_to_relocate == 0)
 	{
-		// No need for relocation0x000aaa00
+
 		return true;
 	}
 
@@ -272,7 +269,7 @@ bool CManualMappedDllCurrentProcess::relocate_dll_image_data()
 
 		auto relative_info = (relocation_entry*)(ibr + sizeof(uint8_t));
 
-		// size of a complete block without the header divided by the entry size.
+
 		size_t num_of_relocations = (ibr->SizeOfBlock - sizeof(IMAGE_BASE_RELOCATION)) / sizeof(relocation_entry);
 		for (size_t i = 0; i < num_of_relocations; i++)
 		{
@@ -301,7 +298,7 @@ bool CManualMappedDllCurrentProcess::relocate_dll_image_data()
 				}
 				case IMAGE_REL_BASED_ABSOLUTE:
 				{
-					// This is skipped
+
 					break;
 				}
 				default:
@@ -323,8 +320,8 @@ bool CManualMappedDllCurrentProcess::relocate_dll_image_data()
 
 bool CManualMappedDllCurrentProcess::execute_shellcode()
 {
-	// xddd just call the shellcode fucking locally, who cares lol. This isn't a target process injection, so it's kinda
-	// silly to call it a "shellcode", but yea, whatever dude
+
+
 	if (NULL == shellcode_routine())
 	{
 		CMessageBox::display_error("Shellcode routine exited with error.");

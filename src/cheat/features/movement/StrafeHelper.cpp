@@ -38,13 +38,13 @@ enum EStrafeDir
 
 enum EMoveDirection
 {
-	MOVE_FORWARD, // ^
-	MOVE_RIGHT,   // >
-	MOVE_BACK,    // v
-	MOVE_LEFT,    // <
+	MOVE_FORWARD,
+	MOVE_RIGHT,
+	MOVE_BACK,
+	MOVE_LEFT,
 };
 
-// strafing with mouse
+
 VarBoolean movement_strafe_helper_strafe_with_mouse("movement_strafe_helper_strafe_with_mouse", "Performs moves with mouse. Works only forward/backward", false);
 VarBoolean movement_strafe_helper_strafe_dir_auto("movement_strafe_helper_strafe_dir_auto", "Automatically deduces strafe direction based on keys held", false);
 VarInteger movement_strafe_helper_strafe_dir("movement_strafe_helper_strafe_dir", "Strafe direction", MOVE_FORWARD, MOVE_FORWARD, MOVE_LEFT);
@@ -55,57 +55,53 @@ struct move_direction_t
 	float sidemove, forwardmove;
 };
 
-// the "forward" strafe is always no strafe, so we zero everything
+
 static const std::array<std::array<move_direction_t, 2>, 4> g_move_dirs =
 {{
-	// MOVE_FORWARD
-	// forward and back vector is FORWARD & BACK
-	// side vectors are LEFT & RIGHT
+
+
 	{
-		move_direction_t( // STRAFE RIGHT
+		move_direction_t(
 			false, true, false, false,
 			250, 0
 		),
-		move_direction_t( // STRAFE LEFT
+		move_direction_t(
 			false, false, false, true,
 			-250, 0
 		),
 	},
-	// MOVE_RIGHT
-	// forward and back vector is RIGHT & LEFT
-	// side vectors are FORWARD & BACK
+
+
 	{
-		move_direction_t( // STRAFE RIGHT
+		move_direction_t(
 			false, false, true, false,
 			0, -250
 		),
-		move_direction_t( // STRAFE LEFT
+		move_direction_t(
 			true, false, false, false,
 			0, 250
 		),
 	},
-	// MOVE_BACK
-	// forward and back vector is BACK & FORWARD
-	// side vectors are RIGHT & LEFT
+
+
 	{
-		move_direction_t( // STRAFE RIGHT
+		move_direction_t(
 			false, true, false, true,
 			-250, 0
 		),
-		move_direction_t( // STRAFE LEFT
+		move_direction_t(
 			false, true, false, false,
 			250, 0
 		),
 	},
-	// MOVE_LEFT
-	// forward and back vector is LEFT & RIGHT
-	// side vectors are BACK & FORWARD
+
+
 	{
-		move_direction_t( // STRAFE RIGHT
+		move_direction_t(
 			true, false, false, false,
 			0, 250
 		),
-		move_direction_t( // STRAFE LEFT
+		move_direction_t(
 			false, false, true, false,
 			0, -250
 		),
@@ -133,7 +129,7 @@ void CMovementStrafeHelper::update()
 	{
 		m_mouse_direction = LEFT;
 	}
-	else // no mouse movement
+	else
 	{
 		m_mouse_direction = FORWARD;
 	}
@@ -163,7 +159,7 @@ void CMovementStrafeHelper::update()
 
 		if (m_mouse_direction == FORWARD)
 		{
-			// no strafe direction always resets everything
+
 			cmd->forwardmove = cmd->sidemove = 0;
 			CClientMovementPacket::the().set_button_bit(IN_FORWARD, false);
 			CClientMovementPacket::the().set_button_bit(IN_MOVERIGHT, false);
@@ -175,7 +171,7 @@ void CMovementStrafeHelper::update()
 			const auto& move_dir = g_move_dirs[wanted_dir];
 			const auto& strafe_dir = move_dir[m_mouse_direction];
 
-			// set stuff based on direction
+
 			cmd->forwardmove = strafe_dir.forwardmove;
 			cmd->sidemove = strafe_dir.sidemove;
 			CClientMovementPacket::the().set_button_bit(IN_FORWARD, strafe_dir.move_forward);
@@ -229,4 +225,3 @@ int CMovementStrafeHelper::deduce_direction(hl::usercmd_t* cmd)
 
 	return MOVE_FORWARD;
 }
-

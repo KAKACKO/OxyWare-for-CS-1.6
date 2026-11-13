@@ -35,20 +35,19 @@ void CMovementAirStuck::update()
 {
 	float value = movement_air_stuck_intensity.get_value();
 
-	// override previous value.
+
 	switch (movement_air_stuck_type.get_value())
 	{
-		case 0: // server
+		case 0:
 		{
 			float ft = CLocalState::the().get_engine_frametime();
 
-			// make it somewhat fps-based so that this doesn't get affected when changing fps
-			// since this is capped to only integer resolution, it just will not work properly...
+
 			value *= (1.0f + (70.0f * ft));
 			CClientMovementPacket::the().svside_movement_speed_factor((int)(std::floor(value)), true);
 			break;
 		}
-		case 1: // engine
+		case 1:
 		{
 			CEngineSpeedControl::the().classic_cs16_cheating_scene_speedhack(value);
 			break;

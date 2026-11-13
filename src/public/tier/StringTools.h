@@ -44,7 +44,7 @@ public:
 
 	std::wstring fix_trailing_slashes(const std::wstring& wstr);
 
-	// trim
+
 	std::string& rtrim(std::string& s, const char* t = " \t\n\r\f\v");
 	std::string& ltrim(std::string& s, const char* t = " \t\n\r\f\v");
 	std::string& trim(std::string& s, const char* t = " \t\n\r\f\v");
@@ -58,4 +58,4 @@ public:
 	bool case_insensitive_string_search(const std::string& haystack, const std::string& needle);
 };
 
-#endif // STRINGTOOLS_H
+#endif

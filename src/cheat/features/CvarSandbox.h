@@ -41,7 +41,7 @@ extern VarKeyValue fps_override;
 extern VarKeyValue gl_vsync;
 extern VarKeyValue developer;
 
-// movement
+
 extern VarKeyValue cl_movespeedkey;
 extern VarKeyValue cl_forwardspeed;
 extern VarKeyValue cl_sidespeed;
@@ -49,14 +49,14 @@ extern VarKeyValue cl_upspeed;
 extern VarKeyValue cl_yawspeed;
 extern VarKeyValue cl_pitchspeed;
 
-// prediction
+
 extern VarKeyValue cl_lc;
 extern VarKeyValue cl_lw;
 
-// other
+
 extern VarKeyValue cl_minmodels;
 
-// networking
+
 extern VarKeyValue cl_cmdrate;
 
 class CCvarSandbox
@@ -65,7 +65,7 @@ public:
 	DECL_BASIC_CLASS(CCvarSandbox);
 
 public:
-	// returns fake cvar value
+
 	const char* filter_cvarvalue(const char* cvar_name);
 
 	void render_ui();
@@ -75,8 +75,7 @@ private:
 
 	void render_cvar_sandbox_slot(VarKeyValue* var);
 
-	// ik that this seems really dumb and out of place however, I don't really know how to properly
-	// work with input text buffers... xD
+
 	inline static constexpr size_t k_max_filtered_cvars = 32;
 	std::unordered_map<std::string, size_t> m_filtered_cvars;
 	char m_input_buffers[k_max_filtered_cvars][256];
@@ -89,4 +88,4 @@ private:
 	std::vector<VarKeyValue*> m_variables;
 };
 
-#endif // CVARSANDBOX_H
+#endif

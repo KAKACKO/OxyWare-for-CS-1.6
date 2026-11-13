@@ -32,11 +32,10 @@ bool CMemoryFnDetourMgr::install_hooks()
 {
 	if (!_Host_Frame().install()) return false;
 
-	// just to be absolutely safe that the engine doesn't call a function in a middle of us deouring it.
-	// Yes, this happened to me once. It's a pure miracle when it happens, but it happens..
+
 	CEngineSynchronization::the().put_engine_in_sleep();
 
-	// let's install and detour individual hooks.
+
 	glBegin().install();
 	glReadPixels().install();
 	wglSwapBuffers().install();
@@ -60,7 +59,7 @@ bool CMemoryFnDetourMgr::install_hooks()
 		if (!R_ForceCVars().install()) { CEngineSynchronization::the().resume_engine(); return false; }
 	}
 	V_CalcRefdef().install();
-	//EV_HLDM_FireBullets().install();
+
 	HUD_Redraw().install();
 	R_GLStudioDrawPoints().install();
 	V_FadeAlpha().install();
@@ -109,7 +108,7 @@ void CMemoryFnDetourMgr::uninstall_hooks()
 {
 	m_unloading_hooks_mutex = true;
 
-	// now, uninstall the detour from each function.
+
 	glBegin().uninstall();
 	glReadPixels().uninstall();
 	wglSwapBuffers().uninstall();
@@ -130,10 +129,10 @@ void CMemoryFnDetourMgr::uninstall_hooks()
 	MYgluPerspective().uninstall();
 	if (COxWare::the().get_build_number() >= 4554)
 	{
-		R_ForceCVars().uninstall(); // there isn't such function, e.g. in 3266
+		R_ForceCVars().uninstall();
 	}
 	V_CalcRefdef().uninstall();
-	//EV_HLDM_FireBullets().uninstall();
+
 	HUD_Redraw().uninstall();
 	R_GLStudioDrawPoints().uninstall();
 	V_FadeAlpha().uninstall();
@@ -145,7 +144,7 @@ void CMemoryFnDetourMgr::uninstall_hooks()
 
 	if (!m_unloading_from_CEngine__Unload)
 	{
-		// this gets uninstalled when called, otherwise it would crash, because we unload the cheat inside of this function.
+
 		CEngine__Unload().uninstall();
 	}
 
@@ -179,18 +178,17 @@ void CMemoryFnDetourMgr::uninstall_hooks()
 #endif
 	Steam_GSInitiateGameConnection().uninstall();
 
-	// must be unloaded at last, because of synchronizated cheat unload. see CEngineSynchronization for more info.
+
 	_Host_Frame().uninstall();
 
 	m_unloading_hooks_mutex = false;
 }
 
-//---------------------------------------------------------------------------------
 
 bool wglSwapBuffers_FnDetour_t::install()
 {
-	// SDL2 swaps through GDI32!SwapBuffers. Hooking only the OpenGL export
-	// initializes the UI on an incidental call but misses the game's frames.
+
+
 	if (COxWare::the().get_build_number() >= FIRST_SDL_BUILD)
 	{
 		initialize("SwapBuffers", L"gdi32.dll");
@@ -210,7 +208,6 @@ BOOL APIENTRY wglSwapBuffers_FnDetour_t::wglSwapBuffers(HDC hdc)
 	return CMemoryFnDetourMgr::the().wglSwapBuffers().call(hdc);
 }
 
-//---------------------------------------------------------------------------------
 
 bool glBegin_FnDetour_t::install()
 {
@@ -220,7 +217,7 @@ bool glBegin_FnDetour_t::install()
 
 void APIENTRY glBegin_FnDetour_t::glBegin(GLenum mode)
 {
-	// Note: That detouring functions such as glBegin can be really slow, because of how often they're called.
+
 
 	if (!CAntiScreen::the().hide_visuals() && !CPanic::the().panicking())
 	{
@@ -236,7 +233,6 @@ void APIENTRY glBegin_FnDetour_t::glBegin(GLenum mode)
 	CMemoryFnDetourMgr::the().glBegin().call(mode);
 }
 
-//---------------------------------------------------------------------------------
 
 bool glReadPixels_FnDetour_t::install()
 {
@@ -246,7 +242,7 @@ bool glReadPixels_FnDetour_t::install()
 
 void APIENTRY glReadPixels_FnDetour_t::glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid* pixels)
 {
-//	CConsole::the().dinfo(__FUNCTION__);
+
 
 	if (!antiscreen_enable.get_value())
 	{
@@ -256,17 +252,16 @@ void APIENTRY glReadPixels_FnDetour_t::glReadPixels(GLint x, GLint y, GLsizei wi
 
 	if (CAntiScreen::the().glreadpixels_called_by_antiscreen())
 	{
-		// this function was called by antiscreen code, retreive the real pixels.
+
 		CMemoryFnDetourMgr::the().glReadPixels().call(x, y, width, height, format, type, pixels);
 	}
 	else
 	{
-		// return artifical pixels
+
 		CAntiScreen::the().detour_pixels((uint8_t*)pixels);
 	}
 }
 
-//---------------------------------------------------------------------------------
 
 bool glColor4f_FnDetour_t::install()
 {
@@ -281,7 +276,6 @@ void glColor4f_FnDetour_t::glColor4f(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
 	CMemoryFnDetourMgr::the().glColor4f().call(r, g, b, a);
 }
 
-//---------------------------------------------------------------------------------
 
 bool VGui_CallEngineSurfaceAppHandler_FnDetour_t::install()
 {
@@ -291,7 +285,7 @@ bool VGui_CallEngineSurfaceAppHandler_FnDetour_t::install()
 
 void VGui_CallEngineSurfaceAppHandler_FnDetour_t::VGui_CallEngineSurfaceAppHandler(void* event, void* userData)
 {
-	// This function is responsible for processing user keyboard and mouse input.
+
 
 	if (COxWareUI::the().should_disable_ingame_input())
 	{
@@ -301,7 +295,6 @@ void VGui_CallEngineSurfaceAppHandler_FnDetour_t::VGui_CallEngineSurfaceAppHandl
 	CMemoryFnDetourMgr::the().VGui_CallEngineSurfaceAppHandler().call(event, userData);
 }
 
-//---------------------------------------------------------------------------------
 
 bool VGui_CallEngineSurfaceAppHandler4554_FnDetour_t::install()
 {
@@ -311,7 +304,7 @@ bool VGui_CallEngineSurfaceAppHandler4554_FnDetour_t::install()
 
 LRESULT VGui_CallEngineSurfaceAppHandler4554_FnDetour_t::VGui_CallEngineSurfaceAppHandler4554(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-	// This function is responsible for processing user keyboard and mouse input.
+
 
 	if (COxWareUI::the().should_disable_ingame_input())
 	{
@@ -321,7 +314,6 @@ LRESULT VGui_CallEngineSurfaceAppHandler4554_FnDetour_t::VGui_CallEngineSurfaceA
 	return CMemoryFnDetourMgr::the().VGui_CallEngineSurfaceAppHandler4554().call(hwnd, msg, wparam, lparam);
 }
 
-//---------------------------------------------------------------------------------
 
 bool Key_Event_FnDetour_t::install()
 {
@@ -331,22 +323,20 @@ bool Key_Event_FnDetour_t::install()
 
 void Key_Event_FnDetour_t::Key_Event(int key, hl::qboolean down)
 {
-	// this function is responsible for key input ingame
+
 
 	if (COxWareUI::the().should_disable_ingame_input())
 	{
 		return;
 	}
 
-	// stop executing the engine key, if our key is bound to an incommand.
-	// but only if we said to block it.
+
 	if (g_in_commands_i->should_block_engine_key(g_user_input_i->engine_key_to_virtual_key(key)))
 	{
 		return;
 	}
 
-	// see if this key is bound inside our cheat. if yes, prefer executing our key over engine key.
-	// but only if user said to do so, this is controled by a bind flag.
+
 	if (g_bindmgr_i->should_block_engine_key(g_user_input_i->engine_key_to_virtual_key(key)))
 	{
 		return;
@@ -355,7 +345,6 @@ void Key_Event_FnDetour_t::Key_Event(int key, hl::qboolean down)
 	CMemoryFnDetourMgr::the().Key_Event().call(key, down);
 }
 
-//---------------------------------------------------------------------------------
 
 bool Host_Noclip_f_FnDetour_t::install()
 {
@@ -372,7 +361,6 @@ void Host_Noclip_f_FnDetour_t::Host_Noclip_f()
 	CForceEnableDisabled::the().force_enable_noclip_post();
 }
 
-//---------------------------------------------------------------------------------
 
 bool CL_CreateMove_FnDetour_t::install()
 {
@@ -382,8 +370,7 @@ bool CL_CreateMove_FnDetour_t::install()
 
 void CL_CreateMove_FnDetour_t::CL_CreateMove(float frametime, hl::usercmd_t *cmd, int active)
 {
-	// function for creating client move. This is basically called at the beginning of the frame,
-	// hence the amount of functions we call here. Ouch.
+
 
 	CPanic::the().update();
 
@@ -403,7 +390,7 @@ void CL_CreateMove_FnDetour_t::CL_CreateMove(float frametime, hl::usercmd_t *cmd
 	{
 		CLocalState::the().update_clientmove(frametime, cmd);
 
-		// update if we're alive, connected, etc..
+
 		g_in_commands_i->update_activation_conditions();
 
 		if (!CGameUtil::the().is_spectator())
@@ -416,8 +403,8 @@ void CL_CreateMove_FnDetour_t::CL_CreateMove(float frametime, hl::usercmd_t *cmd
 
 			if (COxWareUI::the().should_disable_ingame_input())
 			{
-				// disable all movement when the menu is up. This is called by CL_Move() when the game expects
-				// client dll to modify usercmd_t for current command so it can be sent to the server.
+
+
 				cmd->buttons = 0;
 				cmd->forwardmove = cmd->sidemove = cmd->upmove = 0;
 			}
@@ -430,7 +417,7 @@ void CL_CreateMove_FnDetour_t::CL_CreateMove(float frametime, hl::usercmd_t *cmd
 			CMovement::the().update_clientmove(frametime, cmd);
 		}
 
-#if 0 // force weather
+#if 0
 		if (CUserMSGDetourMgr::the().ReceiveW_fn().is_installed())
 		{
 			uint8_t value = 2;
@@ -445,7 +432,6 @@ void CL_CreateMove_FnDetour_t::CL_CreateMove(float frametime, hl::usercmd_t *cmd
 	}
 }
 
-//---------------------------------------------------------------------------------
 
 bool _Host_Frame_FnDetour_t::install()
 {
@@ -457,7 +443,7 @@ bool _Host_Frame_FnDetour_t::install()
 
 void _Host_Frame_FnDetour_t::_Host_Frame(float time)
 {
-	// see for connection change
+
 	static bool was_connected = false;
 	bool is_connected = (CMemoryHookMgr::the().cls()->state == hl::ca_active);
 	if (was_connected != is_connected)
@@ -468,11 +454,11 @@ void _Host_Frame_FnDetour_t::_Host_Frame(float time)
 
 	if (!CEngineSynchronization::the().engine_frame())
 	{
-		// don't call anything below no more, so that after cheat unload, we don't access unloaded memory.
+
 		return;
 	}
 
-	// GoldSrc engine frame function. There goes all code that has to work with ingame things.
+
 	OX_PROFILE_SCOPE("engine_frame");
 
 	CForceEnableDisabled::the().update_disable_sponly_cvars();
@@ -482,7 +468,6 @@ void _Host_Frame_FnDetour_t::_Host_Frame(float time)
 	CMemoryFnDetourMgr::the()._Host_Frame().call(time);
 }
 
-//---------------------------------------------------------------------------------
 
 bool CL_ReallocateDynamicData_FnDetour_t::install()
 {
@@ -492,18 +477,17 @@ bool CL_ReallocateDynamicData_FnDetour_t::install()
 
 void CL_ReallocateDynamicData_FnDetour_t::CL_ReallocateDynamicData(int nMaxClients)
 {
-	// Called on level transition, the main entity array, cl_entities[] is being reallocated.
+
 
 	CMemoryFnDetourMgr::the().CL_ReallocateDynamicData().call(nMaxClients);
 
-	// must be called after CL_ReallocateDynamicData(), therefore we have stuff like cl.max_edicts set.
+
 	CEntityMgr::the().erase();
 	CEntityMgr::the().init();
 
 	CSoundEsp::the().reset_cache();
 }
 
-//---------------------------------------------------------------------------------
 
 bool CL_DeallocateDynamicData_FnDetour_t::install()
 {
@@ -513,14 +497,13 @@ bool CL_DeallocateDynamicData_FnDetour_t::install()
 
 void CL_DeallocateDynamicData_FnDetour_t::CL_DeallocateDynamicData()
 {
-	// called before allocation or at level disconnect. the cl_entities[] array is being deallocated and set to NULL.
+
 
 	CEntityMgr::the().erase();
 
 	CMemoryFnDetourMgr::the().CL_DeallocateDynamicData().call();
 }
 
-//---------------------------------------------------------------------------------
 
 bool MYgluPerspective_FnDetour_t::install()
 {
@@ -535,14 +518,14 @@ void MYgluPerspective_FnDetour_t::MYgluPerspective(GLdouble fovy, GLdouble aspec
 
 	if (!CAntiScreen::the().hide_visuals() && !CPanic::the().panicking())
 	{
-		// render distance
+
 		auto renderdist_scaled = CForceEnableDisabled::the().force_max_viewable_renderdistance();
 		if (renderdist_scaled)
 		{
 			out_zFar = zFar * renderdist_scaled.value();
 		}
 
-		// aspect raio
+
 		auto aspect_scaled = CAspectRatioChanger::the().scale_aspect();
 		if (aspect_scaled)
 		{
@@ -553,7 +536,6 @@ void MYgluPerspective_FnDetour_t::MYgluPerspective(GLdouble fovy, GLdouble aspec
 	CMemoryFnDetourMgr::the().MYgluPerspective().call(fovy, out_aspect, zNear, out_zFar);
 }
 
-//---------------------------------------------------------------------------------
 
 bool R_ForceCVars_FnDetour_t::install()
 {
@@ -573,7 +555,6 @@ void R_ForceCVars_FnDetour_t::R_ForceCVars(hl::qboolean mp)
 	CMemoryFnDetourMgr::the().R_ForceCVars().call(mp);
 }
 
-//---------------------------------------------------------------------------------
 
 bool V_CalcRefdef_FnDetour_t::install()
 {
@@ -589,12 +570,11 @@ void V_CalcRefdef_FnDetour_t::V_CalcRefdef(hl::ref_params_t *pparams)
 	{
 		CThirdPerson::the().update(pparams);
 
-		// no-recoil
-		//pparams->viewangles = pparams->cl_viewangles + pparams->punchangle;
+
 	}
 }
  
-//---------------------------------------------------------------------------------
+
 
 bool EV_HLDM_FireBullets_FnDetour_t::install()
 {
@@ -611,11 +591,9 @@ void EV_HLDM_FireBullets_FnDetour_t::EV_HLDM_FireBullets(int idx, float* forward
 	CMemoryFnDetourMgr::the().EV_HLDM_FireBullets().call(idx, forward, right, up, cShots, vecSrc, vecDirShooting, vecSpread, flDistance,
 														 iBulletType, iTracerFreq, tracerCount, iPenetration);
 
-	//Vector vec_start = /*CGameUtil::the().is_local_player(idx) ? CLocalState::the().local_player().get_eye_pos() :*/ vecSrc;
 
 }
 
-//---------------------------------------------------------------------------------
 
 bool HUD_Redraw_FnDetour_t::install()
 {
@@ -627,7 +605,7 @@ int HUD_Redraw_FnDetour_t::HUD_Redraw(float time, int intermission)
 {
 	OX_PROFILE_SCOPE("clientdll_hud_redraw");
 
-	// handle the antiscreen and panic logic inside of this function separately.
+
 	CRemovals::the().remove_hud_modifier();
 
 	if (!CAntiScreen::the().hide_visuals() && !CPanic::the().panicking())
@@ -638,7 +616,6 @@ int HUD_Redraw_FnDetour_t::HUD_Redraw(float time, int intermission)
 	return CMemoryFnDetourMgr::the().HUD_Redraw().call(time, intermission);
 }
 
-//---------------------------------------------------------------------------------
 
 bool R_GLStudioDrawPoints_FnDetour_t::install()
 {
@@ -650,7 +627,7 @@ void R_GLStudioDrawPoints_FnDetour_t::R_GLStudioDrawPoints()
 {
 	if (!CAntiScreen::the().hide_visuals() && !CPanic::the().panicking())
 	{
-		// function responsible for the actual rendering of the studio model
+
 		OX_PROFILE_SCOPE("studio_drawpoints");
 
 		CTriggerbot::the().capture_head_hitboxes();
@@ -672,7 +649,6 @@ void R_GLStudioDrawPoints_FnDetour_t::R_GLStudioDrawPoints()
 	}
 }
 
-//---------------------------------------------------------------------------------
 
 bool V_FadeAlpha_FnDetour_t::install()
 {
@@ -682,7 +658,7 @@ bool V_FadeAlpha_FnDetour_t::install()
 
 int V_FadeAlpha_FnDetour_t::V_FadeAlpha()
 {
-	// function for drawing screen fade.
+
 
 	int alpha = CMemoryFnDetourMgr::the().V_FadeAlpha().call();
 
@@ -694,7 +670,6 @@ int V_FadeAlpha_FnDetour_t::V_FadeAlpha()
 	return alpha;
 }
 
-//---------------------------------------------------------------------------------
 
 bool V_ApplyShake_FnDetour_t::install()
 {
@@ -708,14 +683,13 @@ void V_ApplyShake_FnDetour_t::V_ApplyShake(float* origin, float* angles, float f
 	{
 		if (CRemovals::the().remove_screenshake())
 		{
-			return; // bye bye
+			return;
 		}
 	}
 
 	CMemoryFnDetourMgr::the().V_ApplyShake().call(origin, angles, factor);
 }
 
-//---------------------------------------------------------------------------------
 
 bool S_StartDynamicSound_FnDetour_t::install()
 {
@@ -739,7 +713,6 @@ void S_StartDynamicSound_FnDetour_t::S_StartDynamicSound(int entnum, int entchan
 	CMemoryFnDetourMgr::the().S_StartDynamicSound().call(entnum, entchannel, sfx, origin, fvol, attenuation, flags, pitch);
 }
 
-//---------------------------------------------------------------------------------
 
 bool R_DrawViewModel_FnDetour_t::install()
 {
@@ -764,7 +737,6 @@ void R_DrawViewModel_FnDetour_t::R_DrawViewModel()
 	CMemoryFnDetourMgr::the().R_DrawViewModel().call();
 }
 
-//---------------------------------------------------------------------------------
 
 bool CPartSmokeGrenade__Create_FnDetour_t::install()
 {
@@ -776,9 +748,7 @@ hl::CPartSmokeGrenade* __cdecl CPartSmokeGrenade__Create_FnDetour_t::CPartSmokeG
 	hl::CPartSmokeGrenade* _this, Vector org, Vector normal, hl::model_t* sprite, 
 	float size, float brightness, const char* classname)
 {
-	// CPartSmokeGrenade::Create, although it doesn't look like it, is a static member function, so its calling convention
-	// may be (and it is in this case) __cdecl, instead of __thiscall. It is called every time new smoke is created. And
-	// it is being called by CreateGasSmoke.
+
 
 	auto part = CMemoryFnDetourMgr::the().CPartSmokeGrenade__Create().call(_this, org, normal, sprite, size/* * 0.5*/, brightness, classname);
 
@@ -787,7 +757,6 @@ hl::CPartSmokeGrenade* __cdecl CPartSmokeGrenade__Create_FnDetour_t::CPartSmokeG
 	return part;
 }
 
-//---------------------------------------------------------------------------------
 
 bool CreateGasSmoke_FnDetour_t::install()
 {
@@ -802,7 +771,6 @@ void CreateGasSmoke_FnDetour_t::CreateGasSmoke(Vector origin, Vector vVelocity, 
 	CSmokeVisuals::the().post_gas_smoke_create();
 }
 
-//---------------------------------------------------------------------------------
 
 bool CEngine__Unload_FnDetour_t::install()
 {
@@ -819,8 +787,8 @@ extern "C" void __declspec(naked) __fastcall CEngine_Unload_hook(hl::CEngine* ec
 		add esp, 4
 		test eax, eax
 		jz no_native_reference
-		// FreeLibrary executes outside this DLL and returns straight to the
-		// engine caller. No instruction or return address remains in our DLL.
+
+
 		pop edx
 		push eax
 		push edx
@@ -838,21 +806,20 @@ extern "C" HMODULE __cdecl CEngine_Unload_impl(hl::CEngine* ecx)
 			reinterpret_cast<LPCWSTR>(&CEngine_Unload_hook), &native_reference);
 	CConsole::the().info("Game is closing, shutting down cheat...");
 
-	// don't unload this detour when calling CMemoryFnDetourMgr::uninstall_hooks().
+
 	CMemoryFnDetourMgr::the().toggle_unloading_from_CEngine__Unload();
 
 	bool engine_restarting = ecx->m_nQuitting == hl::QUIT_RESTART;
 	
-	// set up the shutdown of the cheat. this triggers a check inside the main loop that is executing
-	// on another thread. worst possible time to wait is 0.5s (if there's no hang), because the main loop updates
-	// every 0.5s.
+
+
 	CConsole::the().info("Requesting the end of cheat execution...");
 	COxWare::the().end_cheat_execution(true);
 
 	while (!COxWare::the().is_shutted_down())
 	{
 		nitro_compat::pump_pending_operation();
-		// hang till we fully shut down, if we hang in the shutdown process, we're fucked.
+
 		std::this_thread::sleep_for(0.1s);
 	}
 
@@ -861,19 +828,18 @@ extern "C" HMODULE __cdecl CEngine_Unload_impl(hl::CEngine* ecx)
 
 	if (engine_restarting)
 	{
-		// restart the cheat. this will fire a signal inside the loader and it will unload the module 
-		// first and then load it back in.
+
+
 		CInjectedDllIPCLayerClient::the().write_code(C2I_Restarting);
 	}
 	else
 	{
-		// engine qutting, we're fully shutted down, so just tell the loader to fully unload us.
+
 		CInjectedDllIPCLayerClient::the().write_code(C2I_Unloading);
 	}
 	return native_reference;
 }
 
-//---------------------------------------------------------------------------------
 
 bool SCR_CalcRefdef_FnDetour_t::install()
 {
@@ -883,7 +849,7 @@ bool SCR_CalcRefdef_FnDetour_t::install()
 
 void SCR_CalcRefdef_FnDetour_t::SCR_CalcRefdef()
 {
-	// fov gets capped inside this function.
+
 
 	if (!CAntiScreen::the().hide_visuals() && !CPanic::the().panicking())
 	{
@@ -893,7 +859,6 @@ void SCR_CalcRefdef_FnDetour_t::SCR_CalcRefdef()
 	CMemoryFnDetourMgr::the().SCR_CalcRefdef().call();
 }
 
-//---------------------------------------------------------------------------------
 
 bool SCR_UpdateScreen_FnDetour_t::install()
 {
@@ -907,7 +872,7 @@ void SCR_UpdateScreen_FnDetour_t::SCR_UpdateScreen()
 
 	if (!CAntiScreen::the().hide_visuals() && !CPanic::the().panicking())
 	{
-		// check if method is set to 'UpdateScreen'
+
 		if (frame_skip_method.get_value() == 0 && CFrameSkipper::the().skip_current_frame())
 		{
 			return;
@@ -919,7 +884,6 @@ void SCR_UpdateScreen_FnDetour_t::SCR_UpdateScreen()
 	CMemoryFnDetourMgr::the().SCR_UpdateScreen().call();
 }
 
-//---------------------------------------------------------------------------------
 
 bool SPR_Set_FnDetour_t::install()
 {
@@ -931,10 +895,9 @@ bool SPR_Set_FnDetour_t::install()
 
 void SPR_Set_FnDetour_t::SPR_Set(hl::HSPRITE_t hSprite, int r, int g, int b)
 {
-	// Handles sprite color
+
 	
-	// there isn't any way around this (how to change all sprites color), because this function
-	// directly calls glColorf().
+
 
 	if (!CAntiScreen::the().hide_visuals() && !CPanic::the().panicking())
 	{
@@ -944,7 +907,6 @@ void SPR_Set_FnDetour_t::SPR_Set(hl::HSPRITE_t hSprite, int r, int g, int b)
 	CMemoryFnDetourMgr::the().SPR_Set().call(hSprite, r, g, b);
 }
 
-//---------------------------------------------------------------------------------
 
 bool CGame__AppActivate_FnDetour_t::install()
 {
@@ -954,11 +916,11 @@ bool CGame__AppActivate_FnDetour_t::install()
 
 void __thiscall CGame__AppActivate_FnDetour_t::CGame__AppActivate(void* ecx, bool fActive)
 {
-	// is called when the window is focused/unfocused.
+
 
 	COxWare::the().set_at_least_once_focused();
 
-	// if we let this called while the menu is up, it can override the ingame cursor that we hid.
+
 	if (COxWareUI::the().should_disable_ingame_input())
 	{
 		return;
@@ -967,7 +929,6 @@ void __thiscall CGame__AppActivate_FnDetour_t::CGame__AppActivate(void* ecx, boo
 	CMemoryFnDetourMgr::the().CGame__AppActivate().call(ecx, fActive);
 }
 
-//---------------------------------------------------------------------------------
 
 bool CHudAmmo__DrawCrosshair_FnDetour_t::install()
 {
@@ -1030,7 +991,6 @@ int __thiscall CHudAmmo__DrawCrosshair_FnDetour_t::CHudAmmo__DrawCrosshair(void*
 	return CMemoryFnDetourMgr::the().CHudAmmo__DrawCrosshair().call(ecx, flTime, weaponid);
 }
 
-//---------------------------------------------------------------------------------
 
 bool R_StudioDrawPlayer_FnDetour_t::install()
 {
@@ -1049,8 +1009,8 @@ int R_StudioDrawPlayer_FnDetour_t::R_StudioDrawPlayer(int flags, hl::entity_stat
 
 		if (mdlchams_player_skeleton.get_value())
 		{
-			// disable p_* models when using skeletal chams. This model gets merged into the playermodel, hence createing unecessary
-			// bones then we then render and that stays in the way.
+
+
 			pplayer->weaponmodel = 0;
 		}
 
@@ -1059,7 +1019,7 @@ int R_StudioDrawPlayer_FnDetour_t::R_StudioDrawPlayer(int flags, hl::entity_stat
 			pplayer->gaitsequence = 1;
 		}
 
-		// draw first so we don't clip through original model
+
 		if (mdlchams_render_real_playermodel.get_value())
 		{
 			static hl::cvar_t* cl_minmodels = nullptr;
@@ -1083,7 +1043,6 @@ int R_StudioDrawPlayer_FnDetour_t::R_StudioDrawPlayer(int flags, hl::entity_stat
 	return CMemoryFnDetourMgr::the().R_StudioDrawPlayer().call(flags, pplayer);
 }
 
-//---------------------------------------------------------------------------------
 
 bool CL_SendConsistencyInfo_FnDetour_t::install()
 {
@@ -1099,7 +1058,6 @@ void CL_SendConsistencyInfo_FnDetour_t::CL_SendConsistencyInfo(hl::sizebuf_t* ms
 	}
 }
 
-//---------------------------------------------------------------------------------
 
 bool SCR_DrawFPS_FnDetour_t::install()
 {
@@ -1109,7 +1067,7 @@ bool SCR_DrawFPS_FnDetour_t::install()
 
 void SCR_DrawFPS_FnDetour_t::SCR_DrawFPS()
 {
-	// this is in fact a good place to render custom engine stuff from
+
 
 	if (!CAntiScreen::the().hide_visuals() && !CPanic::the().panicking())
 	{
@@ -1119,7 +1077,6 @@ void SCR_DrawFPS_FnDetour_t::SCR_DrawFPS()
 	CMemoryFnDetourMgr::the().SCR_DrawFPS().call();
 }
 
-//---------------------------------------------------------------------------------
 
 bool Cmd_AddMallocCommand_FnDetour_t::install()
 {
@@ -1129,38 +1086,15 @@ bool Cmd_AddMallocCommand_FnDetour_t::install()
 
 void Cmd_AddMallocCommand_FnDetour_t::Cmd_AddMallocCommand(char* cmd_name, hl::xcommand_t function, int flag)
 {
-	// sadly, the function doesn't return the new command entry pointer, so we have to search for it...
 
-	//
-	// so far what I had gathered from studying the GS command code:
-	// 
-	// there are two functions that can add commands:
-	// 1) Cmd_AddCommandWithFlags	- is only called from the host initialization code and cannot be called after.
-	// 2) Cmd_AddMallocCommand		- can be called after initialization, is used by mods. This one is the only one
-	//								  that I am aware of that can add commands at runtime.
-	// 
-	// commands can be also removed, but they're only at initialization or shutdown. From mod you aren't able to do that AFAIk.
-	// 
-	// commands with FCMD_HUD flag are added by the client dll (mod).
-	// commands with FCMD_GAME flag are added by the game dll.
-	// commands with FCMD_WRAPPER flag are added by the SystemWrapper interface. (this is used by gameUI)
-	//
 
 	CMemoryFnDetourMgr::the().Cmd_AddMallocCommand().call(cmd_name, function, flag);
 
-	// now the cmd has been added, search for it.
-	//
-	// the function goes like this:
-	//
-	// cmd->next = cmd_functions;
-	// cmd_functions = cmd;
-	//
-	// so I assume that cmd_functions points to the newly added entry.
-	auto cmd = CMemoryHookMgr::the().cl_enginefuncs()->pfnGetFirstCmdFunctionHandle(); // cannot be null
+
+	auto cmd = CMemoryHookMgr::the().cl_enginefuncs()->pfnGetFirstCmdFunctionHandle();
 	CGoldSrcCommandMgr::the().register_cmd(cmd->name, cmd);
 }
 
-//---------------------------------------------------------------------------------
 
 bool hudRegisterVariable_FnDetour_t::install()
 {
@@ -1172,12 +1106,6 @@ hl::cvar_t* hudRegisterVariable_FnDetour_t::hudRegisterVariable(char* szName, ch
 {
 	auto cvar = CMemoryFnDetourMgr::the().hudRegisterVariable().call(szName, szValue, flags);
 
-	//
-	// with cvars its easier than with commands. Cvars are added only by Cvar_RegisterVariable, which is
-	// exported to clientdlls via pfnRegisterVariable. There's no other way to register cvars.
-	// 
-	// cvars cannot be unregistered. they are only unregistered at shutdown or initialization. same with cmds.
-	//
 
 	if (cvar)
 	{
@@ -1187,7 +1115,6 @@ hl::cvar_t* hudRegisterVariable_FnDetour_t::hudRegisterVariable(char* szName, ch
 	return cvar;
 }
 
-//---------------------------------------------------------------------------------
 
 bool MSG_WriteUsercmd_FnDetour_t::install()
 {
@@ -1197,14 +1124,13 @@ bool MSG_WriteUsercmd_FnDetour_t::install()
 
 void MSG_WriteUsercmd_FnDetour_t::MSG_WriteUsercmd(hl::sizebuf_t* buf, hl::usercmd_t* to, hl::usercmd_t* from)
 {
-	// called in CL_Move()
+
 
 	CClientMovementPacket::the().update_msg_writeusercmd(to);
 
 	CMemoryFnDetourMgr::the().MSG_WriteUsercmd().call(buf, to, from);
 }
 
-//---------------------------------------------------------------------------------
 
 bool CHudSniperScope__Draw_FnDetour_t::install()
 {
@@ -1225,7 +1151,6 @@ int __thiscall CHudSniperScope__Draw_FnDetour_t::CHudSniperScope__Draw(void* ecx
 	return CMemoryFnDetourMgr::the().CHudSniperScope__Draw().call(ecx, flTime);
 }
 
-//---------------------------------------------------------------------------------
 
 bool CL_IsThirdPerson_FnDetour_t::install()
 {
@@ -1243,7 +1168,6 @@ int CL_IsThirdPerson_FnDetour_t::CL_IsThirdPerson()
 	return CMemoryFnDetourMgr::the().CL_IsThirdPerson().call();
 }
 
-//---------------------------------------------------------------------------------
 
 bool CL_ProcessEntityUpdate_FnDetour_t::install()
 {
@@ -1253,14 +1177,13 @@ bool CL_ProcessEntityUpdate_FnDetour_t::install()
 
 void CL_ProcessEntityUpdate_FnDetour_t::CL_ProcessEntityUpdate(hl::cl_entity_t* ent)
 {
-	// called after packet entities are resolved
+
 
 	CMemoryFnDetourMgr::the().CL_ProcessEntityUpdate().call(ent);
 
 	CEntityMgr::the().entity_state_update(ent);
 }
 
-//---------------------------------------------------------------------------------
 
 bool HUD_PostRunCmd_FnDetour_t::install()
 {
@@ -1276,7 +1199,6 @@ void HUD_PostRunCmd_FnDetour_t::HUD_PostRunCmd(hl::local_state_t* from, hl::loca
 	CWeapons::the().update(to, cmd);
 }
 
-//---------------------------------------------------------------------------------
 
 bool HUD_CreateEntities_FnDetour_t::install()
 {
@@ -1286,7 +1208,7 @@ bool HUD_CreateEntities_FnDetour_t::install()
 
 void HUD_CreateEntities_FnDetour_t::HUD_CreateEntities()
 {
-	// Function called inside CL_EmitEntities().
+
 
 	CMemoryFnDetourMgr::the().HUD_CreateEntities().call();
 
@@ -1297,7 +1219,6 @@ void HUD_CreateEntities_FnDetour_t::HUD_CreateEntities()
 	}
 }
 
-//---------------------------------------------------------------------------------
 
 bool HUD_DrawTransparentTriangles_FnDetour_t::install()
 {
@@ -1316,7 +1237,6 @@ void HUD_DrawTransparentTriangles_FnDetour_t::HUD_DrawTransparentTriangles()
 	}
 }
 
-//---------------------------------------------------------------------------------
 
 bool MakeSkyVec_FnDetour_t::install()
 {
@@ -1326,7 +1246,7 @@ bool MakeSkyVec_FnDetour_t::install()
 
 void MakeSkyVec_FnDetour_t::MakeSkyVec(float s, float t, int axis)
 {
-	// function called when rendering skybox faces, right after qglColor3f().
+
 
 	if (!CAntiScreen::the().hide_visuals() && !CPanic::the().panicking())
 	{
@@ -1339,7 +1259,6 @@ void MakeSkyVec_FnDetour_t::MakeSkyVec(float s, float t, int axis)
 	CMemoryFnDetourMgr::the().MakeSkyVec().call(s, t, axis);
 }
 
-//---------------------------------------------------------------------------------
 
 bool HUD_Frame_FnDetour_t::install()
 {
@@ -1349,7 +1268,7 @@ bool HUD_Frame_FnDetour_t::install()
 
 void HUD_Frame_FnDetour_t::HUD_Frame()
 {
-	// client dll frame function. Called after servercode inside _Host_Frame
+
 
 	if (!CAntiScreen::the().hide_visuals() && !CPanic::the().panicking())
 	{
@@ -1359,7 +1278,6 @@ void HUD_Frame_FnDetour_t::HUD_Frame()
 	CMemoryFnDetourMgr::the().HUD_Frame().call();
 }
 
-//---------------------------------------------------------------------------------
 
 bool R_DrawEntitiesOnList_FnDetour_t::install()
 {
@@ -1369,7 +1287,7 @@ bool R_DrawEntitiesOnList_FnDetour_t::install()
 
 void R_DrawEntitiesOnList_FnDetour_t::R_DrawEntitiesOnList()
 {
-	// function to process all visents and beams
+
 
 	if (!CAntiScreen::the().hide_visuals() && !CPanic::the().panicking())
 	{
@@ -1379,7 +1297,6 @@ void R_DrawEntitiesOnList_FnDetour_t::R_DrawEntitiesOnList()
 	CMemoryFnDetourMgr::the().R_DrawEntitiesOnList().call();
 }
 
-//---------------------------------------------------------------------------------
 
 bool R_StudioSetupLighting_FnDetour_t::install()
 {
@@ -1389,7 +1306,7 @@ bool R_StudioSetupLighting_FnDetour_t::install()
 
 void R_StudioSetupLighting_FnDetour_t::R_StudioSetupLighting(hl::alight_t* plighting)
 {
-	// function takes care of studiomodel lighting (ambient / shadelight)
+
 
 	if (!CAntiScreen::the().hide_visuals() && !CPanic::the().panicking())
 	{
@@ -1399,7 +1316,6 @@ void R_StudioSetupLighting_FnDetour_t::R_StudioSetupLighting(hl::alight_t* pligh
 	CMemoryFnDetourMgr::the().R_StudioSetupLighting().call(plighting);
 }
 
-//---------------------------------------------------------------------------------
 
 bool VGui_ViewportPaintBackground_FnDetour_t::install()
 {
@@ -1409,11 +1325,11 @@ bool VGui_ViewportPaintBackground_FnDetour_t::install()
 
 void VGui_ViewportPaintBackground_FnDetour_t::VGui_ViewportPaintBackground(int* extents)
 {
-	// responsible for the entire rendering (including VGUI and world view)
+
 
 	if (!CAntiScreen::the().hide_visuals() && !CPanic::the().panicking())
 	{
-		// check if method is set to 'ViewportPaintBackground'
+
 		if (frame_skip_method.get_value() == 1 && CFrameSkipper::the().skip_current_frame())
 		{
 			return;
@@ -1423,7 +1339,6 @@ void VGui_ViewportPaintBackground_FnDetour_t::VGui_ViewportPaintBackground(int* 
 	CMemoryFnDetourMgr::the().VGui_ViewportPaintBackground().call(extents);
 }
 
-//---------------------------------------------------------------------------------
 
 #ifdef INTERCEPT_STEAM_LOGGING
 bool CLogInstance__log_FnDetour_t::install()
@@ -1459,9 +1374,8 @@ void CLogInstance__log_FnDetour_t::CLogInstance__log(int a1, int a2, int a3, int
 
 	CMemoryFnDetourMgr::the().CLogInstance__log().call(a1, a2, a3, a4, a5, a6, a7, a8, a9, message, a11);
 }
-#endif // INTERCEPT_STEAM_LOGGING
+#endif
 
-//---------------------------------------------------------------------------------
 
 bool Steam_GSInitiateGameConnection_FnDetour_t::install()
 {
@@ -1504,5 +1418,3 @@ int Steam_GSInitiateGameConnection_FnDetour_t::Steam_GSInitiateGameConnection(
 
 	return ret;
 }
-
-//---------------------------------------------------------------------------------

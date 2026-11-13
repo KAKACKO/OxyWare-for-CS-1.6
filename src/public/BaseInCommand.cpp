@@ -37,7 +37,6 @@
 
 #include <string>
 
-//--------------------------------------------------------------
 
 bool BaseInCommand::is_active() const
 {
@@ -61,7 +60,7 @@ void BaseInCommand::rebind_key_to(int new_vk)
 	std::string in_id = "in_" + m_name;
 	std::string out_id = "out_" + m_name;
 
-	// get the old key, if any, and unregister the previous callback
+
 	bool found;
 	auto& old_key = g_user_input_i->get_key(m_vk, &found);
 	if (found)
@@ -79,7 +78,7 @@ void BaseInCommand::rebind_key_to(int new_vk)
 		return;
 	}
 
-	// on pressed, once
+
 	key.add_on_pressed_callback(
 		in_id,
 		[](const std::string& id, UserKey_t* key)
@@ -98,12 +97,12 @@ void BaseInCommand::rebind_key_to(int new_vk)
 			}
 		});
 
-	// on released, once
+
 	key.add_on_unpressed_callback(
 		out_id,
 		[](const std::string& id, UserKey_t* key)
 		{
-			// keep the release key event running even if the UI is up, to deactivate the command.
+
 
 			auto incmd_id = id.substr(4);
 			auto incmd = g_in_commands_i->get_incommand(incmd_id);
@@ -129,17 +128,12 @@ void BaseInCommand::rebind_key_to(int new_vk)
 	m_bound_initially = true;
 }
 
-//--------------------------------------------------------------
 
 void InCommand::register_cmd()
 {
 	rebind_key_to(m_vk);
 
-	//
-	// register variables
-	//
 
-	// toggle variable
 	{
 		std::string variable_name = m_name + "_enable";
 		std::string variable_description = "Toggles " + m_name + ".";
@@ -147,7 +141,7 @@ void InCommand::register_cmd()
 		g_variablemgr_i->register_single_variable(m_var_toggle);
 	}
 
-	// always enabled variable
+
 	{
 		std::string variable_name = m_name + "_always_enabled";
 		std::string variable_description = "If on, " + m_name + " will be enabled without the key pressed.";
@@ -156,7 +150,6 @@ void InCommand::register_cmd()
 	}
 }
 
-//--------------------------------------------------------------
 
 StaticInCommandContainer g_static_incommand_container;
 

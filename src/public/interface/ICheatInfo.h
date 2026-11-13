@@ -33,12 +33,12 @@
 class ICheatInfo : public IBaseInterface
 {
 public:
-	// applies only for interactible UI rendering contexts
+
 	virtual bool is_cheat_ui_running() = 0;
 
 	virtual bool is_game_ui_running() = 0;
 
-	// true if chat is opened
+
 	virtual bool is_in_messagemode() = 0;
 };
 
@@ -46,4 +46,4 @@ extern ICheatInfo* g_cheat_info_i;
 
 #define ICHEATINFO_INTERFACEID "ICheatInfo"
 
-#endif // ICHEATINFO_H
+#endif

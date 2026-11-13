@@ -26,9 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// IBaseInjector.h -- Defines an interface which must the base injector class use as well as individual injected dll objects.
-//
 
 #ifndef IBASEINJECTOR_H
 #define IBASEINJECTOR_H
@@ -47,11 +44,11 @@ enum EInjectorEvent
 {
 	INE_None = 0,
 
-	INE_ModuleCommunicationHalt,			// failed to communicate with injected module
-	INE_ModuleSuccessfulInitialization,		// module successfully initialized after injection.
-	INE_ModuleFailedInitialization,			// module failed to initialze after injected 
-	INE_ModuleUnloading,					// module is unloading
-	INE_ModuleRestarting,					// module is restarting
+	INE_ModuleCommunicationHalt,
+	INE_ModuleSuccessfulInitialization,
+	INE_ModuleFailedInitialization,
+	INE_ModuleUnloading,
+	INE_ModuleRestarting,
 };
 
 using fnOnInjectorEvent = std::function<void(EInjectorEvent ev, IInjectableModuleObject* obj)>;
@@ -116,12 +113,12 @@ inline session_id_t generate_new_session_id()
 	return session_id;
 }
 
-// byte patterns for manually mapped shellcode
-#define BPattern_RtlIIFT_Idx 0 // RtlInsertInvertedFunctionTable
-#define BPattern_RtlRIFT_Idx 1 // RtlRemoveInvertedFunctionTable
 
-// you need to specify both length and the buffer because the byte pattern may contain null terminators.
-static constexpr size_t k_max_mmapper_pattern_length = 128; // had to increase twice.
+#define BPattern_RtlIIFT_Idx 0
+#define BPattern_RtlRIFT_Idx 1
+
+
+static constexpr size_t k_max_mmapper_pattern_length = 128;
 struct bytepattern_string_t
 {
 	char bytepattern[k_max_mmapper_pattern_length];
@@ -131,27 +128,25 @@ struct bytepattern_string_t
 
 typedef void(__fastcall*pfnRtlRemoveInvertedFunctionTable_t)(DWORD ImageBase);
 
-// stuff that we provide to the injected module through exposed CommunicativeDllEntryPoint routine
+
 struct alignas(sizeof(uintptr_t)) injector_information_package_t
 {
 	wchar_t							m_loader_path[MAX_PATH];
 
-	// good for generating log files etc.
+
 	session_id_t					m_current_session_id;
 
-	// c++ exceptions
+
 	bytepattern_string_t			m_RtlRIFT_pattern;
 
-	// communication block that the injected dll use to communicate between injector and them
+
 	IPCInterface_t*					m_ipc_block_ptr = nullptr;
 };
 
-// The data that we provide to the shellcode routine so it can operate correctly as
-// well as establishing communication between the mapper&module, if there'll be any.
+
 struct alignas(sizeof(uintptr_t)) manualmap_shellcode_execution_context_t
 {
-	//------------------------------------------------------------------------
-	// stuff we need in order to map the module
+
 
 	uint8_t*						module_base = nullptr;
 	pfnGetProcAddress_t				pfnGetProcAddress = nullptr;
@@ -163,53 +158,42 @@ struct alignas(sizeof(uintptr_t)) manualmap_shellcode_execution_context_t
 	pfnmemset_t						pfnmemset = nullptr;
 	pfnmemcpy_t						pfnmemcpy = nullptr;
 
-	// yes, the shellcode also cannot have any strings
+
 	char							debug_messages[11][64] = {};
 	char							export_names[4][64] = {};
 	wchar_t							dll_names[1][32] = {};
-	bytepattern_string_t			byte_patterns[1]; // see BPattern_* macros above
+	bytepattern_string_t			byte_patterns[1];
 
-	//------------------------------------------------------------------------
-	// stuff we receive while mapping the module.
 
-	// exposed functions that are needed when injected in order to then locate 
-	// module interfaces, initialize the modules properly, etc.
 	ExposeModuleFn					pfnExposeModule = nullptr;
 	GetInterfaceInstanceFn			pfnGetInterfaceInstance = nullptr;
 
-	//------------------------------------------------------------------------
-	// communication
 
 	injector_information_package_t	m_information_package;
 };
 
-// the data we provide to the thread that starts executing in the target process.
-// this particular data is for the loadlibrary injection method.
+
 struct alignas(sizeof(uintptr_t)) loadlibrary_shellcode_execution_context_t
 {
-	//------------------------------------------------------------------------
-	// stuff we need in order to inject the module
+
 
 	char							m_injected_dll_name[MAX_PATH];
 	pfnLoadLibraryExA_t				pfnLoadLibraryExA = nullptr;
 	pfnOutputDebugStringA_t			pfnOutputDebugStringA = nullptr;
 	pfn_stricmp_t					pfn_stricmp = nullptr;
 
-	// yes, the shellcode also cannot have any strings
+
 	char							debug_messages[5][64] = {};
 	char							export_names[3][64] = {};
 
-	//------------------------------------------------------------------------
-	// stuff we receive while injecting the module.
+
 	
-	// exposed functions that are needed when injected in order to then locate 
-	// module interfaces, initialize the modules properly, etc.
+
+
 	ExposeModuleFn					pfnExposeModule = nullptr;
 	GetInterfaceInstanceFn			pfnGetInterfaceInstance = nullptr;
-	HMODULE							m_loaded_module = NULL; // the module we load using LoadLibraryExA. This is for unloading the dll later on.
+	HMODULE							m_loaded_module = NULL;
 
-	//------------------------------------------------------------------------
-	// communication
 
 	injector_information_package_t	m_information_package;
 };
@@ -220,7 +204,7 @@ public:
 	DECL_BASIC_CLASS(CInjectorUtils)
 public:
 
-	// returns -1 on failure
+
 	uint32_t get_running_process_id(const char* execuatable_name);
 	HANDLE open_process(const char* execuatable_name);
 
@@ -238,11 +222,11 @@ public:
 
 	virtual uintptr_t get_base_address() const = 0;
 
-	// functions exported by the dll
+
 	virtual inline ExposeModuleFn get_ExposeModule_fn() const = 0;
 	virtual inline GetInterfaceInstanceFn get_GetInterfaceInstance_fn() const = 0;
 
-	// only when the module is communicative
+
 	inline bool is_successfully_initialized() const { return m_injected_module_successfully_initialized; }
 	virtual void on_successfull_initialize() = 0;
 
@@ -283,34 +267,34 @@ protected:
 protected:
 	bool m_unloaded = false;
 
-	// time since we've injected the cheat. this is used for communication with it.
-	inline static float k_load_and_init_threshold_seconds = 30; // also count the load time
+
+	inline static float k_load_and_init_threshold_seconds = 30;
 	inline float calc_current_load_and_init_threshold_seconds()
 	{
 		return std::chrono::duration<float, std::ratio<1, 1>>(std::chrono::high_resolution_clock::now() - m_start_time).count();
 	}
 
-	std::chrono::high_resolution_clock::time_point m_start_time; // timestamp at the beginnin of the injecting
-	std::chrono::high_resolution_clock::time_point m_initialization_time; // timestamp of when the module has been sucessfully initialized
+	std::chrono::high_resolution_clock::time_point m_start_time;
+	std::chrono::high_resolution_clock::time_point m_initialization_time;
 
 	bool m_successfully_injected = false;
 	bool m_injection_failed = false;
 	bool m_injected_module_successfully_initialized = false;
 	EClient2Injector m_last_communicated_code = C2I_None;
 
-	// the injector requests the dll to be unloaded. Is set to true after it is unloaded.
+
 	bool m_requested_injected_dll_unload = false;
 #ifdef _DEBUG
 	inline static float k_seconds_for_the_client_dll_to_unload = 9999;
 #else
-	inline static float k_seconds_for_the_client_dll_to_unload = 20; // give him # amount of seconds to destroy properly and then respond to us so we can unload him
+	inline static float k_seconds_for_the_client_dll_to_unload = 20;
 #endif
-	// after this elapses, we unload it anyways.
-	std::chrono::high_resolution_clock::time_point m_unload_request_time; // timestamp when we started to wait for the client dll to unload
+
+	std::chrono::high_resolution_clock::time_point m_unload_request_time;
 	inline float calc_time_elapsed_since_unload_request_seconds()
 	{
 		return std::chrono::duration<float, std::ratio<1, 1>>(std::chrono::high_resolution_clock::now() - m_unload_request_time).count();
 	}
 };
 
-#endif // IBASEINJECTIONMETHOD_H
+#endif

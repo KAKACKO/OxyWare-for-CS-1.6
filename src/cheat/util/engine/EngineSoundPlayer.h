@@ -38,7 +38,7 @@ public:
 public:
 	void play_engine_sound(int ent, const Vector& origin, int channel, const char* sample, float volume, float attenuation, int fFlags, int pitch);
 
-	// plays ambient sound just like ambient_generic
+
 	void play_ambient_sound_unique(int ent, const Vector& origin, const char* sample, float volume, EAmbientSoundSpawnFlags radius, bool repeat);
 
 	void stop_sound(const std::string& sample);
@@ -48,4 +48,4 @@ private:
 	std::unordered_set<std::string> m_sounds;
 };
 
-#endif // ENGINESOUNDPLAYER_H
+#endif

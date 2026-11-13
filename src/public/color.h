@@ -35,12 +35,9 @@
 #include <cassert>
 
 #pragma warning(push)
-#pragma warning(disable : 4244) // conversion from 'float' to 'int', possible loss of data
+#pragma warning(disable : 4244)
 
-//-----------------------------------------------------------------------------
-// Purpose: Basic handler for an rgb set of colors
-//			This class is fully inline
-//-----------------------------------------------------------------------------
+
 class CColor
 {
 public:
@@ -129,7 +126,7 @@ public:
 		return parse_color_out_of_string(color_string, dummy);
 	}
 
-	// expects [r: {} g: {} b: {} a: {}]
+
 	static CColor parse_color_out_of_string(const std::string& color_string, bool& ok)
 	{
 		CColor result = {};
@@ -171,7 +168,7 @@ public:
 	}
 
 private:
-	// Saturated, always output 0..255
+
 	constexpr uint8_t f32_to_int8_sat(float clr) const
 	{
 		return ((int)(saturate(clr) * 255.0f + 0.5f));
@@ -188,4 +185,4 @@ public:
 
 #pragma warning(pop) 
 
-#endif // COLOR_H
+#endif

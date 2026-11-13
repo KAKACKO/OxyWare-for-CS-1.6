@@ -58,7 +58,7 @@ public:
 	void feature_enabled_section(VarBoolean* var_boolean, const std::function<void()>& callback, const std::string& title = "Enable", bool see_if_enabled = true);
 	void feature_enabled_section(VarBoolean* var_boolean, VarColor* colors_var, const std::function<void()>& callback, bool alpha = false, const std::string& title = "Enable", bool see_if_enabled = true);
 
-	// additions for incommands, since they use different checkbox widget
+
 	void feature_enabled_section_incommands(BaseInCommand* in_cmd, const std::function<void()>& callback, const std::string& title = "Enable", bool see_if_enabled = true);
 
 	void section_unavailable_for_builds(const std::function<bool(int current_bn)>& disable_condition, const std::string& avalable, const std::function<void()>& callback);
@@ -78,4 +78,4 @@ private:
 	std::unordered_map<std::string, collapsible_child_data_t> m_collapsible_child_data;
 };
 
-#endif // UIMENUWIDGETS_H
+#endif

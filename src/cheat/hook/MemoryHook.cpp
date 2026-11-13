@@ -30,14 +30,14 @@
 
 bool CMemoryHookMgr::install_hooks()
 {
-	// let's install individual hooks.
+
 	if (!pmainwindow().install()) return false;
-	// host_initialized gets installed while initialization because it's needed in order to continue initing.
+
 	if (!sv_player().install()) return false;
 	if (!cl().install()) return false;
 	if (!gGlobalVariables().install()) return false;
 	if (!scr_fov_value().install()) return false;
-	if (COxWare::the().get_build_number() < 8684) // old struct
+	if (COxWare::the().get_build_number() < 8684)
 	{
 		if (!g_PlayerExtraInfoOld().install()) return false;
 	}
@@ -65,10 +65,9 @@ bool CMemoryHookMgr::install_hooks()
 
 void CMemoryHookMgr::uninstall_hooks()
 {
-	// here you can add hooks that needs to have their memory restored back (after you eventually modify it)
+
 }
 
-//-----------------------------------------------------------------------------
 
 hl::cl_enginefunc_t* CMemoryHookMgr::cl_enginefuncs()
 {
@@ -90,7 +89,6 @@ char** CMemoryHookMgr::keybindings()
 	return CSecurityModuleHook::the().keybindings();
 }
 
-//-----------------------------------------------------------------------------
 
 bool pmainwindow_MemoryHook::install()
 {
@@ -111,7 +109,6 @@ void pmainwindow_MemoryHook::test_hook()
 		});
 }
 
-//-----------------------------------------------------------------------------
 
 bool host_initialized_MemoryHook::install()
 {
@@ -139,7 +136,6 @@ void host_initialized_MemoryHook::test_hook()
 		});
 }
 
-//-----------------------------------------------------------------------------
 
 bool sv_player_MemoryHook::install()
 {
@@ -147,7 +143,6 @@ bool sv_player_MemoryHook::install()
 	return install_using_bytepattern(1);
 }
 
-//-----------------------------------------------------------------------------
 
 bool cl_MemoryHook::install()
 {
@@ -172,7 +167,6 @@ void cl_MemoryHook::test_hook()
 		});
 }
 
-//-----------------------------------------------------------------------------
 
 bool gGlobalVariables_MemoryHook::install()
 {
@@ -197,7 +191,6 @@ void gGlobalVariables_MemoryHook::test_hook()
 		});
 }
 
-//-----------------------------------------------------------------------------
 
 bool scr_fov_value_MemoryHook::install()
 {
@@ -218,7 +211,6 @@ void scr_fov_value_MemoryHook::test_hook()
 		});
 }
 
-//-----------------------------------------------------------------------------
 
 bool g_PlayerExtraInfo_MemoryHook::install()
 {
@@ -234,12 +226,11 @@ void g_PlayerExtraInfo_MemoryHook::test_hook()
 		m_name,
 		[&]()
 		{
-			auto& cur = p[48]; // random index, just to see if everything is valid. 
+			auto& cur = p[48];
 			return cur.deaths == 0 && cur.frags == 0 && cur.has_c4 == false && cur.teamname[0] == 0;
 		});
 }
 
-//-----------------------------------------------------------------------------
 
 bool g_PlayerExtraInfoOld_MemoryHook::install()
 {
@@ -255,12 +246,11 @@ void g_PlayerExtraInfoOld_MemoryHook::test_hook()
 		m_name,
 		[&]()
 		{
-			auto& cur = p[48]; // random index, just to see if everything is valid. 
+			auto& cur = p[48];
 			return cur.deaths == 0 && cur.frags == 0 && cur.has_c4 == false && cur.teamname[0] == 0;
 		});
 }
 
-//-----------------------------------------------------------------------------
 
 bool engine_studio_api_MemoryHook::install()
 {
@@ -280,7 +270,6 @@ void engine_studio_api_MemoryHook::test_hook()
 		});
 }
 
-//-----------------------------------------------------------------------------
 
 bool cl_parsefuncs_MemoryHook::install()
 {
@@ -289,9 +278,9 @@ bool cl_parsefuncs_MemoryHook::install()
 		1, 
 		[](uintptr_t** address) -> void
 		{
-			// there isn't a single occurence of the exact base of the svc_func_t table, only at offset +0x4 relative to the base.
-			// therefore, we need to manually offset to the base of the array.
-			*address -= 0x2; // a dword shift back
+
+
+			*address -= 0x2;
 		});
 }
 
@@ -307,7 +296,6 @@ void cl_parsefuncs_MemoryHook::test_hook()
 		});
 }
 
-//-----------------------------------------------------------------------------
 
 bool pmove_MemoryHook::install()
 {
@@ -341,7 +329,6 @@ void pmove_MemoryHook::test_hook()
 		});
 }
 
-//-----------------------------------------------------------------------------
 
 bool gClientUserMsgs_MemoryHook::install()
 {
@@ -359,7 +346,7 @@ void gClientUserMsgs_MemoryHook::test_hook()
 		{
 			auto umsg = *p; 
 
-			int n = 0, max = 5; // see at least 5 entries
+			int n = 0, max = 5;
 			while (umsg && n++ < max)
 			{
 				if (!umsg->szName)
@@ -372,7 +359,6 @@ void gClientUserMsgs_MemoryHook::test_hook()
 		});
 }
 
-//-----------------------------------------------------------------------------
 
 bool g_iShotsFired_MemoryHook::install()
 {
@@ -380,7 +366,6 @@ bool g_iShotsFired_MemoryHook::install()
 	return install_using_bytepattern(1);
 }
 
-//-----------------------------------------------------------------------------
 
 bool r_model_MemoryHook::install()
 {
@@ -388,7 +373,6 @@ bool r_model_MemoryHook::install()
 	return install_using_bytepattern(1);
 }
 
-//-----------------------------------------------------------------------------
 
 bool pstudiohdr_MemoryHook::install()
 {
@@ -396,7 +380,6 @@ bool pstudiohdr_MemoryHook::install()
 	return install_using_bytepattern(1);
 }
 
-//-----------------------------------------------------------------------------
 
 bool pStudioAPI_MemoryHook::install()
 {
@@ -417,7 +400,6 @@ void pStudioAPI_MemoryHook::test_hook()
 		});
 }
 
-//-----------------------------------------------------------------------------
 
 bool currententity_MemoryHook::install()
 {
@@ -427,7 +409,6 @@ bool currententity_MemoryHook::install()
 	return install_using_memory_address((uintptr_t*)((uint8_t*)pfnGetCurrentEntity + 0x1), 1);
 }
 
-//-----------------------------------------------------------------------------
 
 bool host_framecount_MemoryHook::install()
 {
@@ -447,7 +428,6 @@ void host_framecount_MemoryHook::test_hook()
 	});
 }
 
-//-----------------------------------------------------------------------------
 
 bool realtime_MemoryHook::install()
 {
@@ -467,7 +447,6 @@ void realtime_MemoryHook::test_hook()
 	});
 }
 
-//-----------------------------------------------------------------------------
 
 bool IVideoMode_MemoryHook::install()
 {
@@ -487,7 +466,6 @@ void IVideoMode_MemoryHook::test_hook()
 	});
 }
 
-//-----------------------------------------------------------------------------
 
 bool random_1k_speedhack_modifier_constant_MemoryHook::install()
 {
@@ -507,12 +485,9 @@ void random_1k_speedhack_modifier_constant_MemoryHook::test_hook()
 	});
 }
 
-//-----------------------------------------------------------------------------
 
 bool key_dest_MemoryHook::install()
 {
 	initialize("key_dest", L"hw.dll");
 	return install_using_bytepattern(1);
 }
-
-//-----------------------------------------------------------------------------

@@ -40,4 +40,4 @@ struct gui_color_translation_t
 
 extern gui_color_translation_t g_gui_color_translation[GUICLR_MAX];
 
-#endif // COLORTRANSLATION_H
+#endif

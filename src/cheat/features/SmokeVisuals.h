@@ -49,4 +49,4 @@ private:
 	hl::CPartSmokeGrenade* m_last_smoke = nullptr;
 };
 
-#endif // SMOKEVISUALS_H
+#endif

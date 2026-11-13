@@ -74,7 +74,7 @@ public:
 		return parse_kv_out_of_string(kv_string, dummy);
 	}
 
-	// expects [{}: {}]
+
 	static KeyValue parse_kv_out_of_string(const std::string& kv_string, bool& ok)
 	{
 		KeyValue result = {};
@@ -127,4 +127,4 @@ private:
 	std::pair<std::string, std::string> p = { "empty", "empty" };
 };
 
-#endif // KEYVALUE_H
+#endif

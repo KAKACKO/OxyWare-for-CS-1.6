@@ -34,16 +34,16 @@
 
 #include <array>
 
-// just random virtual codes
+
 #define VK_MWHEELDOWN	0x97
 #define VK_MWHEELUP		0x98
 
 struct key_t
 {
 	std::string key_name;
-	int vk, ek; // virtual and engine key
+	int vk, ek;
 };
 
 extern const std::array<key_t, k_key_range> g_virtual_key_translation;
 
-#endif // KEYTRANSLATION_H
+#endif

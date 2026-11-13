@@ -36,7 +36,7 @@ void CLocalState::update_pre_clientmove(float frametime, hl::usercmd_t * cmd)
 
 void CLocalState::update_clientmove(float frametime, hl::usercmd_t* cmd)
 {
-	// cache everything related to our client.
+
 
 	m_engine_frametime = frametime;
 
@@ -44,7 +44,7 @@ void CLocalState::update_clientmove(float frametime, hl::usercmd_t* cmd)
 	m_vieangle_delta = Vector2D(cl->viewangles[YAW] - m_last_viewangles[YAW], cl->viewangles[PITCH] - m_last_viewangles[PITCH]);
 	m_vieangle_delta *= -1.0f;
 
-	// round to zero
+
 	if (m_vieangle_delta.x < 0.01 && m_vieangle_delta.x > -0.01) m_vieangle_delta.x = 0.0f;
 	if (m_vieangle_delta.y < 0.01 && m_vieangle_delta.y > -0.01) m_vieangle_delta.y = 0.0f;
 
@@ -52,10 +52,10 @@ void CLocalState::update_clientmove(float frametime, hl::usercmd_t* cmd)
 
 	m_current_frame = &cl->frames[cl->parsecountmod];
 
-	// playermove flags
+
 	m_player_flags = m_current_frame->clientdata.flags;
 
-	// set this first! because the tracing code needs it!
+
 	m_tracing_hull = is_ducking() ? HULL_DUCKING : HULL_STANDING;
 
 	m_moving_velocity = m_pmove->velocity;
@@ -64,10 +64,10 @@ void CLocalState::update_clientmove(float frametime, hl::usercmd_t* cmd)
 	m_edge_dist = CGameUtil::the().compute_edge_distance(m_pmove->origin);
 	m_is_surfing = m_ground_angle > 45.0f && m_ground_dist < 30.0f;
 
-	// in-game chat
+
 	m_in_messagemode = *CMemoryHookMgr::the().key_dest().get() == hl::key_message;
 
-	// local player
+
 	auto local = CEntityMgr::the().get_local_player();
 	m_local_player = local ? *local : nullptr;
 
@@ -75,14 +75,14 @@ void CLocalState::update_clientmove(float frametime, hl::usercmd_t* cmd)
 	{
 		if (!m_local_player->is_valid() || !m_local_player->is_alive())
 		{
-			// reset, we don't want it then
+
 			m_local_player = nullptr;
 		}
 	}
 
 	if (CHLInterfaceHook::the().ISteamUser())
 	{
-		// TODO: set only once?
+
 		m_local_steamid = CHLInterfaceHook::the().ISteamUser()->GetSteamID();
 	}
 }
@@ -124,7 +124,7 @@ bool CLocalState::is_on_ground()
 
 bool CLocalState::is_on_ground_safe()
 {
-	// HACKHACK
+
 	return is_on_ground() || m_ground_dist < 0.1f;
 }
 
@@ -217,8 +217,7 @@ EPlayerHull CLocalState::get_current_hull()
 	return (EPlayerHull)m_pmove->usehull;
 }
 
-// on some servers the hull is being set to 2 and remainsant, idk why.
-// resolve the hull for ourselfs, otherwise tracing code will fail
+
 EPlayerHull CLocalState::get_current_hull_tracing()
 {
 	return m_tracing_hull;
@@ -234,7 +233,7 @@ hl::frame_t* CLocalState::get_current_frame()
 	return m_current_frame;
 }
 
-// only set when local player object is valid and alive.
+
 CGenericPlayer* CLocalState::local_player()
 {
 	return m_local_player;

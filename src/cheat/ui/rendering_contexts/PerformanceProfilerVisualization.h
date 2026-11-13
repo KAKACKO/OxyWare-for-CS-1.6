@@ -43,4 +43,4 @@ public:
 	void on_destroy();
 };
 
-#endif // UIPERFPROFILERVISUALIZATION_H
+#endif

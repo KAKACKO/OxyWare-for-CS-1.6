@@ -33,9 +33,9 @@ void CUIMenuBackground::on_initialize()
 	m_fade_density = 0.0f;
 }
 
-// fast rand
+
 static unsigned long x = 123456789, y = 362436069, z = 521288629;
-unsigned long xorshf96() {          //period 2^96-1
+unsigned long xorshf96() {
 	unsigned long t;
 	x ^= x << 16;
 	x ^= x >> 5;
@@ -59,9 +59,6 @@ void CUIMenuBackground::on_render()
 											 { 0.0f, 0.0f }, g_imgui_platform_layer_i->get_screen_size(), { 0.0f, 0.0f, 0.0f, m_fade_density });
 	}
 
-	//
-	// rain
-	//
 
 	if (ui_background_rain.get_value())
 	{
@@ -100,7 +97,7 @@ void CUIMenuBackground::render_rain()
 	if (m_rain.size() > 1000)
 		m_rain.pop_front();
 
-	// for time-based calculations, rather then fps-based
+
 	static uint32_t prev_cross_time = GetTickCount();
 
 	bool flip_every_N_ms = false;
@@ -143,7 +140,7 @@ void CUIMenuBackground::render_rain()
 		}
 		else
 		{
-			// out of bounds. we could erase it here, but I think that that would be too slow
+
 		}
 	}
 }

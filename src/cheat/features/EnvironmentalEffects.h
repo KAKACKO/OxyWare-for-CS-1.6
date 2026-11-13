@@ -61,7 +61,7 @@ public:
 public:
 	void initialize();
 	void shutdown();
-	void restart(); // does reinitialization
+	void restart();
 
 	void render();
 
@@ -86,7 +86,7 @@ private:
 
 	Vector m_weather_origin;
 
-	// to keep track of timings
+
 	float m_old_time;
 
 	void precache_sprites();
@@ -108,9 +108,6 @@ private:
 	void create_wind_particle(const Vector& origin, float max_size);
 	void create_snow_flake(const Vector& origin);
 
-	//
-	// wind
-	//
 
 	void update_wind_variables();
 	void initialize_wind_variables();
@@ -121,4 +118,4 @@ private:
 	float m_ideal_wind_yaw;
 };
 
-#endif // ENVIRONMENTALEFFECTS_H
+#endif

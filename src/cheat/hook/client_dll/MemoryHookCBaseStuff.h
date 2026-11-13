@@ -30,14 +30,13 @@
 #define MEMORYHOOKCBASESTUFF_H
 #pragma once
 
-// CBasePlayerWeapon *g_pWpns[MAX_WEAPONS];
+
 struct ClientWeapons_Hook final : public GenericMemoryHook<hl::CBasePlayerWeapon*[MAX_WEAPONS]>
 {
 	bool install() override;
 	void test_hook() override;
 };
 
-//-----------------------------------------------------------------------------
 
 class CMemoryHookCBaseStuff
 {
@@ -47,11 +46,8 @@ public:
 public:
 	bool install_hooks();
 
-	//
-	// individual hooks
-	//
 
 	inline static auto& ClientWeapons() { static ClientWeapons_Hook hook; return hook; };
 };
 
-#endif // MEMORYHOOK_H
+#endif

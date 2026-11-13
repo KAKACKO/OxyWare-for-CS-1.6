@@ -28,9 +28,6 @@
 
 #include "precompiled.h"
 
-//------------------------------------------------------------------------------------------------------
-// Texture loaders
-// 
 
 class BaseTextureLoaderFromFile
 {
@@ -44,7 +41,7 @@ public:
 	virtual bool load_texture_and_upload_to_gpu(BaseTexture& texture_to_be_loaded, uint8_t* pixel_data, const Vector2D& resolution) = 0;
 };
 
-// abstract builder class
+
 template<typename T>
 class TextureLoader : public virtual T
 {
@@ -58,10 +55,9 @@ protected:
 		glGenTextures(1, &new_texture_id);
 		glBindTexture(GL_TEXTURE_2D, new_texture_id);
 
-//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)texture_resolution.x, (GLsizei)texture_resolution.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_pixel_data);
 
 		glBindTexture(GL_TEXTURE_2D, last_texture);
@@ -70,7 +66,7 @@ protected:
 	}
 };
 
-// texture loader implementation from a file buffer
+
 class TextureLoaderFromFileData : public virtual TextureLoader<BaseTextureLoaderFromFile>
 {
 public:
@@ -92,16 +88,16 @@ public:
 
 		GLuint new_texture_id = upload_texture_to_gpu(image_resolution, image_pixel_data);
 
-		// free soil buffer
+
 		SOIL_free_image_data(image_pixel_data);
 
-		// fill texture data
+
 		texture_to_be_loaded.create(image_resolution, new_texture_id);
 		return true;
 	}
 };
 
-// texture loader implementation from a raw pixel data
+
 class TextureLoaderFromPixelData : public virtual TextureLoader<BaseTextureLoaderFromPixelBuffer>
 {
 public:
@@ -111,13 +107,12 @@ public:
 
 		GLuint new_texture_id = upload_texture_to_gpu(resolution, pixel_data);
 
-		// fill texture data
+
 		texture_to_be_loaded.create(resolution, new_texture_id);
 		return true;
 	}
 };
 
-//------------------------------------------------------------------------------------------------------
 
 ITextureManager* g_texture_manager_i = nullptr;
 
@@ -157,11 +152,6 @@ private:
 CTextureManager g_texture_manager;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CTextureManager, ITextureManager, ITEXTUREMANAGER_INTERFACEID, g_texture_manager);
 
-//-------------------------------------------------------------------------------
-//
-// CTextureManager implementation
-//
-//-------------------------------------------------------------------------------
 
 CTextureManager::CTextureManager()
 {
@@ -175,7 +165,7 @@ CTextureManager::~CTextureManager()
 
 void CTextureManager::initialize()
 {
-	// texture loaders
+
 	m_filedata_texture_loader = new TextureLoaderFromFileData();
 	m_pixeldata_texture_loader = new TextureLoaderFromPixelData();
 
@@ -196,10 +186,10 @@ void CTextureManager::shutdown()
 
 const BaseTexture& CTextureManager::create_and_register_new_texture_from_filedata(const char* identifier, uint8_t* file_data, uint32_t length)
 {
-	// create the texture here by using the array operator
+
 	auto& new_texture = m_precached_textures[identifier];
 
-	// upload the texture data to gpu, and if we fail, use the checkerboard texture as invalid texture.
+
 	if (!m_filedata_texture_loader->load_texture_and_upload_to_gpu(new_texture, file_data, length))
 	{
 		on_texture_register_failure(identifier);
@@ -214,10 +204,10 @@ const BaseTexture& CTextureManager::create_and_register_new_texture_from_filedat
 
 const BaseTexture& CTextureManager::create_and_register_new_texture_from_pixeldata(const char* identifier, uint8_t* pixel_data, const Vector2D& resolution)
 {
-	// create the texture here by using the array operator
+
 	auto& new_texture = m_precached_textures[identifier];
 
-	// upload the texture data to gpu, and if we fail, use the checkerboard texture as invalid texture.
+
 	if (!m_pixeldata_texture_loader->load_texture_and_upload_to_gpu(new_texture, pixel_data, resolution))
 	{
 		on_texture_register_failure(identifier);
@@ -238,7 +228,7 @@ bool CTextureManager::destroy_and_unregister_texture(const char* identifier)
 		return false;
 	}
 
-	// unload from gpu
+
 	release_texture_from_gpu(m_precached_textures[identifier]);
 
 	m_precached_textures.erase(identifier);
@@ -249,10 +239,10 @@ bool CTextureManager::destroy_and_unregister_texture(const char* identifier)
 
 const BaseTexture& CTextureManager::reupload_texture_from_filedata(const char* identifier, uint8_t* file_data, uint32_t length)
 {
-	// destroy if it exists, if not, proceed.
+
 	if (!destroy_and_unregister_texture(identifier))
 	{
-//		CConsole::the().dwarning("Couldn't destroy texture '{}' when re-uploading.", identifier);
+
 	}
 
 	return create_and_register_new_texture_from_filedata(identifier, file_data, length);
@@ -260,10 +250,10 @@ const BaseTexture& CTextureManager::reupload_texture_from_filedata(const char* i
 
 const BaseTexture& CTextureManager::reupload_texture_from_pixeldata(const char* identifier, uint8_t* pixel_data, const Vector2D& resolution)
 {
-	// destroy if it exists, if not, proceed.
+
 	if (!destroy_and_unregister_texture(identifier))
 	{
-//		CConsole::the().dwarning("Couldn't destroy texture '{}' when re-uploading.", identifier);
+
 	}
 
 	return create_and_register_new_texture_from_pixeldata(identifier, pixel_data, resolution);

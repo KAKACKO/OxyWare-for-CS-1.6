@@ -50,7 +50,7 @@ std::optional<GLdouble> CForceEnableDisabled::force_max_viewable_renderdistance(
 {
 	if (!bypass_constrain_renderdist_enable.get_value())
 	{
-		return std::nullopt; // let engine decide
+		return std::nullopt;
 	}
 
 	return (GLdouble)bypass_constrain_renderdist_value.get_value();
@@ -69,7 +69,7 @@ bool CForceEnableDisabled::disable_renderer_cvar_constrain()
 	{
 		if (!m_just_disabled_renderer_cvars)
 		{
-			// save settings and later restore
+
 			save_renderer_cvars();
 			m_just_disabled_renderer_cvars = true;
 		}
@@ -141,7 +141,7 @@ void CForceEnableDisabled::update_disable_sponly_cvars()
 		{
 			for (auto& disabled_sponly_cvar : m_saved_sponly_cvars)
 			{
-				// find the cvar we have disabled
+
 				auto cvar = CGoldSrcCommandMgr::the().get_cvar(disabled_sponly_cvar);
 				if (!cvar)
 				{

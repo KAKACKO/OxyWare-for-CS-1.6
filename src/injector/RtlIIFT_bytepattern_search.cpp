@@ -26,17 +26,12 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// RtlIIFT_bytepattern_search.cpp -- Helper class for searching for RtlInsertInvertedFunctionTable 
-//									 and RtlRemoveInvertedFunctionTable inside ntdll.
-//
 
 #include "precompiled.h"
 
 bool RtlIIFT_BytePattern_Search::resolve_bytepatterns()
 {
-	// damn, it sucks that Microsoft didn't export this function.. Oh well, whatever. Now we need to do all this shit, 
-	// which isn't guaranteed that it will work every time...
+
 
 	auto ntdll_path = CGenericUtil::the().get_system_directory("ntdll.dll");
 	auto ntdll_ver = CGenericUtil::the().get_file_version(ntdll_path.string());
@@ -68,18 +63,12 @@ bool RtlIIFT_BytePattern_Search::resolve_bytepatterns()
 
 bool RtlIIFT_BytePattern_Search::resolve_iift()
 {
-	// byte pattern for RtlInsertInvertedFunctionTable inside ntdll.
+
 	CBytePatternWithLengthConstexpr<k_max_mmapper_pattern_length> RtlIIFT_pattern;
 
 	CConsole::the().info("Searching for RtlInsertInvertedFunctionTable...");
 
-	//-----------------------------------------------------
-	// Windows 10 - newer builds
-	// This byte pattern is the same on:
-	//	ntdll.dll (10.0.22621.1928) win11
-	//	ntdll.dll (10.0.19041.2788)
-	//	ntdll.dll (10.0.18362.387)
-	//	ntdll.dll (10.0.17134.254)
+
 	RtlIIFT_pattern = CBytePatternWithLengthConstexpr<k_max_mmapper_pattern_length>("\x8B\xFF\x55\x8B\xEC\x83\xEC\x0C\x53\x56\x57\x8D\x45\xF8\x8B\xFA");
 	if (try_to_find_function_in_ntdll(RtlIIFT_pattern))
 	{
@@ -89,12 +78,7 @@ bool RtlIIFT_BytePattern_Search::resolve_iift()
 		return true;
 	}
 
-	//-----------------------------------------------------
-	// Windows 10 - older builds
-	// This byte pattern is the same on:
-	//	ntdll.dll (10.0.14393.0)
-	//	ntdll.dll (10.0.10586.20)
-	//	ntdll.dll (10.0.10240.16430)
+
 	RtlIIFT_pattern = CBytePatternWithLengthConstexpr<k_max_mmapper_pattern_length>("\x8B\xFF\x55\x8B\xEC\x83\xEC\x0C\x8D\x45\xF8\x53\x56\x57\x8B");
 	if (try_to_find_function_in_ntdll(RtlIIFT_pattern))
 	{
@@ -109,14 +93,12 @@ bool RtlIIFT_BytePattern_Search::resolve_iift()
 
 bool RtlIIFT_BytePattern_Search::resolve_rift()
 {
-	// byte pattern for RtlRemoveInvertedFunctionTable inside ntdll.
+
 	CBytePatternWithLengthConstexpr<k_max_mmapper_pattern_length> RtlRIFT_pattern;
 
 	CConsole::the().info("Searching for RtlRemoveInvertedFunctionTable...");
 
-	//-----------------------------------------------------
-	// Windows 11
-	//	ntdll.dll (10.0.22621.1928) win11
+
 	RtlRIFT_pattern = CBytePatternWithLengthConstexpr<k_max_mmapper_pattern_length>("\x8B\xFF\x56\x68\xCC\xCC\xCC\xCC\x8B\xF1\xE8\xCC\xCC\xCC\xCC\x8B\xD6\xE8");
 	if (try_to_find_function_in_ntdll(RtlRIFT_pattern))
 	{
@@ -126,12 +108,7 @@ bool RtlIIFT_BytePattern_Search::resolve_rift()
 		return true;
 	}
 
-	//-----------------------------------------------------
-	// Windows 10 - newer builds
-	// This byte pattern is the same on:
-	//	ntdll.dll (10.0.19041.2788)
-	//	ntdll.dll (10.0.18362.387)
-	//	ntdll.dll (10.0.17134.254)
+
 	RtlRIFT_pattern = CBytePatternWithLengthConstexpr<k_max_mmapper_pattern_length>("\x8B\xFF\x51\x56\x57\xBF\xCC\xCC\xCC\xCC\x8B\xF1\x57\xE8");
 	if (try_to_find_function_in_ntdll(RtlRIFT_pattern))
 	{
@@ -141,12 +118,7 @@ bool RtlIIFT_BytePattern_Search::resolve_rift()
 		return true;
 	}
 
-	//-----------------------------------------------------
-	// Windows 10 - older builds
-	// This byte pattern is the same on:
-	//	ntdll.dll (10.0.14393.0)
-	//	ntdll.dll (10.0.10586.20)
-	//	ntdll.dll (10.0.10240.16430)
+
 	RtlRIFT_pattern = CBytePatternWithLengthConstexpr<k_max_mmapper_pattern_length>("\x8B\xFF\x53\x56\x57\x68\xCC\xCC\xCC\xCC\x8B\xD9\xE8\xCC\xCC\xCC\xCC\x8B\x35");
 	if (try_to_find_function_in_ntdll(RtlRIFT_pattern))
 	{

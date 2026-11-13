@@ -38,7 +38,7 @@ bool CGSDecrypt::decrypt_dll(const std::filesystem::path& encrypted_file, recons
 
 	CConsole::the().info("Input file: \"{}\"", path_in.string().c_str());
 
-	// If the file is not found, try to search locally
+
 	if (!std::filesystem::exists(path_in))
 	{
 		CConsole::the().error("Input file doesn't exist!");

@@ -35,21 +35,20 @@
 class BaseInCommand;
 using fnInCommandCallback = void(*)(BaseInCommand* _this);
 
-// Conditions whenever to activate the incommand or not.
-// these are hardcoded to each incmd and cannot be changed by the user.
+
 enum EActivationCondition
 {
 	IN_ACTCOND_None = BIT(-1),
-	IN_ACTCOND_Connected = BIT(0),			// executes only if connected to a server
-	IN_ACTCOND_Alive = BIT(1),				// executes only if alive
-	IN_ACTCOND_NotInMessageMode = BIT(2),	// executes only if not in messagemode (chat opened)
+	IN_ACTCOND_Connected = BIT(0),
+	IN_ACTCOND_Alive = BIT(1),
+	IN_ACTCOND_NotInMessageMode = BIT(2),
 };
 DEFINE_ENUM_BITWISE_OPERATORS(EActivationCondition);
 
 enum EInCommandFlags
 {
 	IN_FLAG_None = BIT(-1),
-	IN_FLAG_DisableInGameKey = BIT(0),	// don't run the engine command bound to same key when it is pressed
+	IN_FLAG_DisableInGameKey = BIT(0),
 };
 DEFINE_ENUM_BITWISE_OPERATORS(EInCommandFlags);
 
@@ -76,13 +75,7 @@ struct std::formatter<EInCommandFlags> : std::formatter<std::string> {
 			flags_str = incommand_flags_to_str[IN_FLAG_DisableInGameKey];
 			add_colon = true;
 		}
-		//if (flags & XXX)
-		//{
-		//	flags_str += (add_colon ? ", " : "") + incommand_flags_to_str[XXX];
-		//	add_colon = true;
-		//}
 
-		// NOTE: Don't forget to add separator ', ' after the first command
 
 		return std::formatter<string>::format(flags_str, ctx);
 	}
@@ -102,12 +95,12 @@ public:
 	{
 	}
 
-	// tell whenever the InCommand is activated or not
+
 	bool is_active() const;
 
 	inline auto get_activation_condition() const { return m_activation_condition; }
 	inline const auto& get_name() const { return m_name; }
-	inline int get_key_bound() const { return m_vk; } // 0 if unbound
+	inline int get_key_bound() const { return m_vk; }
 
 	inline auto get_in_fn() const { return m_in_fn; }
 	inline auto get_out_fn() const { return m_out_fn; }
@@ -121,7 +114,7 @@ public:
 
 	virtual void add_to_global_list() = 0;
 
-	// setters
+
 	inline void set_is_active(bool is_active) { m_is_active = is_active; }
 	inline void toggle_active() { m_is_active = !m_is_active; }
 	inline void set_flags(EInCommandFlags f) { m_flags = f; }
@@ -139,16 +132,16 @@ public:
 
 protected:
 	bool m_is_active = false;
-	int m_vk = NULL; // 0 if unbound
+	int m_vk = NULL;
 
 	std::string m_name;
 
-	// down/up callbacks
+
 	fnInCommandCallback m_in_fn, m_out_fn;
 
 	bool m_bound_initially = false;
 
-	// variable to enable/disable this incommand completely (optional)
+
 	VarBoolean* m_var_toggle = nullptr;
 	VarBoolean* m_var_always_enabled = nullptr;
 	bool m_enable_variable_by_default = false;
@@ -180,16 +173,14 @@ public:
 	virtual void add_to_global_list();
 };
 
-//--------------------------------------------------------------------------------------------------------------------
 
 #include <unordered_set>
 
-// maximum amount of incommands that our list can hold
-static constexpr size_t k_max_incommands = 64; // per_module limit
-static constexpr size_t k_max_incommands_absolute = k_max_incommands * 4; // used in the interface code
 
-// temporary storage to collect all globally declared incommands. The collected data will be then transefered
-// to IInCommand interface that will collect all incommands at runtime.
+static constexpr size_t k_max_incommands = 64;
+static constexpr size_t k_max_incommands_absolute = k_max_incommands * 4;
+
+
 class StaticInCommandContainer
 {
 public:
@@ -198,7 +189,7 @@ public:
 	inline auto& get_incommand_list() const { return m_incommands; }
 
 private:
-	// call only once
+
 	void reserve_limit();
 
 	bool see_for_overflow(BaseInCommand* current_incommand);
@@ -214,4 +205,4 @@ inline void InCommand::add_to_global_list()
 	g_static_incommand_container.add_incommand(this);
 }
 
-#endif // BASEINCOMMAND_H
+#endif

@@ -46,9 +46,7 @@ public:
 	}
 
 public:
-	//
-	// testing
-	//
+
 
 	virtual void add_to_test() override
 	{
@@ -60,7 +58,7 @@ private:
 	{
 		CConsole::the().info("Searching for UserMSG: '{}'", m_usermsg_name);
 
-		// find the right entry
+
 		hl::UserMsg* entry = *CMemoryHookMgr::the().gClientUserMsgs().get();
 		while (entry)
 		{
@@ -81,7 +79,6 @@ private:
 	std::string m_usermsg_name;
 };
 
-//-------------------------------------------------------------------------------------------
 
 class CUserMSGDetourMgr
 {
@@ -92,9 +89,6 @@ public:
 	bool install_hooks();
 	void uninstall_hooks();
 
-	//
-	// detoured UserMSG hooks
-	//
 
 	inline auto& HideWeapon_fn() { static UserMSG_FnDetour_t fnhook; return fnhook; }
 	inline auto& MOTD_fn() { static UserMSG_FnDetour_t fnhook; return fnhook; }
@@ -102,9 +96,7 @@ public:
 	inline auto& ReceiveW_fn() { static UserMSG_FnDetour_t fnhook; return fnhook; }
 
 private:
-	//
-	// detourands :D
-	//
+
 
 	static int HideWeapon_f(const char* pszName, int iSize, void* pbuf);
 	static int MOTD_f(const char* pszName, int iSize, void* pbuf);
@@ -112,4 +104,4 @@ private:
 	static int ReceiveW_f(const char* pszName, int iSize, void* pbuf);
 };
 
-#endif // USERMSGDETOUR_H
+#endif

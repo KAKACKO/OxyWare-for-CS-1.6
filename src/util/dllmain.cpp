@@ -26,19 +26,16 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// dllmain.cpp -- Module interface for the utility module.
-//
 
 #include "precompiled.h"
 
-// This
+
 IBaseModule* g_thismodule_i = nullptr;
 
-// Cheat
+
 ICheatInfo* g_cheat_info_i = nullptr;
 
-// Dependency loader
+
 ILibraryLoader* g_libloader_i = nullptr;
 IDeveloperConsole* g_devconsole_i = nullptr;
 
@@ -65,7 +62,6 @@ private:
 
 CUtilityModule g_util_module;
 
-//-------------------------------------------------------------------------------
 
 bool CUtilityModule::initialize(ModuleInitializationContext* context)
 {
@@ -85,14 +81,14 @@ void CUtilityModule::destroy()
 {
 	CConsole::the().destroy();
 
-	// Dependency loader
+
 	g_libloader_i = nullptr;
 	g_devconsole_i = nullptr;
 
-	// Cheat
+
 	g_cheat_info_i = nullptr;
 
-	// Local
+
 	g_registry_i = nullptr;
 }
 
@@ -101,7 +97,7 @@ EUpdateStatus CUtilityModule::update()
 	return m_update_status;
 }
 
-// Expose current module to the loader and initialize it
+
 C_DLLEXPORT bool ExposeModule(IBaseModule** module_interface, ModuleInitializationContext* context)
 {
 	*module_interface = &g_util_module;
@@ -115,7 +111,6 @@ C_DLLEXPORT bool ExposeModule(IBaseModule** module_interface, ModuleInitializati
 	return true;
 }
 
-//-------------------------------------------------------------------------------
 
 BOOL APIENTRY DllMain(HMODULE hModule,
 					  DWORD  ul_reason_for_call,

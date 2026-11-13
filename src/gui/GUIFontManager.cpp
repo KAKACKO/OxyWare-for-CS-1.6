@@ -34,7 +34,7 @@
 
 #include <set>
 
-// defines glypth ranges for fonts
+
 class CGlyphRanges
 {
 public:
@@ -58,66 +58,55 @@ private:
 
 ImWchar CGlyphRanges::s_regular_font_range[] =
 {
-	0x0020,  0x00FF, // ASCII
-	0x0400,  0x052F, // Cyrillic + Cyrillic Supplement
-	0x2000,  0x206F, // General Punctuation
-	0x2DE0,  0x2DFF, // Cyrillic Extended-A
-	0xFF00,  0xFFEF, // Half-width characters
-	0x4e00,  0x9FAF, // CJK Ideograms
-	0x2010,  0x205E, // Punctuations
+	0x0020,  0x00FF,
+	0x0400,  0x052F,
+	0x2000,  0x206F,
+	0x2DE0,  0x2DFF,
+	0xFF00,  0xFFEF,
+	0x4e00,  0x9FAF,
+	0x2010,  0x205E,
 	0,
 };
 
-// glyph ranges for standard emojis such as: "😀😃🤗😌😨🥺" etc...
-// see https://en.wikipedia.org/wiki/Emoticons_(Unicode_block)
-// and https://unicode.org/charts/PDF/U1F600.pdf
-//
-// NOTE that building this font is _EXTREMELY_ performance expensive, even on retail builds.
-//		Increasing the glyph range only slightly will have a major impact on performance.
-//
-// NOTE that the standard range of emojis doesn't include other emojis such as "🤐🤑🤒🤓🤔"
-// see https://en.wikipedia.org/wiki/Supplemental_Symbols_and_Pictographs
+
 ImWchar CGlyphRanges::s_emojis_range[] =
 {
-	0x1F600, 0x1F64F, // standard emoticons
-//	0x1F900, 0x1F9FF, // supplemental symbols
-	0x1F550, 0x1F55B, // clock emojis (🕐, 🕑, 🕕, 🕗)
-	U'🔥', U'🔥',	  // fire
-	U'⏳', U'⏳',	  // sand clock
-	U'🌈', U'🌈',	  // rainbow
-	U'🥳', U'🥳',	  // celebration
-	U'⌨', U'⌨',	  // keyboard
-	U'🏃', U'🏃',	  // man running
-	U'🌎', U'🌎',	  // globe
-	U'⛈', U'⛈',	  // thunderstorm
-	U'❌', U'❌',	  // rotated cross
-	U'❔', U'❔',	  // question mark
-	U'🔎', U'🔎',	  // right-facing magnifier glass
-	U'🖥', U'🖥',	  // computer screen
-	U'📼', U'📼',	  // recording tape
-	U'💀', U'💀',	  // skull
-	U'🔳', U'🔳',	  // empty rectangle with outline
-	U'➕', U'➕',	  // crosshair
-	U'⚙', U'⚙',	  // cog
-	U'📂', U'📂',	  // file
-	U'👈', U'👈',	  // left-pointing finger
-	U'👆', U'👆',	  // up-pointing finger
-	U'🧐', U'🧐',	  // 
-	U'🐇', U'🐇',	  // bunny
-	U'👥', U'👥',	  // 2x gray person
-	U'🐞', U'🐞',	  // beetle
-	U'🕶', U'🕶',	  // sunglasses
+	0x1F600, 0x1F64F,
+
+	0x1F550, 0x1F55B,
+	U'🔥', U'🔥',
+	U'⏳', U'⏳',
+	U'🌈', U'🌈',
+	U'🥳', U'🥳',
+	U'⌨', U'⌨',
+	U'🏃', U'🏃',
+	U'🌎', U'🌎',
+	U'⛈', U'⛈',
+	U'❌', U'❌',
+	U'❔', U'❔',
+	U'🔎', U'🔎',
+	U'🖥', U'🖥',
+	U'📼', U'📼',
+	U'💀', U'💀',
+	U'🔳', U'🔳',
+	U'➕', U'➕',
+	U'⚙', U'⚙',
+	U'📂', U'📂',
+	U'👈', U'👈',
+	U'👆', U'👆',
+	U'🧐', U'🧐',
+	U'🐇', U'🐇',
+	U'👥', U'👥',
+	U'🐞', U'🐞',
+	U'🕶', U'🕶',
 	0,
 };
 
-//----------------------------------------------------------------------------------------------
 
-// font identifier that is unique for this set of parameters such as id, decoration, or size.
 using FontIdentifier_t = std::tuple<EFontId, EFontDecoration, EFontSize>;
 
 MAKE_HASHABLE(FontIdentifier_t, std::get<0>(t), std::get<1>(t), std::get<1>(t));
 
-//----------------------------------------------------------------------------------------------
 
 IGUIFontManager* g_gui_fontmgr_i = nullptr;
 
@@ -171,6 +160,8 @@ private:
 	
 private:
 	std::unordered_map<FontIdentifier_t, ImFont*> m_precached_fonts;
+	void* m_emoji_font_data = nullptr;
+	int m_emoji_font_size = 0;
 
 	ImFont* m_default_font = nullptr;
 
@@ -181,11 +172,6 @@ private:
 CGUIFontManager g_gui_fontmgr;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CGUIFontManager, IGUIFontManager, IGUIFONTMANAGER_INTERFACEID, g_gui_fontmgr);
 
-//-------------------------------------------------------------------------------
-//
-// CGUIThemeManager implementation
-// 
-//-------------------------------------------------------------------------------
 
 CGUIFontManager::CGUIFontManager()
 {
@@ -194,12 +180,13 @@ CGUIFontManager::CGUIFontManager()
 
 CGUIFontManager::~CGUIFontManager()
 {
+	IM_FREE(m_emoji_font_data);
 	g_gui_fontmgr_i = nullptr;
 }
 
 bool CGUIFontManager::pre_newframe()
 {
-	// someone requested font atlas rebuild
+
 	if (m_needs_font_rebuild)
 	{
 		rebuild_font_atlas();
@@ -223,8 +210,7 @@ void CGUIFontManager::rebuild_font_atlas()
 {
 	auto t1 = std::chrono::high_resolution_clock::now();
 
-	// re-build the atlas
-	// NOTE that this is very performance expensive.
+
 	ImFontAtlas* atlas = ImGui::GetIO().Fonts;
 	atlas->FontBuilderIO = ImGuiFreeType::GetBuilderForFreeType();
 	atlas->FontBuilderFlags = m_freetype_builder_flags;
@@ -278,7 +264,7 @@ ImFont* CGUIFontManager::get_font(EFontId id, EFontSize size, EFontDecoration de
 
 	assert(iter != m_precached_fonts.end() && "You tried to get a font that doesn't exist.");
 	
-	// if the font hasn't been found, return the default font instead. While debugging, we will catch this.
+
 	return iter->second == nullptr ? m_default_font : iter->second;
 }
 
@@ -311,12 +297,11 @@ void CGUIFontManager::precache_all_fonts()
 
 	auto t1 = std::chrono::high_resolution_clock::now();
 	
-	// This stuff is really performance expensive.
+
 
 #if 0
-	//
-	// HARDCORE APPROACH: precache all fonts, one by one, including all of their decorations and sizes.
-	//
+
+
 	for (int id = 0; id < NUM_FONTS; id++)
 	{
 		for (int decor = 0; decor < NUM_FONT_DECORATIONS; decor++)
@@ -328,19 +313,8 @@ void CGUIFontManager::precache_all_fonts()
 		}
 	}
 #else
-	//
-	// MANUAL APPROACH: manually precache fonts only that we use in code.
-	// 
-	// How to search for font variations that are used in code:
-	//	- find all occurences of a font size (e.g. FSZ_13px) in the code.
-	//	- see which variations (font id and decoration) is being used together in
-	//	  combination with this font.
-	//	- add all combinations here.
-	//
-	// NOTE: If you forget to add something, you'll get assertion anyways.
-	//
 
-	// segoe
+
 	precache_font(FID_SegoeUI, FSZ_10px, FDC_Bold);
 	precache_font(FID_SegoeUI, FSZ_10px, FDC_Regular);
 
@@ -371,7 +345,7 @@ void CGUIFontManager::precache_all_fonts()
 
 	precache_font(FID_SegoeUI, FSZ_45px, FDC_Bold);
 
-	// proggy
+
 	precache_font(FID_ProggyClean, FSZ_13px, FDC_Bold);
 	precache_font(FID_ProggyClean, FSZ_13px, FDC_Regular);
 
@@ -394,7 +368,7 @@ ImFont* CGUIFontManager::precache_font(EFontId id, EFontSize size_id, EFontDecor
 	ImFontConfig cfg;
 	cfg.SizePixels = size_px;
 
-	// For smaller fonts, setting this throws out better results.
+
 	if (size_px <= 12)
 	{
 		cfg.GlyphBuildFlags |= ImGuiFreeTypeGlyphBuildFlags_ForceAutoHint;
@@ -428,7 +402,7 @@ ImFont* CGUIFontManager::precache_font(EFontId id, EFontSize size_id, EFontDecor
 			g_proggyclean_compressed_data, g_proggyclean_compressed_size, size_px, &cfg, normal_ranges);
 	}
 
-	// load emojis and merge with previous font
+
 	merge_emoji_font(&cfg);
 
 	m_precached_fonts[std::make_tuple(id, decor, size_id)] = added_font;
@@ -438,28 +412,47 @@ ImFont* CGUIFontManager::precache_font(EFontId id, EFontSize size_id, EFontDecor
 	return added_font;
 }
 
-// merge emoji font into current one
+
 void CGUIFontManager::merge_emoji_font(ImFontConfig* cfg)
 {
 	auto emojis_ranges = CGlyphRanges::the().get_range_for_emojis();
 	auto& io = ImGui::GetIO();
 
-	// setup config
+
 	cfg->OversampleH = cfg->OversampleV = 1;
-	cfg->MergeMode = true; // merge into existing font
+	cfg->MergeMode = true;
 	cfg->FontBuilderFlags |= ImGuiFreeTypeBuilderFlags_LoadColor;
 
-	// make emojis slightly smaller, because usually they're bigger than acutal text.
+
 	cfg->SizePixels *= 0.75f;
 
-	auto path = system_font_path("seguiemj.ttf");
-	if (!path.empty())
+	if (!m_emoji_font_data)
 	{
-		io.Fonts->AddFontFromFileTTF(path.c_str(), cfg->SizePixels, cfg, emojis_ranges);
+		auto path = system_font_path("seguiemj.ttf");
+		if (!path.empty())
+		{
+			size_t size = 0;
+			void* data = ImFileLoadToMemory(path.c_str(), "rb", &size);
+			if (data && size > 0 && size <= INT_MAX)
+			{
+				m_emoji_font_data = data;
+				m_emoji_font_size = static_cast<int>(size);
+			}
+			else
+			{
+				IM_FREE(data);
+			}
+		}
+	}
+
+	if (m_emoji_font_data)
+	{
+		cfg->FontDataOwnedByAtlas = false;
+		cfg->FontDataSharedExternally = true;
+		io.Fonts->AddFontFromMemoryTTF(m_emoji_font_data, m_emoji_font_size, cfg->SizePixels, cfg, emojis_ranges);
 	}
 }
 
-//----------------------------------------------------------------------------------------------
 
 BaseCommand ui_reload_fonts(
 	"ui_reload_fonts", "Rebuilds all of the fonts.",

@@ -35,7 +35,6 @@ bool CMemoryHookCBaseStuff::install_hooks()
 	return true;
 }
 
-//-----------------------------------------------------------------------------
 
 bool ClientWeapons_Hook::install()
 {
@@ -79,5 +78,3 @@ void ClientWeapons_Hook::test_hook()
 			return ok;
 		});
 }
-
-//-----------------------------------------------------------------------------

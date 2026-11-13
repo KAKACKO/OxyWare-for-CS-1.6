@@ -30,7 +30,7 @@
 
 void UIBasePopupContext::render()
 {
-	// a popup must have uid, therefore it can be destroyed properly.
+
 	assert(!m_uid.empty() && "popup without uid!");
 
 	render_background();
@@ -53,7 +53,7 @@ void UIBasePopupContext::render()
 		"popup_window", window_flags,
 		[&]()
 		{
-			// derived classes can do whatever they want here
+
 			if (m_popup_custom_contents_fn)
 			{
 				if (m_popup_custom_contents_fn())
@@ -63,12 +63,12 @@ void UIBasePopupContext::render()
 			}
 			else
 			{
-				// if derived class didn't provide any contents rendering callback, it's our turn to render it.
+
 				if (m_contents_fn)
 				{
 					if (m_contents_fn())
 					{
-						closing_popup = true; // user wants to close callback.
+						closing_popup = true;
 					}
 				}
 			}
@@ -109,11 +109,11 @@ void UIBasePopupContext::render()
 			}
 		});
 
-	g_gui_thememgr_i->pop_color(); // child background
+	g_gui_thememgr_i->pop_color();
 
 	if (closing_popup)
 	{
-		// tell the master that we're exiting this popup.
+
 		CUIWindowPopups::the().signal_popup_close(m_uid);
 	}
 }
@@ -140,10 +140,9 @@ void UIBasePopupContext::render_background()
 				{ 0.0f, 0.0f, 0.0f, 0.5f });
 		});
 
-	g_gui_widgets_i->pop_stylevar(); // window padding
+	g_gui_widgets_i->pop_stylevar();
 }
 
-//-----------------------------------------------------------------------------------------------
 
 bool UIDecoratedPopup::popup_window_contents()
 {
@@ -163,7 +162,6 @@ bool UIDecoratedPopup::popup_window_contents()
 	return ret;
 }
 
-//-----------------------------------------------------------------------------------------------
 
 bool UIDecoratedWithTitlePopup::popup_window_contents()
 {
@@ -173,26 +171,25 @@ bool UIDecoratedWithTitlePopup::popup_window_contents()
 		g_gui_widgets_i->add_text(m_title, TEXTPROP_None, title_font);
 	}
 
-	// render child window
+
 	return UIDecoratedPopup::popup_window_contents();
 }
 
-//-----------------------------------------------------------------------------------------------
 
 void CUIWindowPopups::pre_render()
 {
-	// welcoming popup dialog, but only if the window is focused.
+
 	static bool once = false;
 	if (!once && (COxWare::the().at_least_once_focused() || GetFocus() == COxWareUI::the().get_window_handle()))
 	{
-		// see registry if we already shown the "welcome dialog"
+
 		bool show_welcome_popup = g_registry_i->read_int(REG_OXWARE, "already_shown_welcome_popup") == 0;
 		if (show_welcome_popup)
 		{
 			create_welcome_popup();
 		}
 
-		once = true; // okay, don't repeat next time.
+		once = true;
 	}
 }
 
@@ -271,4 +268,3 @@ void CUIWindowPopups::handle_popup_close()
 		m_popup_to_be_deleted.clear();
 	}
 }
-

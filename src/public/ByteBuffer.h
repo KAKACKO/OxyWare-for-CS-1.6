@@ -35,16 +35,15 @@
 #include <utility>
 #include <cassert>
 
-// Helper class that allows us to better manage raw byte buffer
-// The template parameter is the addressing type on such file.
+
 template<typename A> requires(std::is_integral<A>::value)
 class ByteBuffer
 {
 public:
-	// Create data from filepath
+
 	bool create(const std::filesystem::path& filepath, A size);
 
-	// Create data from a buffer
+
 	bool create(uint8_t* data, A size);
 
 	void destroy();
@@ -54,23 +53,23 @@ public:
 	}
 
 private:
-	// Allocates # number of bytes for the byte buffer
+
 	bool allocate(A size);
 
-	// Deallocates previously allocated data
+
 	void deallocate();
 
-	// Copy data from filepath
+
 	bool copy_data(const std::filesystem::path& filepath);
 
-	// Copy data from buffer
+
 	bool copy_data(uint8_t* data);
 
 public:
 	inline uint8_t* const get_raw() const { return m_byte_buffer; }
 	inline auto get_size() const { return m_size; }
 
-	// Returns pointer to the address at specified offset
+
 	template<class T>
 	inline T* get_at(A off) const
 	{
@@ -79,14 +78,14 @@ public:
 
 		if (off >= m_size)
 		{
-			assert(0); // Offset too large.
+			assert(0);
 			return nullptr;
 		}
 
 		return reinterpret_cast<T*>(m_byte_buffer + off);
 	}
 
-	// Converts all bytes into readable string form
+
 	std::string to_string(A at, const std::string& delimiter = " ") const;
 
 private:
@@ -204,4 +203,4 @@ inline std::string ByteBuffer<A>::to_string(A at, const std::string& delimiter) 
 	return ret;
 }
 
-#endif // BYTEBUFFER_H
+#endif

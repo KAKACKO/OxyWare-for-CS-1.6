@@ -48,17 +48,17 @@ public:
 public:
 	void update();
 
-	// call inside CL_CreateMove()
+
 	void server_speedhack(uint8_t msec, bool override_previous = false);
 
-	// see the function definition for more information :-)
+
 	void classic_cs16_cheating_scene_speedhack(double new_speed);
 
-	// modifies realtime global variable
+
 	void realtime_speedhack(double new_speed);
 
 private:
 	void reset();
 };
 
-#endif // ENGINESPEEDCONTROL_H
+#endif

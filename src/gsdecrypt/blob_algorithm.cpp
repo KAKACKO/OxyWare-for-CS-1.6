@@ -34,7 +34,7 @@ bool CBlobAlgorithm::decrypt_file_buffer(uint8_t* filebuffer, uint32_t length, r
 
 	m_info = reinterpret_cast<blob_info_t*>(filebuffer);
 
-	// Validate magic number
+
 	if (!valid_info_header())
 	{
 		CConsole::the().error("Bad blob info header!");
@@ -47,22 +47,21 @@ bool CBlobAlgorithm::decrypt_file_buffer(uint8_t* filebuffer, uint32_t length, r
 	CConsole::the().info("  Company : {}", m_info->m_szCompany[0] != '\0' ? m_info->m_szCompany : "none");
 	CConsole::the().info("  Magic   : 0x{:08X}", m_info->m_dwMagic);
 
-	// Xor the entire file buffer with 'W'
+
 	xor_buffer(filebuffer, length);
 
-	// Get the blob header
+
 	m_header = reinterpret_cast<blob_hdr_t*>(filebuffer + sizeof(blob_info_t));
 	decrypt_header(m_header);
 
-	// Validate addresses exposed by the blob header
+
 	if (!valid_blob_data_header())
 	{
 		CConsole::the().error("Bad blob data header!");
 		return false;
 	}
 
-	// In blob files, there's always one section+, so we increment this now
-	// so we don't have to do + 1 every time we use this afterwards.
+
 	m_header->m_wSectionCount++;
 	
 	CConsole::the().info("--- Blob data header ---");
@@ -89,10 +88,10 @@ bool CBlobAlgorithm::decrypt_file_buffer(uint8_t* filebuffer, uint32_t length, r
 		CConsole::the().info("  Is special     : {}", sec->m_bIsSpecial == TRUE ? "yes" : "no");
 	}
 
-	// Build pe header for the new image
+
 	info = CPEBuilder::the().build_pe_header(filebuffer, m_header, m_sectionbase);
 
-	// set addional data
+
 	info.blob.info = *m_info;
 	info.blob.header = *m_header;
 
@@ -147,7 +146,7 @@ void CBlobAlgorithm::xor_buffer(uint8_t* filebuffer, uint32_t length)
 {
 	uint8_t xor_char = 'W';
 
-	// Start at blob_info header and continue xoring till the end
+
 	for (uint32_t i = sizeof(blob_info_t); i < length; i++)
 	{
 		filebuffer[i] ^= xor_char;
@@ -169,8 +168,7 @@ void CBlobAlgorithm::write_section_data(uint8_t* filebuffer, uint32_t file_align
 
 		CConsole::the().info("0x{:08X} Wrote {} bytes for section {}", (uint32_t)ofs.tellp(), sec->m_dwDataSize, i);
 
-		// Sections are aligned to the FileAlignment value stored inside 
-		// Optional Header.
+
 		uint32_t mod = file_alignment - (sec->m_dwDataSize % file_alignment);
 
 		if (mod != file_alignment)
@@ -188,7 +186,7 @@ void CBlobAlgorithm::write_section_data(uint8_t* filebuffer, uint32_t file_align
 
 void CBlobAlgorithm::decrypt_header(blob_hdr_t* header)
 {
-	// decrypt header with magic XORs
+
 	header->m_dwExportPoint ^= 0x7A32BC85;
 	header->m_dwImageBase ^= 0x49C042D1;
 	header->m_dwEntryPoint -= 0x0000000C;

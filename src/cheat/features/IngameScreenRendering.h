@@ -52,4 +52,4 @@ private:
 	hl::cvar_t* cl_showfps = nullptr;
 };
 
-#endif // INGAMESCREENRENDERING_H
+#endif

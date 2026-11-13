@@ -30,9 +30,6 @@
 
 #include "BaseVariable.h"
 
-//--------------------------------------------------------------------------------------------------------------------
-// VARIABLES
-//
 
 StaticVariableContainer g_static_variable_container;
 
@@ -74,9 +71,6 @@ bool StaticVariableContainer::see_for_overflow(BaseVariable* current_var)
 	return true;
 }
 
-//--------------------------------------------------------------------------------------------------------------------
-// COMMANDS
-//
 
 StaticCommandContainer g_static_command_container;
 
@@ -117,4 +111,3 @@ bool StaticCommandContainer::see_for_overflow(BaseCommand* current_var)
 
 	return true;
 }
-

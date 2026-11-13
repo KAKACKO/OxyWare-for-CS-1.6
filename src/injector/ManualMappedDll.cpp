@@ -26,55 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// ManualMappedDll.cpp -- Defines a ManualMap injector interface.
-// 
-// STEPS OF MANUAL MAPPING
-// 
-//	1) MEMORY ALLOCATION
-//			a)	Allocate enough memory in CURRENT PROCESS for the dll image which
-//				will be then copied into this memory. 
-//
-//			b)	Allocate enough memory in TARGET PROCESS for the dll image, as well
-//				as the shellcode execution data, and the shellcode itself.
-//
-//	2) DLL HEADER COPYING AND WRITING MMAP INFORMATION INTO TARGET PROCESS
-//			a)	Copying all individual headers of the loaded dll file into current process 
-//				allocated memory via the PointerToRawData offset from the raw dll data base 
-//				address.
-//
-//			b)	The manual map information including the manual mapping data and shellcode
-//				are both written into the target process, to previously allocated memory.
-//
-//	3) RELOCATE ALL BASERELOCATIONS IF NEEDED
-//
-//	4) FIX DLL IMPORTS & LOAD ADDITIONAL LIBRARIES THAT THE DLL IS USING
-//
-//	5) WRITE DLL IMAGE INTO TARGET PROCESS
-//
-//	6) DEALLOCATING ALLOCATED MEMORY INSIDE CURRENT PROCESS
-//
-//	8) CREATING A NEW THREAD IN THE TARGET PROCESS
-//			-	A new thread will be created which will execute the shellcode. The thread is
-//				located at the shellcode section base address, and as a parameter it is being
-//				passed the shellcode data execution context address.
-//			-	The dll entry point will be called.
-//
-//	9) WAITING FOR THE DLL TO RESPOND, IF IT IS A COMMUNICATIVE DLL.
-//
-
-//
-//
-//
-//	READ OR YOU WILL HAVE TO DEAL WITH ANNOYING BUGS THAT WILL TAKE A LOG OF TIME TO FIX !!!!
-// 
-//		DON'T build with INCREMENTAL LINKING on!!! Otherwise the shellcode part of the injection will not work properly!
-//		Incremental linking creates a function jump table inside the binary, therefore, when e.g. calculating the size
-//		of the shellcode it will fail! because the function pointer for the shellcode routine will point to an entry inside
-//		a jump table! Same with writing the shellcode to the target proces!
-//
-//
-//
 
 #include "precompiled.h"
 
@@ -96,10 +47,10 @@ bool CManualMappedDll::start_injection()
 
 void CManualMappedDll::unload(bool tell_client_dll)
 {
-	// only parent client modules provides communication interface
+
 	if ((tell_client_dll && !m_requested_injected_dll_unload) && is_communicative_dll())
 	{
-		// the client module doesn't know about this, we'll have to tell them.
+
 		m_requested_injected_dll_unload = true;
 		m_unload_request_time = std::chrono::high_resolution_clock::now();
 
@@ -114,7 +65,7 @@ void CManualMappedDll::unload(bool tell_client_dll)
 	}
 	else
 	{
-		// mostlikely requested by the client module itself
+
 		CConsole::the().info("Unloading... {}", m_dll_filepath.string());
 
 		deallocate_target_process_memory();
@@ -135,7 +86,7 @@ bool CManualMappedDll::communicate_with_injected_dll(EClient2Injector& code)
 		return false;
 	}
 
-	// keep in sync between injector and client dll
+
 	manualmap_shellcode_execution_context_t sec;
 	if (!read_execution_context_back(&sec))
 	{
@@ -144,7 +95,7 @@ bool CManualMappedDll::communicate_with_injected_dll(EClient2Injector& code)
 
 	m_shellcode_execution_context = sec;
 
-	// see if the module has responded within a defined time. if not, it failed to sucessfully initialize.
+
 	if (c2m == C2I_None)
 	{
 		if (calc_current_load_and_init_threshold_seconds() > k_load_and_init_threshold_seconds)
@@ -154,7 +105,7 @@ bool CManualMappedDll::communicate_with_injected_dll(EClient2Injector& code)
 		}
 	}
 
-	// we told the module that we're unloading and now we're waiting for it to respond..
+
 	if (m_requested_injected_dll_unload)
 	{
 		if (calc_time_elapsed_since_unload_request_seconds() > k_seconds_for_the_client_dll_to_unload)
@@ -162,7 +113,7 @@ bool CManualMappedDll::communicate_with_injected_dll(EClient2Injector& code)
 			m_requested_injected_dll_unload = false;
 
 			CConsole::the().error("Client dll failed to acknowledge its unload within {} seconds. Unloading...", (int)k_seconds_for_the_client_dll_to_unload);
-			code = C2I_Unloading; // manually force DLL unload
+			code = C2I_Unloading;
 			return true;
 		}
 	}
@@ -239,7 +190,7 @@ bool CManualMappedDll::map_dll_to()
 		return false;
 	}
 
-	// we don't need this anymore.
+
 	deallocate_current_process_memory();
 
 	CConsole::the().info("Executing shellcode in target process...");
@@ -251,7 +202,6 @@ bool CManualMappedDll::map_dll_to()
 		return false;
 	}
 
-	// now the dll is injected and we have to wait for its response, if there'll be any.
 
 	return true;
 }
@@ -263,7 +213,7 @@ bool CManualMappedDll::read_execution_context_back(manualmap_shellcode_execution
 		(PVOID)get_target_process_shellcode_execution_context_addr(), sec))
 	{
 		CConsole::the().error("Couldn't read target process memory while trying to communicate with it.");
-		return false; // sudden target process crash or mapped dll unload
+		return false;
 	}
 
 	return true;
@@ -288,7 +238,7 @@ bool CManualMappedDll::allocate_memory()
 
 bool CManualMappedDll::allocate_current_process_memory()
 {
-	// Allocate space for the DLL image inside our process.
+
 	m_local_dll_image_ptr = CVirtualMemoryManager::the().allocate<uint8_t>(
 		nullptr, m_dll_to_be_injected.get_size_of_image(), PAGE_EXECUTE_READWRITE);
 	if (!m_local_dll_image_ptr)
@@ -349,10 +299,10 @@ void CManualMappedDll::deallocate_target_process_memory()
 
 bool CManualMappedDll::copy_dll_image_data()
 {
-	// Copy NT & DOS headers
+
 	memcpy(m_local_dll_image_ptr, m_dll_to_be_injected.get_byte_buffer().get_raw(), m_dll_to_be_injected.get_size_of_headers());
 
-	// Copy image sections
+
 	auto first_section = m_dll_to_be_injected.get_image_first_section();
 	for (uint16_t i = 0; i < m_dll_to_be_injected.get_num_of_sections(); i++)
 	{
@@ -379,11 +329,11 @@ bool CManualMappedDll::copy_dll_image_data()
 
 bool CManualMappedDll::relocate_dll_image_data()
 {
-	// relocate only if the base address specified by the DLL doesn't corespond to the real base address. Then everything needs to be relocated.
+
 	uintptr_t* amount_to_relocate = (uintptr_t*)(m_target_dll_image_ptr - m_dll_to_be_injected.get_image_base());
 	if (amount_to_relocate == 0)
 	{
-		// No need for relocation0x000aaa00
+
 		return true;
 	}
 
@@ -400,14 +350,13 @@ bool CManualMappedDll::relocate_dll_image_data()
 
 		auto relative_info = (relocation_entry*)(ibr + sizeof(uint8_t));
 
-		// size of a complete block without the header divided by the entry size.
+
 		size_t num_of_relocations = (ibr->SizeOfBlock - sizeof(IMAGE_BASE_RELOCATION)) / sizeof(relocation_entry);
 		for (size_t i = 0; i < num_of_relocations; i++)
 		{
 			uint16_t type = (relative_info[i] & 0xF000) >> 12;
 			uint16_t offs = (relative_info[i] & 0x0FFF);
 
-			//CConsole::the().info("reloc type: {}", type);
 
 			switch (type)
 			{
@@ -431,7 +380,7 @@ bool CManualMappedDll::relocate_dll_image_data()
 				}
 				case IMAGE_REL_BASED_ABSOLUTE:
 				{
-					// This is skipped
+
 					break;
 				}
 				default:
@@ -453,7 +402,7 @@ bool CManualMappedDll::relocate_dll_image_data()
 
 bool CManualMappedDll::write_data_into_target_process()
 {
-	// write the dll code itself
+
 	if (!CVirtualMemoryManager::the().write(
 		m_target_process_handle, m_target_dll_image_ptr,
 		m_local_dll_image_ptr, m_dll_to_be_injected.get_size_of_image()))
@@ -466,7 +415,7 @@ bool CManualMappedDll::write_data_into_target_process()
 		return false;
 	}
 
-	// write the context, first
+
 	if (!CVirtualMemoryManager::the().write(
 		m_target_process_handle, (LPVOID)get_target_process_shellcode_execution_context_addr(),
 		&m_shellcode_execution_context, sizeof(m_shellcode_execution_context)))
@@ -476,7 +425,7 @@ bool CManualMappedDll::write_data_into_target_process()
 
 	CConsole::the().info("Shellcode context at 0x{:08X}", get_target_process_shellcode_execution_context_addr());
 
-	// then write the communication interface block
+
 	if (is_communicative_dll())
 	{
 		if (!write_ipc_block((LPVOID)get_target_process_ipc_block_addr()))
@@ -487,15 +436,11 @@ bool CManualMappedDll::write_data_into_target_process()
 		CConsole::the().info("Communication interface block at 0x{:08X}", get_target_process_ipc_block_addr());
 	}
 
-	//
-	// NOTE: DON'T build with INCREMENTAL LINKING on!!! Otherwise 'shellcode_routine' will point to a jump table entry
-	//		 generated by the compiler and not to the actual address. Now, I'm not entirely sure whether this is because
-	//		 the function is a static member function, nonetheless, if you don't disable it, this will fail.
-	//
+
 	
 	CConsole::the().info("Trying to write shellcode_routine at 0x{:08X}", (uintptr_t)get_target_process_shellcode_addr());
 
-	// now write the actual shellcode
+
 	if (!CVirtualMemoryManager::the().write(
 		m_target_process_handle, (LPVOID)get_target_process_shellcode_addr(),
 		shellcode_routine, calc_shellcode_routine_size_in_bytes()))
@@ -530,13 +475,12 @@ bool CManualMappedDll::execute_shellcode_in_target_process()
 	}
 	else
 	{
-		// if not communicative, there's no way of us knowing that it initialized.. just wait here
-		// if it hangs, we're fucked.. TODO
+
+
 		NtWaitForSingleObject(hThread, FALSE, NULL);
 	}
 
-	// "Closing a thread handle does not terminate the associated thread or remove the thread object"
-	// https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
+
 	NtClose(hThread);
 
 	return true;
@@ -548,7 +492,7 @@ bool CManualMappedDll::update_shellcode_execution_context_data()
 	m_shellcode_execution_context.pfnGetProcAddress = (pfnGetProcAddress_t)GetProcAddress;
 	m_shellcode_execution_context.pfnLoadLibraryA = (pfnLoadLibraryA_t)LoadLibraryA;
 	m_shellcode_execution_context.pfnOutputDebugStringA = (pfnOutputDebugStringA_t)OutputDebugStringA;
-	// this needs to be from ntdll.dll! we're lucky that it exports such functions anyways.. heh
+
 	m_shellcode_execution_context.pfn_stricmp = (pfn_stricmp_t)GetProcAddress(GetModuleHandleA("ntdll.dll"), "_stricmp");
 	m_shellcode_execution_context.pfn_wcsicmp = (pfn_wcsicmp_t)GetProcAddress(GetModuleHandleA("ntdll.dll"), "_wcsicmp");
 	m_shellcode_execution_context.pfnmemset = (pfnmemset_t)GetProcAddress(GetModuleHandleA("ntdll.dll"), "memset");
@@ -562,7 +506,7 @@ bool CManualMappedDll::update_shellcode_execution_context_data()
 	assert(m_shellcode_execution_context.pfnmemset);
 	assert(m_shellcode_execution_context.pfnmemcpy);
 
-	// debug strings
+
 	strcpy_s(m_shellcode_execution_context.debug_messages[0], "Hello from shellcode.\n");
 	strcpy_s(m_shellcode_execution_context.debug_messages[1], "Resolving imports...\n");
 	strcpy_s(m_shellcode_execution_context.debug_messages[2], "Resolving exports...\n");
@@ -575,16 +519,16 @@ bool CManualMappedDll::update_shellcode_execution_context_data()
 	strcpy_s(m_shellcode_execution_context.debug_messages[9], "Calling Communicative Entry Point...\n");
 	strcpy_s(m_shellcode_execution_context.debug_messages[10], "Shellcode end.\n");
 
-	// exported procnames
+
 	strcpy_s(m_shellcode_execution_context.export_names[0], EXPOSEMODULE_PROCNAME);
 	strcpy_s(m_shellcode_execution_context.export_names[1], INTERFACEINSTANCEGETTER_PROCNAME);
 	strcpy_s(m_shellcode_execution_context.export_names[2], COMMUNICATIVEDLLENTRYPOINT_PROCNAME);
 	strcpy_s(m_shellcode_execution_context.export_names[3], PRE_DLL_LOAD_PROCNAME);
 
-	// dll names
+
 	wcscpy_s(m_shellcode_execution_context.dll_names[0], L"ntdll.dll");
 
-	// byte patterns
+
 	if (!RtlIIFT_BytePattern_Search::the().resolve_bytepatterns())
 	{
 		return false;
@@ -599,7 +543,7 @@ bool CManualMappedDll::update_shellcode_execution_context_data()
 		m_shellcode_execution_context.m_information_package.m_ipc_block_ptr = (IPCInterface_t*)get_target_process_ipc_block_addr();
 		m_shellcode_execution_context.m_information_package.m_current_session_id = generate_new_session_id();
 
-		// c++ exceptions
+
 		strcpy_s(m_shellcode_execution_context.m_information_package.m_RtlRIFT_pattern.bytepattern, RtlIIFT_BytePattern_Search::the().m_RtlRIFT_bytepattern.c_str());
 		strcpy_s(m_shellcode_execution_context.m_information_package.m_RtlRIFT_pattern.mask, RtlIIFT_BytePattern_Search::the().m_RtlRIFT_bytepattern_mask.c_str());
 		m_shellcode_execution_context.m_information_package.m_RtlRIFT_pattern.length = RtlIIFT_BytePattern_Search::the().m_RtlRIFT_bytepattern.length();

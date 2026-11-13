@@ -38,9 +38,9 @@
 
 enum EModuleUnloadWaitResult
 {
-	MODWAIT_Error,		// something happened, keep injected.
-	MODWAIT_CanUnload,	// module acknowledged, we can unload it.
-	MODWAIT_Hang,		// still waiting
+	MODWAIT_Error,
+	MODWAIT_CanUnload,
+	MODWAIT_Hang,
 };
 
 class CBaseInjector : public IBaseInjector
@@ -52,7 +52,7 @@ public:
 
 	void destroy();
 
-	static constexpr size_t k_update_threshold_ms = 250; // update every 250ms
+	static constexpr size_t k_update_threshold_ms = 250;
 	void update();
 	bool is_reinjection_pending() const override { return m_should_reinject; }
 
@@ -84,12 +84,12 @@ private:
 	reinjection_data_t m_reinjection_data;
 
 private:
-	// hang till all modules are unloaded. This is needed when the injector is exiting, it needs to wait a little bit
-	// for injected modules to respond..
+
+
 #ifdef _DEBUG
-	inline static constexpr size_t k_max_module_unload_wait_time_sec = 9999; // For debugging purposes it's good when you're debugging the dll while it's unloading. :)
+	inline static constexpr size_t k_max_module_unload_wait_time_sec = 9999;
 #else
-	inline static constexpr size_t k_max_module_unload_wait_time_sec = 10; // give the module N seconds before we'll force the unload.
+	inline static constexpr size_t k_max_module_unload_wait_time_sec = 10;
 #endif
 	EModuleUnloadWaitResult hang_till_module_unloads(const std::filesystem::path& module_path, IInjectableModuleObject* module,
 													 std::chrono::high_resolution_clock::time_point wait_start);
@@ -116,4 +116,4 @@ private:
 	std::unordered_map<std::filesystem::path, IInjectableModuleObject*> m_injected_dlls;
 };
 
-#endif // BASEINJECTOR_H
+#endif

@@ -40,16 +40,12 @@ struct cached_player_info_t
 	Steam3ID_t m_steam3_id;
 	Steam2ID_t m_steam2_id;
 
-	int m_player_id, m_user_id; // player_info_t::userid
+	int m_player_id, m_user_id;
 	std::string m_team;
 
 	bool m_is_steam_user;
 
-	//
-	// steam. this will only work for steam builds.
-	//
 
-	// we are a friend with this guy through steam. 
 	bool m_local_is_friend_with;
 
 	std::string m_steam_name;
@@ -78,19 +74,19 @@ private:
 
 	void manage_timers();
 
-	// if the condition is true, the text will be green, otherwise red.
+
 	void add_gui_condional_colored_text(const std::string& text, bool condition);
 	
 	int m_selected_plr_idx;
 
-	// cached player info
+
 	std::array<cached_player_info_t, MAX_CLIENTS> m_cached_players;
 	void create_cached_player_info(int id, const CGenericPlayer& player);
 	void update_avatars(int id, cached_player_info_t& cached_player);
 	bool m_update_player_cache = false;
 	uint32_t m_last_cache_update_time = 0;
 
-	// avatar pictures
+
 	bool m_precache_avatar_picture = false;
 	uint32_t m_last_avatar_precache_time = 0;
 
@@ -98,10 +94,10 @@ private:
 
 	std::string get_avatar_texture_playerid(int id);
 
-	// true if we're on steam build of the game. we just cache this, otherwise this just checks for the build number.
+
 	bool m_is_local_steam = false;
 
-	// filters
+
 	bool m_filter_allow_steam;
 	bool m_filter_allow_non_steam;
 	bool m_filter_allow_bots;
@@ -109,4 +105,4 @@ private:
 	bool apply_filter(const CGenericPlayer& player);
 };
 
-#endif // PLAYERLIST_H
+#endif

@@ -51,7 +51,7 @@ void CWorldVisuals::dim()
 		float speed = (float)1.0f;
 		double tm = CMemoryHookMgr::the().cl().get()->time;
 
-		// all phase-shifted so that it's more cool
+
 		color.r = std::abs(std::sinf(tm * speed + 0));
 		color.g = std::abs(std::sinf(tm * speed + 90));
 		color.b = std::abs(std::sinf(tm * speed + 180));
@@ -70,7 +70,7 @@ void CWorldVisuals::dim()
 
 void CWorldVisuals::render_fog()
 {
-	// it's under world visuals.
+
 	if (!world_visuals_enable.get_value() || !world_visuals_fog.get_value())
 	{
 		return;

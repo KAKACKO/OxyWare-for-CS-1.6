@@ -29,10 +29,10 @@
 #include "precompiled.h"
 
 InCommand CMovement::bunnyhop = InCommand("movement_bhop", VK_SPACE, false, IN_ACTCOND_Alive | IN_ACTCOND_NotInMessageMode);
-InCommand CMovement::airstuck = InCommand("movement_air_stuck", VK_XBUTTON1, false, IN_ACTCOND_Alive | IN_ACTCOND_NotInMessageMode); // mouse4
-InCommand CMovement::gs = InCommand("movement_gs", VK_XBUTTON2, false, IN_ACTCOND_Alive | IN_ACTCOND_NotInMessageMode); // mouse5
+InCommand CMovement::airstuck = InCommand("movement_air_stuck", VK_XBUTTON1, false, IN_ACTCOND_Alive | IN_ACTCOND_NotInMessageMode);
+InCommand CMovement::gs = InCommand("movement_gs", VK_XBUTTON2, false, IN_ACTCOND_Alive | IN_ACTCOND_NotInMessageMode);
 InCommand CMovement::eb = InCommand("movement_eb", 'C', false, IN_ACTCOND_Alive | IN_ACTCOND_NotInMessageMode);
-InCommand CMovement::strafe = InCommand("movement_strafe_hack", VK_MBUTTON, false, IN_ACTCOND_Alive | IN_ACTCOND_NotInMessageMode); // mouse3
+InCommand CMovement::strafe = InCommand("movement_strafe_hack", VK_MBUTTON, false, IN_ACTCOND_Alive | IN_ACTCOND_NotInMessageMode);
 InCommand CMovement::strafe_helper = InCommand("movement_strafe_helper", NULL, false, IN_ACTCOND_Alive | IN_ACTCOND_NotInMessageMode);
 InCommand CMovement::fastrun = InCommand("movement_fastrun", NULL, false, IN_ACTCOND_Alive | IN_ACTCOND_NotInMessageMode);
 InCommand CMovement::auto_jof = InCommand("movement_auto_jof", NULL, false, IN_ACTCOND_Alive | IN_ACTCOND_NotInMessageMode);

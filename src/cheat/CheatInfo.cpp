@@ -45,11 +45,6 @@ public:
 
 EXPOSE_SINGLE_INTERFACE(CCheatInfo, ICheatInfo, ICHEATINFO_INTERFACEID);
 
-//-------------------------------------------------------------------------------
-//
-// CCheatInfo implementation
-//
-//-------------------------------------------------------------------------------
 
 CCheatInfo::CCheatInfo()
 {

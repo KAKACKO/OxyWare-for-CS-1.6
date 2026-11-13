@@ -77,7 +77,7 @@ void CUICheatSettings::search_for_configs()
 {
 	static uint32_t last_searched = GetTickCount();
 
-	// search each # amount of ms
+
 	static constexpr uint32_t interval_ms = 250;
 	if (GetTickCount() - last_searched > interval_ms)
 	{
@@ -122,7 +122,7 @@ void CUICheatSettings::render_actions()
 				actions_restore_defaults();
 			}
 
-			g_gui_widgets_i->pop_stylevar(); // window padding
+			g_gui_widgets_i->pop_stylevar();
 
 			autosave();
 		});
@@ -186,7 +186,7 @@ void CUICheatSettings::render_file_list()
 				{
 					if (is_selected)
 					{
-						// clicking on currently selected entry, toggle it.
+
 						m_selected_cfg.clear();
 					}
 					else
@@ -221,7 +221,7 @@ void CUICheatSettings::options_rename()
 	rename_dialog->provide_on_cancel_fn(
 		[&]()
 		{
-			// don't do nothing at all, just close the popup. this is in order to make the "close button to render"
+
 			strcpy(rename_buffer, "");
 		});
 	rename_dialog->provide_on_okay_fn(
@@ -303,7 +303,7 @@ void CUICheatSettings::actions_export_as()
 	create_dialog->provide_on_cancel_fn(
 		[&]()
 		{
-			// don't do nothing at all, just close the popup. this is in order to make the "close button to render"
+
 			strcpy(name_buffer, "");
 		});
 
@@ -369,19 +369,19 @@ void CUICheatSettings::actions_save_current()
 
 void CUICheatSettings::actions_restore_defaults()
 {
-	// first load it
+
 	if (g_config_mgr_i->load_configuration(CFG_CheatSettings, "default.json"))
 	{
 		m_status_widget.update_status("Restored default configuration.", UIStatusWidget::Success);
 	}
 	else
 	{
-		// if we fail, most likely the "default.json" file was deleted. created it back again and load that.
+
 		g_config_mgr_i->write_configuration(CFG_CheatSettings, "default.json");
 
 		if (!g_config_mgr_i->load_configuration(CFG_CheatSettings, "default.json"))
 		{
-			// idk... xd shouldn't happen
+
 			m_status_widget.update_status("Failed to restore defaults!", UIStatusWidget::Error);
 		}
 	}
@@ -402,7 +402,7 @@ void CUICheatSettings::autosave()
 										  g_config_mgr_i->get_duration_last_saved_sec(), 
 										  (float)g_config_mgr_i->get_save_cfg_interval_var()->get_value());
 
-		// HACKHACK
+
 		if (g_config_mgr_i->get_duration_last_saved_sec() > (float)g_config_mgr_i->get_save_cfg_interval_var()->get_value() - 0.01f)
 		{
 			m_status_widget.update_status("Autosaved!", UIStatusWidget::Success);

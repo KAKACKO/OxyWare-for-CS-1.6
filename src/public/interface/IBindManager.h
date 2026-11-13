@@ -34,16 +34,16 @@
 
 enum EBindType
 {
-	BIND_OnPush,			// executes the command only once, after the key has been pushed
+	BIND_OnPush,
 
-	BIND_OnPushAndRelease,	// executes the first command as soon as the key is pressed, then executes the second
-							// command after the key has been released.
+	BIND_OnPushAndRelease,
+
 };
 
 static const char* bind_type_to_str[] =
 {
-	"on_push",				// BIND_OnPush
-	"on_push_and_release",	// BIND_OnPushAndRelease
+	"on_push",
+	"on_push_and_release",
 };
 
 template <>
@@ -69,10 +69,10 @@ enum EBindFlags
 {
 	BINDFLAG_None = 0,
 
-	BINDFLAG_ExecuteOverUI = BIT(0),		// execute the bind still if the Cheat UI is up.
-	BINDFLAG_ExecuteOverGameUI = BIT(1),	// execute the bind still if the Game UI is up.
-	BINDFLAG_Silent = BIT(2),				// don't log anything to console when executing the bind.
-	BINDFLAG_DisableInGameKey = BIT(3),		// don't run the engine command bound to same key when it is pressed
+	BINDFLAG_ExecuteOverUI = BIT(0),
+	BINDFLAG_ExecuteOverGameUI = BIT(1),
+	BINDFLAG_Silent = BIT(2),
+	BINDFLAG_DisableInGameKey = BIT(3),
 };
 DEFINE_ENUM_BITWISE_OPERATORS(EBindFlags);
 
@@ -118,7 +118,6 @@ struct std::formatter<EBindFlags> : std::formatter<std::string> {
 			add_colon = true;
 		}
 
-		// NOTE: Don't forget to add separator ', ' after the first command
 
 		return std::formatter<string>::format(flags_str, ctx);
 	}
@@ -128,8 +127,8 @@ enum EBindInternalState
 {
 	BINDSTATE_None = 0,
 
-	BINDSTATE_ExecutedWhenCheatUIWasOff = BIT(0),	// the bind was executed when UI was off. Handy for on push and release binds.
-	BINDSTATE_ExecutedWhenGameUIWasOff = BIT(1),	// 
+	BINDSTATE_ExecutedWhenCheatUIWasOff = BIT(0),
+	BINDSTATE_ExecutedWhenGameUIWasOff = BIT(1),
 };
 DEFINE_ENUM_BITWISE_OPERATORS(EBindInternalState);
 
@@ -139,7 +138,7 @@ struct bind_t
 	EBindType type;
 	EBindFlags flags;
 
-	// internal data
+
 	EBindInternalState internal_state;
 };
 
@@ -176,7 +175,7 @@ public:
 
 	virtual bool is_key_bound(int vk) = 0;
 
-	// based on flags, tell whenever to block the engine key and execute our bind instead of engine bind.
+
 	virtual bool should_block_engine_key(int vk) = 0;
 };
 
@@ -184,4 +183,4 @@ extern IBindManager* g_bindmgr_i;
 
 #define IBINDMANAGER_INTERFACEID "IBindManager"
 
-#endif // IBINDMANAGER_H
+#endif

@@ -38,7 +38,7 @@ void CGenericPlayer::update_player_info(int index, hl::player_info_t* pinfo)
 	m_playerinfo = pinfo;
 	m_playerinfo_index = index;
 
-	// now the extra info
+
 	if (COxWare::the().get_build_number() < 8684)
 	{
 		m_extra_playerinfo = (hl::extra_player_info_t*)&(CMemoryHookMgr::the().g_PlayerExtraInfoOld().get()[index + 1]);
@@ -133,7 +133,7 @@ bool CGenericPlayer::is_local_friend_with() const
 		return false;
 	}
 
-	// cannot be a friend with ourselfs
+
 	if (is_local_player())
 	{
 		return false;

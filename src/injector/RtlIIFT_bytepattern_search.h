@@ -30,8 +30,7 @@
 #define RTLIIFT_BYTEPATTERN_SEARCH_H
 #pragma once
 
-// this function isn't exported by the ntdll.dll module and its byte code varies from windows versions... bad for us, hehe
-// RtlInsertInvertedFunctionTable and RtlRemoveInvertedFunctionTable is the function.
+
 class RtlIIFT_BytePattern_Search
 {
 public:
@@ -43,11 +42,11 @@ public:
 	std::string m_RtlRIFT_bytepattern, m_RtlRIFT_bytepattern_mask;
 
 private:
-	bool resolve_iift(); // RtlInsertInvertedFunctionTable
-	bool resolve_rift(); // RtlRemoveInvertedFunctionTable
+	bool resolve_iift();
+	bool resolve_rift();
 
 private:
 	bool try_to_find_function_in_ntdll(const CBytePatternWithLengthConstexpr<k_max_mmapper_pattern_length>& pattern);
 };
 
-#endif // RTLIIFT_BYTEPATTERN_SEARCH_H
+#endif

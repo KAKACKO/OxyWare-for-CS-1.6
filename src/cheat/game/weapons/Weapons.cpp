@@ -31,7 +31,7 @@
 std::array<CCSWeapon, MAX_WEAPONS> CWeapons::s_weapons =
 {{
 	{ },
-	// Weapon index			Class						Ammo Type			Bullet type						Max Clip			Weapon weight			Weapon price		Weapon Primary Damage			Weapon Secondary Damage			Weapon Max Speed		Reload	Wall Penetration (+ 1)	Bullet Max Distance			RangeMod	NAttck	Sniper	Pistol	Shotgun	MG		SMG		Rifle	knife	gun		nade	c4
+
 	{ WEAPON_P228,			WEAPONCLASS_PISTOL,			AMMO_357SIG,		BULLET_PLAYER_357SIG,			P228_MAX_CLIP,		P228_WEIGHT,			P228_PRICE,			P228_PRIMARY_DAMAGE,			P228_SECONDARY_DAMAGE,			P228_MAX_SPEED,			2.7f,	WALL_PENETRATION_1,		P228_MAX_DISTANCE,			0.800f,		false,	false,	true,	false,	false,	false,	false,	false,	true,	false,	false,	},
 	{ WEAPON_GLOCK,			WEAPONCLASS_PISTOL,			AMMO_9MM,			BULLET_NONE,					GLOCK18_MAX_CLIP,	GLOCK18_WEIGHT,			GLOCK18_PRICE,		GLOCK_PRIMARY_DAMAGE,			GLOCK_SECONDARY_DAMAGE,			GLOCK_MAX_SPEED,		0.0f,	WALL_PENETRATION_NONE,	GLOCK_MAX_DISTANCE,			0.000f,		false,	false,	true,	false,	false,	false,	false,	false,	true,	false,	false,	},
 	{ WEAPON_SCOUT,			WEAPONCLASS_SNIPERRIFLE,	AMMO_762NATO,		BULLET_PLAYER_762MM,			SCOUT_MAX_CLIP,		SCOUT_WEIGHT,			SCOUT_PRICE,		SCOUT_PRIMARY_DAMAGE,			SCOUT_SECONDARY_DAMAGE,			SCOUT_MAX_SPEED,		2.0f,	WALL_PENETRATION_3,		SCOUT_MAX_DISTANCE,			0.980f,		false,	true,	false,	false,	false,	false,	false,	false,	true,	false,	false,	},
@@ -70,7 +70,7 @@ CCSWeapon::CCSWeapon(WeaponIdType weapon_id, EWeaponClassType weapon_class, EAmm
 					 float max_speed, float reload_time, EWallPenetrationStrength wall_pen_strength,
 					 float max_distance, float range_modifier,
 
-					 // properties
+
 					 bool is_nonattack, bool is_sniper, bool is_pistol, bool is_shotgun, bool is_machinegun,
 					 bool is_submachinegun, bool is_rifle, bool is_knife, bool is_gun, bool is_nade, bool is_c4)
 {
@@ -193,7 +193,7 @@ bool CCSWeapon::is_useable() const
 {
 	if (is_out_of_ammo() && m_clip_size != WEAPON_NO_CLIP)
 	{
-		// clip is empty (or nonexistant) and the player has no more ammo of this type.
+
 		return false;
 	}
 

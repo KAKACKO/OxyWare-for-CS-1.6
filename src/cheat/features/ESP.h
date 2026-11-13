@@ -69,7 +69,7 @@ struct SoundEntIndexResolverCache
 	SoundEntIndexResolverCache() : resolved_index(0) {}
 	SoundEntIndexResolverCache(int resolved) : resolved_index(resolved) {}
 	
-	// if original == resolved, everything is fine
+
 	int resolved_index;
 };
 
@@ -104,7 +104,7 @@ struct ESPBoxMetrics
 	Vector2D box_botright;
 };
 
-// retreived from w_backpack.mdl
+
 #define DROPPED_BOMB_BBOX_MIN	Vector(-5.22f, -2.94f, -6.85f)
 #define DROPPED_BOMB_BBOX_MAX	Vector(5.22f, 2.94f, 6.85f)
 
@@ -124,17 +124,17 @@ private:
 	void render_sound();
 	void render_bomb_info();
 
-	// rendering
+
 	bool render_player_esp(int index, const CGenericPlayer& player);
 	bool render_entity_esp(int index, const CGenericEntity& entity);
 	bool render_sound_esp(const PlayerStepSound& step, uint32_t time_limit);
 	bool render_dropped_bomb_esp(const BombInfo& bomb_info);
 	bool render_planted_bomb_esp(const BombInfo& bomb_info);
 
-	// util
+
 	bool origin_to_2d_box(const Vector& origin, const Vector& min, const Vector& max, float box_aspect, ESPBoxMetrics& metrics);
 
-	// rendering widgets
+
 	void render_esp_box(const ESPBoxMetrics& metrics, const CColor& color, float corner_ratio = 1.0f);
 	void render_esp_label(const ESPBoxMetrics& metrics, const std::string& label);
 	void render_esp_details(const ESPBoxMetrics& metrics, const CGenericPlayer& player);
@@ -150,4 +150,4 @@ private:
 	float get_playerbox_ratio(const CGenericPlayer* player);
 };
 
-#endif // ESP_H
+#endif

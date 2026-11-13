@@ -31,17 +31,17 @@
 VarBoolean cvar_sandbox_enable("cvar_sandbox_enable", "Enables \"lying to the server\" feature. See menu for more details.", false);
 VarBoolean cvar_sandbox_monitor_server("cvar_sandbox_monitor_server", "Allows to see what cvar server requests from the client. (inside the console)", false);
 
-// convenience macros
+
 #define DESC(x) "Specify fake value for " x " when sent to the server."
 #define DEF_VAR(name, value) VarKeyValue cvar_sandbox_##name("cvar_sandbox_" #name, DESC(#name), KeyValue(#name, #value))
 
-// fps
+
 DEF_VAR(fps_max, 100);
 DEF_VAR(fps_override, 0);
 DEF_VAR(gl_vsync, 0);
 DEF_VAR(developer, 0);
 
-// movement
+
 DEF_VAR(cl_movespeedkey, 0.52);
 DEF_VAR(cl_forwardspeed, 400);
 DEF_VAR(cl_sidespeed, 400);
@@ -49,29 +49,26 @@ DEF_VAR(cl_upspeed, 320);
 DEF_VAR(cl_yawspeed, 210);
 DEF_VAR(cl_pitchspeed, 225);
 
-// prediction
+
 DEF_VAR(cl_lc, 1);
 DEF_VAR(cl_lw, 1);
 
-// other
+
 DEF_VAR(cl_minmodels, 0);
 
-// networking
+
 DEF_VAR(cl_cmdrate, 101);
-//VarKeyValue cvar_sandbox_("cvar_sandbox_fps_override", DESC("fps_override"), KeyValue("fps_override", "0"));
-//VarKeyValue cvar_sandbox_("cvar_sandbox_fps_override", DESC("fps_override"), KeyValue("fps_override", "0"));
-//VarKeyValue cvar_sandbox_("cvar_sandbox_fps_override", DESC("fps_override"), KeyValue("fps_override", "0"));
-//VarKeyValue cvar_sandbox_("cvar_sandbox_fps_override", DESC("fps_override"), KeyValue("fps_override", "0"));
+
 
 void CCvarSandbox::initialize()
 {
-	// fps
+
 	m_variables.push_back(&cvar_sandbox_fps_max);
 	m_variables.push_back(&cvar_sandbox_fps_override);
 	m_variables.push_back(&cvar_sandbox_gl_vsync);
 	m_variables.push_back(&cvar_sandbox_developer);
 
-	// movement
+
 	m_variables.push_back(&cvar_sandbox_cl_movespeedkey);
 	m_variables.push_back(&cvar_sandbox_cl_forwardspeed);
 	m_variables.push_back(&cvar_sandbox_cl_sidespeed);
@@ -79,20 +76,20 @@ void CCvarSandbox::initialize()
 	m_variables.push_back(&cvar_sandbox_cl_yawspeed);
 	m_variables.push_back(&cvar_sandbox_cl_pitchspeed);
 
-	// prediction
+
 	m_variables.push_back(&cvar_sandbox_cl_lc);
 	m_variables.push_back(&cvar_sandbox_cl_lw);
 
-	// other
+
 	m_variables.push_back(&cvar_sandbox_cl_minmodels);
 
-	// networking
+
 	m_variables.push_back(&cvar_sandbox_cl_cmdrate);
 }
 
 const char* CCvarSandbox::filter_cvarvalue(const char* cvar_name)
 {
-	// TODO: Make this list dynamic, not hardcoded...
+
 
 	if (cvar_sandbox_enable.get_value())
 	{
@@ -105,7 +102,7 @@ const char* CCvarSandbox::filter_cvarvalue(const char* cvar_name)
 		}
 	}
 
-	// send original cvar value
+
 	return nullptr;
 }
 
@@ -175,21 +172,21 @@ void CCvarSandbox::render_cvar_sandbox_slot(VarKeyValue* var)
 	if (reclaim_focus_value)
 	{
 		g_gui_widgets_i->set_item_default_focus();
-		g_gui_widgets_i->set_keyboard_focus_here(-1); // Auto focus previous widget
+		g_gui_widgets_i->set_keyboard_focus_here(-1);
 	}
 #else
-	// TODO: Make this more customizable, e.g. add custom cvars...
+
 
 	g_gui_widgets_i->add_text(var->get_value().key());
 #endif
 
 	g_gui_widgets_i->table_next_column();
 
-	// unique insertion
+
 	size_t value = 0;
 	try
 	{
-		// this should be O(1), but hehe, whatever..
+
 		value = m_filtered_cvars.at(var->get_value().key());
 	}
 	catch (...)
@@ -201,8 +198,7 @@ void CCvarSandbox::render_cvar_sandbox_slot(VarKeyValue* var)
 
 		strcpy_s(m_input_buffers[value], var->get_value().value().c_str());
 	}
-	//auto& value = m_filtered_cvars[var->get_name()];
-	//auto& value = var->get_value().value();
+
 
 	bool reclaim_focus_key = false;
 	if (g_gui_widgets_i->add_text_input_ex(input2_placeholder_name, m_input_buffers[value], sizeof(m_input_buffers[0]),
@@ -211,11 +207,11 @@ void CCvarSandbox::render_cvar_sandbox_slot(VarKeyValue* var)
 		reclaim_focus_key = true;
 	};
 
-	// Auto-focus on window apparition
+
 	g_gui_widgets_i->set_item_default_focus();
 	if (reclaim_focus_key)
 	{
-		g_gui_widgets_i->set_keyboard_focus_here(-1); // Auto focus previous widget
+		g_gui_widgets_i->set_keyboard_focus_here(-1);
 	}
 
 	g_gui_widgets_i->table_next_column();
@@ -226,7 +222,7 @@ void CCvarSandbox::render_cvar_sandbox_slot(VarKeyValue* var)
 		{
 			var->set_value(KeyValue(/*buffer_name*/var->get_value().key(), m_input_buffers[value]));
 
-			// update status text
+
 			m_current_status = std::format("Set fake value of '{}' to '{}'", var->get_value().key(), m_input_buffers[value]);
 			m_status_update_ms = GetTickCount();
 		}

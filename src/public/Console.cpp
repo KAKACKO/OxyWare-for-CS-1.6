@@ -26,12 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// Console.cpp -- Module-dependent implementation that communicates with the IDeveloperClass interface.
-// 
-//	Each module links this class and after initialization it uses it to use the developer console. This is 
-//	an automatic way for the DeveloperConsole interface to distinguish between which modules are printing msgs.
-//
 
 #include "Console.h"
 
@@ -49,7 +43,7 @@ bool CConsole::initialize(EOutputModule module, IDeveloperConsole* devcon_i)
 	m_devcon_i = devcon_i;
 	m_current_module = module;
 
-	// tell the DeveloperConsole interface that we're registering this module
+
 	m_devcon_i->register_module(m_current_module);
 
 	m_initialized = true;
@@ -83,12 +77,12 @@ void CConsole::print_generic(EOutputCategory category, const std::string& what, 
 
 	if (m_initialized)
 	{
-		// we have the developer console interface pointer, fine
+
 		m_devcon_i->print(m_current_module, category, what, printed_already, time);
 	}
 	else
 	{
-		// we don't have it, schedule messages until we have it.
+
 		scheduled_message_t msg = { category, what, time};
 		m_scheduled_messages.emplace_back(msg);
 		OutputDebugStringA((what + '\n').c_str());

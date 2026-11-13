@@ -52,7 +52,7 @@ public:
 	bool is_in(unsigned short in_action) { return m_original_cmd.buttons & in_action; }
 	bool is_in_modified(unsigned short in_action) { return m_current_cmd->buttons & in_action; }
 
-	// obviously based on IN_* buttons, not on speed or anything similar
+
 	bool is_moving();
 
 	void svside_movement_speed_factor(uint8_t msec, bool override_previous = false);
@@ -64,14 +64,13 @@ private:
 
 	unsigned short m_previous_buttons_state = 0;
 
-	// true if modified command frametime.
+
 	bool m_ft_modified = false;
-	int m_new_ft = -1; // -1 denotes unset
+	int m_new_ft = -1;
 
 	void reset_ft_state();
 };
 
-//---------------------------------------------------------------------------------------------------
 
 struct MPVisualDataEntry
 {
@@ -119,10 +118,10 @@ public:
 private:
 	std::map<std::string, MPVisualDataContainer> m_data;
 
-	// absolute zero of the entire plot
+
 	Vector2D m_plot_base;
 
 	float m_max_x_data = 500.0f;
 };
 
-#endif // BUNNYHOP_H
+#endif

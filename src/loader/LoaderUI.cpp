@@ -54,7 +54,7 @@ void CLoaderUI::initialize()
 	{
 		if (obj->get_dll_filepath().string() != MODULE_CHEAT)
 		{
-			// filter only the cheater module
+
 			return;
 		}
 
@@ -97,7 +97,7 @@ void CLoaderUI::render_tab_main()
 		{
 			static const char* s_exe_names[] = { "cs.exe", "hl.exe", "cstrike.exe" };
 
-			// try different names
+
 			bool success = false;
 			for (int i = 0; i < OX_ARRAYSIZE(s_exe_names); i++)
 			{

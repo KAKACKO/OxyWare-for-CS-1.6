@@ -88,4 +88,4 @@ private:
 	void nsdn_speedhack();
 };
 
-#endif // GROUNDSTRAFE_H
+#endif

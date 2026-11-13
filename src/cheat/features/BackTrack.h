@@ -52,10 +52,10 @@ private:
 	float calc_interpolation_amount(float ex_interp, float update_interval_ms, float lerp_msec);
 	float get_raw_client_latency(hl::frame_t* frame);
 
-	// simulate interpolated origin & angles
+
 	bool backtrack_entity(hl::cl_entity_t* ent, float lerp_msec, Vector& simorg, Vector& simang);
 
 	void construct_backtrack_entity(hl::cl_entity_t& in, const Vector& interpolated_origin, const Vector& interpolated_angles);
 };
 
-#endif // BACKTRACK_H
+#endif

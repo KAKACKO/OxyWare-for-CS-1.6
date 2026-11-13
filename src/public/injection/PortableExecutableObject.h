@@ -34,14 +34,13 @@
 
 #include "ByteBuffer.h"
 
-// An object to carry around information about a dll
+
 class CPortableExecutableObject
 {
 public:
 	bool create(const std::filesystem::path& dll_path);
 	void destroy();
 
-	// ------- API ---------
 
 	inline size_t get_size_of_image() const { return assert_get(m_opt_hdr)->SizeOfImage; }
 	inline size_t get_size_of_headers() const { return assert_get(m_opt_hdr)->SizeOfHeaders; }
@@ -55,18 +54,16 @@ public:
 	inline uint32_t va_as_rva(uint32_t va) const { return va - assert_get(m_opt_hdr)->ImageBase; }
 	inline uint32_t rva_as_va(uint32_t rva) const { return rva + assert_get(m_opt_hdr)->ImageBase; }
 
-	// returns true if exported name is within this executable
+
 	bool find_export(const char* name);
 
-	// Accepts rva address and returns file pointer to the address 
-	// relative to the start of appropriate section. If the rva is
-	// out of bounds of all sections, 0 is returned.
+
 	uintptr_t offset_relative_to_a_section(uintptr_t rva);
 
 private:
 	bool parse_dll();
 
-	// utility function to always assure us that the pointer we're getting is alright.
+
 	template<typename T>
 	inline T* assert_get(T* what) const { assert(what); return what; }
 
@@ -80,4 +77,4 @@ private:
 	PIMAGE_FILE_HEADER m_file_hdr;
 };
 
-#endif // PORTABLEEXECUTABLEOBEJCT_H
+#endif

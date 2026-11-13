@@ -26,9 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// loader.h -- Entirety of the loader.
-//
 
 #ifndef LOADER_H
 #define LOADER_H
@@ -73,19 +70,19 @@ private:
 	bool load_and_initialize_dependencies();
 	void unload_dependencies();
 
-	// function responsible for rendering the loader gui
+
 	void on_render();
 
 private:
 	IBaseInjector* m_selected_injector = nullptr;
 
-	// For frametime & fps calculations
+
 	std::chrono::high_resolution_clock::time_point frame_start, frame_end;
-	double m_avg_fps = 1.0; // Uses moving-average algorithm
+	double m_avg_fps = 1.0;
 
 	HINSTANCE m_instance_handle;
 
 	HANDLE m_loader_mutex;
 };
 
-#endif // LOADER_H
+#endif

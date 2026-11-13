@@ -131,7 +131,7 @@ void CEngineInput::surface_set_cursor_pos(const Vector2D& pos)
 	}
 	else
 	{
-		// This is in absolute coordinates, so offset from the window position
+
 		pos_to_set += CGameUtil::the().get_window_pos();
 		SetCursorPos((int)pos_to_set.x, (int)pos_to_set.y);
 	}
@@ -145,37 +145,26 @@ void CEngineInput::surface_centerize_cursor_position()
 
 void CEngineInput::toggle_ingame_input(bool enable)
 {
-	// panels
+
 	auto client_panel = vgui_client_panel();
 	auto gameui_panel = vgui_gameui_panel();
 
-	// interfaces
+
 	auto ipanel = CHLInterfaceHook::the().IPanel();
 	auto igameui = CHLInterfaceHook::the().IGameUI();
 	auto iclientvgui = CHLInterfaceHook::the().IClientVGUI();
 
-	if ((!client_panel || !gameui_panel) || // sanity checks
+	if ((!client_panel || !gameui_panel) ||
 		(!ipanel || !igameui || !iclientvgui))
 	{
 		CConsole::the().error("Couldn't handle engine input because some of the hooks were null!");
 		return;
 	}
 
-	//
-	// Handle ingame inputs. 
-	// 
-	// If we decide to enable ingame inputs, we'll re-enable all engine input states
-	// so that the engine thinks that we want to capture input from it. Otherwise, we
-	// disable all possible engine inputs, so that the engine thinks that we're competely
-	// numb in terms of inputs.
-	// 
-	// Note for the relative mouse mode: Call the function always after engine functions, 
-	// because we as the modifier want to have the last "word", always.
-	//
 
 	if (enable)
 	{
-		// handle inputs when deactivating the cheat
+
 		if (is_in_relative_mode())
 		{
 			ipanel->SetVisible(client_panel, true);
@@ -193,7 +182,7 @@ void CEngineInput::toggle_ingame_input(bool enable)
 	}
 	else
 	{
-		// handle inputs when deactivating the cheat
+
 		if (is_in_relative_mode())
 		{
 			ipanel->SetVisible(client_panel, false);
@@ -212,10 +201,10 @@ void CEngineInput::toggle_relative_mouse_mode(bool enable)
 {
 	if (COxWare::the().get_build_number() < FIRST_SDL_BUILD)
 	{
-		return; // this isn't a thing on older builds.
+		return;
 	}
 
-	// Relative mouse mode without m_rawinput can cause issues. This is by the engine design.
+
 	auto m_rawinput = CGoldSrcCommandMgr::the().get_cvar("m_rawinput");
 	if (m_rawinput && m_rawinput->value != 0.0f)
 	{
@@ -241,8 +230,7 @@ bool CEngineInput::is_gameui_rendering()
 void CEngineInput::toggle_windows_mouse_cursor(bool show)
 {
 	return;
-	// assuming we have set ImGuiConfigFlags_NoMouseCursorChange in imgui platform layer, we handle
-	// cursor showing/hiding for ourselfs.
+
 
 	if (show)
 	{
@@ -255,7 +243,7 @@ void CEngineInput::toggle_windows_mouse_cursor(bool show)
 	{
 		assert(m_last_cursor_handle == nullptr && "called " __FUNCTION__ " with already hiddne cursor!");
 
-		// set before hidden
+
 		m_last_cursor_handle = get_current_cursor_handle();
 		CConsole::the().info("cursor handle: 0x{:08X}", (DWORD)m_last_cursor_handle);
 		SetCursor(NULL);

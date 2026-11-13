@@ -49,7 +49,7 @@ void CGenericMdl::update(hl::model_t* mdl)
 			case hl::mod_alias:
 			default:
 			{
-				// these ones don't have any header. (except for alias models.. but who cares about them.. xd)
+
 				break;
 			}
 		}

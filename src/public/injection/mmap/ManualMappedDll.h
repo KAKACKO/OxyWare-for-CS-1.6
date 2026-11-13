@@ -26,9 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// ManualMappedDll.h -- Dll that is injected to a target process through manual mapping injection technique.
-//
 
 #ifndef MANUALMAPPINGUNIT_H
 #define MANUALMAPPINGUNIT_H
@@ -52,7 +49,7 @@ public:
 
 	bool communicate_with_injected_dll(EClient2Injector& code);
 
-	// returns the base address inside of target process! Don't use directly!
+
 	uintptr_t get_base_address() const { assert(m_successfully_injected); return (uintptr_t)m_target_dll_image_ptr; }
 
 	inline ExposeModuleFn get_ExposeModule_fn() const { assert(m_successfully_injected); return m_shellcode_execution_context.pfnExposeModule; };
@@ -65,7 +62,7 @@ private:
 
 	bool read_execution_context_back(manualmap_shellcode_execution_context_t* sec);
 
-	// memory
+
 	bool allocate_memory();
 	bool allocate_current_process_memory();
 	bool allocate_target_process_memory();
@@ -78,14 +75,14 @@ private:
 		deallocate_target_process_memory();
 	}
 
-	uint8_t* m_local_dll_image_ptr;		// locally allocated DLL image in our process's VM
-	uint8_t* m_target_dll_image_ptr;	// memory for the dll allocated in the target process
+	uint8_t* m_local_dll_image_ptr;
+	uint8_t* m_target_dll_image_ptr;
 
-	// this includes the raw dll image, the shellcode itself, etc..
+
 	size_t m_target_process_total_allocated_mem;
 
 private:
-	// operations on dll image
+
 	bool copy_dll_image_data();
 	bool relocate_dll_image_data();
 	bool write_data_into_target_process();
@@ -115,9 +112,9 @@ private:
 						   + sizeof(IPCInterface_t));
 	};
 
-	// Shellcode
+
 	static HINSTANCE __stdcall shellcode_routine(manualmap_shellcode_execution_context_t* context);
 	static DWORD calc_shellcode_routine_size_in_bytes();
 };
 
-#endif // MANUALMAPPINGUNIT_H
+#endif

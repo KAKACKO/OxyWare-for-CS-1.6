@@ -34,7 +34,7 @@ VarBoolean auto_zoom("auto_zoom", "Automatically zooms in when the weapon is fir
 
 void CAutomation::update()
 {
-	// chat opened
+
 	if (CLocalState::the().is_in_messagemode())
 	{
 		return;

@@ -26,22 +26,17 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// dllmain.cpp -- Entry point for the injected cheat dll.
-//
 
 #include "precompiled.h"
 
-// called before DllMain
+
 C_DLLEXPORT bool PreDllLoad()
 {	
-	// preserved for future use.
+
 	return true;
 }
 
-//-------------------------------------------------------------------------------
 
-// a communicative dll is a dll that exposes this routine and provides communication functionality with the injector.
 C_DLLEXPORT bool CommunicativeDllEntryPoint(injector_information_package_t* ifp)
 {
 	CConsole::the().info(__FUNCTION__ " start.");
@@ -56,7 +51,6 @@ C_DLLEXPORT bool CommunicativeDllEntryPoint(injector_information_package_t* ifp)
 	return ret;
 }
 
-//-------------------------------------------------------------------------------
 
 uintptr_t g_cheat_dll_base;
 
@@ -64,7 +58,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 					  DWORD  ul_reason_for_call,
 					  LPVOID lpReserved)
 {
-	// so that we don't have to add new members to the information package that is provided to the cheat...
+
 	g_cheat_dll_base = (uintptr_t)hModule;
 
 #if 0

@@ -38,8 +38,8 @@
 
 enum ECfgType
 {
-	CFG_CheatSettings,	// under variables there're also binds
-	CFG_CheatTheme,		// theme
+	CFG_CheatSettings,
+	CFG_CheatTheme,
 };
 
 static const char* cfg_type_to_string[] =
@@ -80,7 +80,7 @@ public:
 			CConsole::the().warning("File already exist. An overwrite will be performed.");
 		}
 
-		m_json.clear(); // erase first
+		m_json.clear();
 		
 		for (auto& fn : m_export_fns)
 		{
@@ -158,22 +158,13 @@ protected:
 
 	ECfgType m_cfg_type;
 
-	// don't emit any console logs
+
 	bool m_silent = false;
 
 	std::vector<fnLoadExportCallback> m_load_fns, m_export_fns;
 };
 
-//----------------------------------------------------------------
-//
-//
-// Following classes are just syntax sugar in order to distinguish
-// between configuration types.
-//
-//
-//----------------------------------------------------------------
 
-// cheat settings -- stores variables, binds, incommands
 class CfgFile_CheatSettings : public GenericConfigFile
 {
 public:
@@ -183,7 +174,7 @@ public:
 	}
 };
 
-// theme container -- stores colors
+
 class CfgFile_CheatTheme : public GenericConfigFile
 {
 public:
@@ -194,4 +185,4 @@ public:
 };
 
 
-#endif // CONFIGFILE_H
+#endif

@@ -41,4 +41,4 @@ public:
 	void fix_fps();
 };
 
-#endif // BULLETTRACE_H
+#endif

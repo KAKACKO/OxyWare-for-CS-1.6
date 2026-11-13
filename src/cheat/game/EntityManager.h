@@ -32,8 +32,8 @@
 
 enum EBombInfoFlags
 {
-	BOMB_FLAG_DROPPED = 0, // if the bomb was dropped due to voluntary dropping or death/disconnect
-	BOMB_FLAG_PLANTED = 1, // if the bomb has been planted will also trigger the round timer to hide will also show where the dropped bomb on the Terrorist team's radar.
+	BOMB_FLAG_DROPPED = 0,
+	BOMB_FLAG_PLANTED = 1,
 };
 
 class BombInfo
@@ -72,14 +72,14 @@ public:
 	void erase();
 	void init();
 
-	// getters
+
 	std::optional<CGenericPlayer*> get_local_player();
 	std::optional<CGenericPlayer*> get_player_by_id(int index);
 
 	std::unordered_map<int, CGenericEntity> m_known_entities;
 	std::unordered_map<int, CGenericPlayer> m_known_players;
 
-	// bomb info
+
 	void update_bomb_info(const Vector& origin, uint8_t flags);
 	inline const BombInfo& get_bomb_info() const
 	{
@@ -90,4 +90,4 @@ private:
 	BombInfo m_bomb_info;
 };
 
-#endif // ENTITYMANAGER_H
+#endif

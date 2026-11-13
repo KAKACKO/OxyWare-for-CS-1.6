@@ -26,9 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// ResourceConsistencyBypass.cpp -- Bypass for "rechecker"-type plugins.
-//
 
 #include "precompiled.h"
 
@@ -41,11 +38,7 @@ extern const std::unordered_multiset<std::string> s_8684_vanilla_halflife_direct
 
 bool CResourceConsistencyBypass::detour_consistency_info(hl::sizebuf_t* msg)
 {
-	//
-	// Some servers can check for dll/exe/asi/cfg files inside the Half-Life directory (and others, of course)
-	// to detect whenever you have any cheats there. If you do, the server can refuse. We can bypass it here
-	// by detouring this function.
-	//
+
 
 	if (!consistencybypass_enable.get_value())
 	{
@@ -72,20 +65,17 @@ bool CResourceConsistencyBypass::detour_consistency_info(hl::sizebuf_t* msg)
 
 	if (!cl->need_force_consistency_response)
 	{
-		return true; // server didn't request any consistency response
+		return true;
 	}
 
 	cl->need_force_consistency_response = FALSE;
 
 	CHLNetMessageIO::the().write_byte(msg, clc_fileconsistency);
-	int msg_start_pos = msg->cursize; // Save starting position of the message
+	int msg_start_pos = msg->cursize;
 
-	CHLNetMessageIO::the().write_short(msg, 0); // 16 bits reserverd to be then set as
-	// total bytes written at the end.
+	CHLNetMessageIO::the().write_short(msg, 0);
 
-	//
-	// For every consistency entry, flush data over to the remote.
-	//
+
 	CHLNetMessageIO::the().start_bit_writing(msg);
 
 	std::string filename, steam_filename;
@@ -108,7 +98,7 @@ bool CResourceConsistencyBypass::detour_consistency_info(hl::sizebuf_t* msg)
 			continue;
 		}
 
-		CHLNetMessageIO::the().write_bits(1, 1); // One bit of padding for every consistency
+		CHLNetMessageIO::the().write_bits(1, 1);
 		CHLNetMessageIO::the().write_bits(item->orig_index, MAX_RESOURCE_INDEX_BITS);
 
 		filename = std::format("{}{}", item->issound ? "sound/" : "", item->filename);
@@ -127,17 +117,14 @@ bool CResourceConsistencyBypass::detour_consistency_info(hl::sizebuf_t* msg)
 			}
 		}
 
-		// there are some CRC checks here to see whenever the file has been modified or not... screw that!
 
 		switch (item->check_type)
 		{
-			// This file has to match the one which the server ones.
+
 			case hl::force_exactfile:
 			{
-				//
-				// Search list of vanilla HalfLife directory files and if found, send the md5 has of the file. Otherwise
-				// act as if the file wasn't there (e.g. a cheat dll/config/exe/asi/bin etc.)
-				//
+
+
 				bool is_vanilla_file = false;
 				for (const auto& file : s_8684_vanilla_halflife_directory_files)
 				{
@@ -148,19 +135,17 @@ bool CResourceConsistencyBypass::detour_consistency_info(hl::sizebuf_t* msg)
 					}
 				}
 
-				//if (strstr(filename.c_str(), "imgui.ini") || filename == "sprites/unrealsmoke_2.spr")
-				//	__debugbreak();
 
 				bool file_allowed_to_md5_check = is_vanilla_file;
 
 				if (is_vanilla_file)
 				{
-					// if the function returns true here, 
+
 					hash_file_fn.call(md5, (char*)filename.c_str(), FALSE, FALSE, NULL);
 				}
 				else
 				{
-					// foreign file, we have to perform harcoded filtration.. this file must be from downloads or somewhere else..
+
 					std::string ext = std::filesystem::path(filename).extension().string();
 					bool skip_checking = false;
 					if (ext != ".spr" &&
@@ -173,7 +158,7 @@ bool CResourceConsistencyBypass::detour_consistency_info(hl::sizebuf_t* msg)
 						ext != ".tga" &&
 						ext != ".wav")
 					{
-						// the server probably wants to search for dlls or cheat files/configs, etc..
+
 						skip_checking = true;
 						file_allowed_to_md5_check = false;
 					}
@@ -184,15 +169,9 @@ bool CResourceConsistencyBypass::detour_consistency_info(hl::sizebuf_t* msg)
 					}
 				}
 
-				// 5.188.108.140:27015 "gas_puff_gray_transparent.spr"
 
 				item->value = *(int*)(md5);
 
-				//
-				// Server plugins expect non-zero md5 values. Zero md5 hashes only happen if you have a modified model sitting on your
-				// machine, that the server requested md5 for. Otherwise, the server expects always non-zero md5 hash, even if the hash
-				// (md5 variable) would be uninitialized! They then compare it with their hash.
-				//
 
 				CHLNetMessageIO::the().write_bits(item->value, sizeof(int) * 8);
 
@@ -200,7 +179,7 @@ bool CResourceConsistencyBypass::detour_consistency_info(hl::sizebuf_t* msg)
 
 				break;
 			}
-			// Check for model bounds
+
 			case hl::force_model_samebounds:
 			case hl::force_model_specifybounds:
 			{
@@ -245,13 +224,10 @@ bool CResourceConsistencyBypass::detour_consistency_info(hl::sizebuf_t* msg)
 		}
 	}
 
-	CHLNetMessageIO::the().write_bits(0, 1); // 1-bit padding, at last
+	CHLNetMessageIO::the().write_bits(0, 1);
 	CHLNetMessageIO::the().end_bit_writing(msg);
 
-	//
-	// Write the total amount of bytes written to the preserved two bytes
-	// at the beggining of the message.
-	//
+
 	unsigned totalsize = msg->cursize - msg_start_pos - sizeof(short);
 	*(unsigned short*)(&msg->data[msg_start_pos]) = totalsize;
 

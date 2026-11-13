@@ -26,13 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// DependencyLoader.cpp -- Provides API to load dependencies.
-// 
-// Note that dependency is a module that doesn't have any communicative interface (i.e. CommunicativeDllEntryPoint)
-// This file can be included only by modules that providde a communicative interface, or by the loader itself.
-// The module that includes this file MUST provide main interfaces such as ILibraryLoader or IVariableManager.
-//
 
 #include "DependencyLoader.h"
 
@@ -64,21 +57,20 @@ bool LoadableModuleObject::load_and_initialize(ELoadType type, const std::filesy
 		return false;
 	}
 
-	// add entries for our manual mapped module to LibraryLoader, so it can search for exports etc.
+
 	if (type == LOADTYPE_MANUALMAP)
 	{
 		g_libloader_i->register_manualmapped_module(module_name.c_str(), m_injected_module->get_base_address());
 	}
 
-	// data forwarded over to the dll
+
 	ModuleInitializationContext ctxt
 	{
 		g_libloader_i, 
 		g_devconsole_i
 	};
 
-	// Initialize the module by calling its exposed func and get pointer 
-	// to the IBaseModule class implementation of such module.
+
 	CConsole::the().info("Calling initialization export for '{}'.", get_name_utf8());
 	bool success = emfn(&m_basemodule_ptr, &ctxt);
 	if (!success || !m_basemodule_ptr)
@@ -87,7 +79,7 @@ bool LoadableModuleObject::load_and_initialize(ELoadType type, const std::filesy
 		return false;
 	}
 
-	// Note that this can be null if the module doesn't implement any interface.
+
 	CConsole::the().info("Module '{}' initialized; resolving interfaces.", get_name_utf8());
 	m_getinterfaceinstance_fn = find_getinterfaceinstance_func();
 
@@ -98,7 +90,7 @@ void LoadableModuleObject::unload()
 {
 	CConsole::the().info("Unloading module {}...", get_name_utf8());
 
-	// tell the module we're unloading
+
 	m_basemodule_ptr->destroy();
 
 	unload_by_type();
@@ -115,7 +107,7 @@ bool LoadableModuleObject::update()
 
 	switch (update_status)
 	{
-		// the module has requested an application exit
+
 		case UPDATE_APP_EXIT:
 		{
 			return false;
@@ -235,7 +227,7 @@ GetInterfaceInstanceFn LoadableModuleObject::find_getinterfaceinstance_func()
 	return func;
 }
 
-// Load the module and call its entry point
+
 bool CDependencyLoader::load_and_initialize_module(ELoadType type, const std::filesystem::path& module_path, const std::wstring& module_name,
 												   std::function<bool(const LoadableModuleObject& mod)> extended_init_callback)
 {
@@ -246,7 +238,7 @@ bool CDependencyLoader::load_and_initialize_module(ELoadType type, const std::fi
 		return false;
 	}
 
-	// whover calls this can perfom actions on just loaded module.
+
 	if (extended_init_callback)
 	{
 		if (!extended_init_callback(mod))
@@ -284,7 +276,7 @@ void CDependencyLoader::unload_module(const std::wstring& module_name)
 
 bool CDependencyLoader::update()
 {	
-	// Module can request application exit by returning false in the main loop
+
 	if (!update_modules())
 	{
 		return false;

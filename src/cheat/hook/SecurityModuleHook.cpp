@@ -43,10 +43,6 @@ inline void callback_table_hook_t<T>::install(const char* name, T* _ptr, const T
 #define P(name)
 #endif
 
-//-----------------------------------------------------------------------------
-//
-// modfuncs_t
-//
 
 static void ModFuncs_LoadMod(char* pchModule)
 {
@@ -88,7 +84,6 @@ static hl::qboolean ModFuncs_ProcessIncomingNet(hl::netchan_t* pchan, hl::sizebu
 {
 	P(__FUNCTION__);
 
-	// called inside Netchan_Process. Has to return TRUE, othwerside the function fails.
 
 	return TRUE;
 }
@@ -131,7 +126,7 @@ static void ModFuncs_SetModcHelpers(hl::modchelpers_t* pmodchelpers)
 static void ModFuncs_SetEngData(hl::engdata_t* pengdata)
 {
 	P(__FUNCTION__);
-	// we can use this function to set our engdata hook
+
 
 	CSecurityModuleHook::the().set_engdata(pengdata);
 }
@@ -159,27 +154,21 @@ static void ModFuncs_SetEngineVersion(int nVersion)
 static int ModFuncs_PCMachine()
 {
 	P(__FUNCTION__);
-	// unused
+
 }
 
 static void ModFuncs_SetIp(int ijump)
 {
 	P(__FUNCTION__);
-	// unused
+
 }
 
 static void ModFuncs_Execute()
 {
 	P(__FUNCTION__);
-	// unused
+
 }
 
-//-----------------------------------------------------------------------------
-//
-// cl_enginefunc_dst_t detour
-//
-// See https://github.com/ValveSoftware/halflife/issues/2131 for what handlers are missing
-//
 
 void EngDst_SPR_Load(const char** pTextureName)
 {
@@ -767,7 +756,6 @@ void EngDst_FilteredClientCmd(char**)
 	P(__FUNCTION__);
 }
 
-//-----------------------------------------------------------------------------
 
 bool CSecurityModuleHook::install_hooks()
 {
@@ -814,25 +802,20 @@ void CSecurityModuleHook::uninstall_hooks()
 
 void CSecurityModuleHook::setup()
 {
-	// fill modfuncs_t wtih non-null data that can be used when CommonLoadSecurityModule is called.
+
 	fill_modfuncs_callback_table();
 
 	CConsole::the().info("Calling CommonLoadSecurityModule to retreive and modify pointers...");
 
-	// Now call this function, which will eventually call g_modfuncs callbacks, that we hook. From these callbacks
-	// we can get useful pointers to information.
+
 	CommonLoadSecurityModule().call(NULL);
 
-	//
-	// Ok, now we have engdata_t pointer, let's fill others.
-	//
 
-	// callback tables
 	s_enginefunc_hook.install("cl_enginefunc_t", s_engdata.pcl_enginefuncs, *s_engdata.pcl_enginefuncs);
 	s_enginefunc_dst_hook.install("cl_enginefunc_dst_t", s_engdata.pg_engdstAddrs, *s_engdata.pg_engdstAddrs);
 	s_cl_funcs_hook.install("cldll_func_t", s_engdata.pcl_funcs, *s_engdata.pcl_funcs);
 
-	// regular pointer to pointer hooks
+
 	s_keybindings = (char**)s_engdata.pkeybindings;
 	s_cls = (hl::client_static_t*)s_engdata.pcls;
 }
@@ -993,7 +976,6 @@ void CSecurityModuleHook::fill_engdst_callback_table()
 	cl_enginefunc_dst->pfnFilteredClientCmd = EngDst_FilteredClientCmd;
 }
 
-//-----------------------------------------------------------------------------
 
 bool CommonLoadSecurityModule_FnHook_t::install()
 {
@@ -1001,7 +983,6 @@ bool CommonLoadSecurityModule_FnHook_t::install()
 	return install_using_bytepattern(0);
 }
 
-//-----------------------------------------------------------------------------
 
 bool g_modfuncs_MemoryHook::install()
 {
@@ -1021,7 +1002,6 @@ void g_modfuncs_MemoryHook::test_hook()
 	});
 }
 
-//-----------------------------------------------------------------------------
 
 bool CloseSecurityModule_FnDetour_t::install()
 {
@@ -1031,12 +1011,9 @@ bool CloseSecurityModule_FnDetour_t::install()
 
 void CloseSecurityModule_FnDetour_t::CloseSecurityModule()
 {
-	// This function still gets called inside CL_Disconnect. I have nodiea why, it's just stupid, but whatever.
-	// If it's called, it resets all of the pointers we've set. Unless we'd set g_module.fLoaded back to zero
-	// (which is set inside CommonLoadSecurityModule), we're fucked. :D
+
+
 	return;
 
 	CSecurityModuleHook::the().CloseSecurityModule().call();
 }
-
-//-----------------------------------------------------------------------------

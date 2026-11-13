@@ -49,4 +49,4 @@ private:
 	bool m_panicking = false;
 };
 
-#endif // PANIC_H
+#endif

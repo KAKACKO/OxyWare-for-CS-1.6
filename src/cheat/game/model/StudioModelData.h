@@ -50,4 +50,4 @@ private:
 	hl::studiohdr_t* m_studiohdr;
 };
 
-#endif // STUIOMODELDATA_H
+#endif

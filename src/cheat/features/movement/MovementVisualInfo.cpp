@@ -78,7 +78,7 @@ void CMovementVisualInfo::render_values()
 		return;
 	}
 
-	// middle bottom
+
 	m_rendering_pos = { screen_size.x * 0.5f, screen_size.y * 0.7f };
 
 	float velocity = CLocalState::the().get_local_velocity_2d();
@@ -109,7 +109,7 @@ void CMovementVisualInfo::render_keys()
 		return;
 	}
 
-	// sligtly offset to the bottom
+
 	Vector2D screen_center = (screen_size / 2.0f);
 
 	CColor white(230, 230, 230, 230);
@@ -127,7 +127,7 @@ void CMovementVisualInfo::render_keys()
 		render_text(font, dir_center_pos + Vector2D(10.0f, 0.0f), white, ">");
 	}
 
-#if 0 // shit looks ugly with ascii
+#if 0
 	if (CClientMovementPacket::the().is_in(IN_FORWARD))
 	{
 		render_text(font, dir_center_pos - Vector2D(0.0f, 10.0f), white, "^");

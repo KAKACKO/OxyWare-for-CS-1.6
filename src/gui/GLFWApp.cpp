@@ -68,11 +68,6 @@ private:
 CGLFWApp g_glfw_app;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CGLFWApp, IGLFWApp, IGLFWAPP_INTERFACEID, g_glfw_app);
 
-//-------------------------------------------------------------------------------
-//
-// CGLFWApp implementation
-// 
-//-------------------------------------------------------------------------------
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -99,14 +94,14 @@ bool CGLFWApp::create_window(int width, int height, const std::string& title, co
 		return false;
 	}
 
-	// GL 3.0 + GLSL 130
+
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
-	// other hints
+
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-	// Create window with graphics context
+
 	m_app_title = title;
 	m_app_width = width;
 	m_app_height = height;
@@ -125,7 +120,7 @@ bool CGLFWApp::create_window(int width, int height, const std::string& title, co
 	}
 
 	glfwMakeContextCurrent(m_glfw_window);
-	glfwSwapInterval(1); // Enable vsync
+	glfwSwapInterval(1);
 
 	if (!g_imgui_platform_layer_i->create_new_layer(IMPLATFORM_glfw, (void*)m_glfw_window, renderer_callback))
 	{
@@ -147,12 +142,12 @@ void CGLFWApp::destroy_window()
 
 bool CGLFWApp::on_tick()
 {
-	// User has requested a window close or the window just
-	// has to be closed now.
+
+
 	if (is_alive() == false)
 		return false;
 
-	// GUI renderer inside here
+
 	glfw_update();
 
 	return true;
@@ -167,11 +162,10 @@ void CGLFWApp::glfw_update()
 {
 	glfwPollEvents();
 
-	// GLFW code goes here...
+
 	glfwSetWindowTitle(m_glfw_window, m_app_title.c_str());
 
-	// always keep the window at the same size. There was some bug where the window would randomly
-	// resize due to CS resolution change or whatever, just random things. prevent that from happening.
+
 	int w, h;
 	glfwGetWindowSize(m_glfw_window, &w, &h);
 	if (w != m_app_width || h != m_app_height)
@@ -179,7 +173,7 @@ void CGLFWApp::glfw_update()
 		glfwSetWindowSize(m_glfw_window, m_app_width, m_app_height);
 	}
 
-	// Renderer code goes here...
+
 	g_imgui_platform_layer_i->render();
 
 	glfwMakeContextCurrent(m_glfw_window);

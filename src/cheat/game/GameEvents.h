@@ -39,4 +39,4 @@ public:
 	void on_connect();
 };
 
-#endif // GAMEVENTS_H
+#endif

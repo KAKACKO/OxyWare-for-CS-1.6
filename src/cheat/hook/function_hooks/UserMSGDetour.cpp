@@ -32,7 +32,7 @@ bool CUserMSGDetourMgr::install_hooks()
 {
 	if (!HideWeapon_fn().install_usermsg(HideWeapon_f, "HideWeapon")) return false;
 	if (!MOTD_fn().install_usermsg(MOTD_f, "MOTD")) return false;
-//	if (!BombDrop_fn().install_usermsg(BombDrop_f, "BombDrop")) return false;
+
 	if (!ReceiveW_fn().install_usermsg(ReceiveW_f, "ReceiveW")) return false;
 
 	return true;
@@ -40,7 +40,7 @@ bool CUserMSGDetourMgr::install_hooks()
 
 void CUserMSGDetourMgr::uninstall_hooks()
 {
-	// reset to original state.
+
 	int reset_value = 0;
 	if (CUserMSGDetourMgr::the().HideWeapon_fn().is_installed())
 	{
@@ -49,11 +49,10 @@ void CUserMSGDetourMgr::uninstall_hooks()
 
 	HideWeapon_fn().uninstall();
 	MOTD_fn().uninstall();
-//	BombDrop_fn().uninstall();
+
 	ReceiveW_fn().uninstall();
 }
 
-//---------------------------------------------------------------------------------
 
 int CUserMSGDetourMgr::HideWeapon_f(const char* pszName, int iSize, void* pbuf)
 {
@@ -66,7 +65,7 @@ int CUserMSGDetourMgr::MOTD_f(const char* pszName, int iSize, void* pbuf)
 	{
 		if (CRemovals::the().remove_motd())
 		{
-			// TODO: Some servers detect this somehow, fix!
+
 			return 0;
 		}
 	}

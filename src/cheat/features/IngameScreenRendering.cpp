@@ -54,13 +54,13 @@ void CIngameScreenRendering::better_cl_showfps()
 		cl_showfps = CGoldSrcCommandMgr::the().get_cvar("cl_showfps");
 		if (!cl_showfps)
 		{
-			return; // can be null when we're in the unloading stage and we unload CmdMgr before hooks, 
-					// sometimes this gets called by the engine once more but sinde the CmdMgr is unloaded, 
-					// we can't find the cvar.
+			return;
+
+
 		}
 	}
 
-	// cvar is on
+
 	if (cl_showfps->value != 0.0f)
 	{
 		cl_showfps_was_on = true;
@@ -73,7 +73,7 @@ void CIngameScreenRendering::better_cl_showfps()
 
 	double ft = CLocalState::the().get_engine_frametime();
 
-#define FPS_AVG_FRAC 0.9 // how fast the number changes
+#define FPS_AVG_FRAC 0.9
 	static double rolling_ft = 0.0;
 	rolling_ft = FPS_AVG_FRAC * rolling_ft + (1.0 - FPS_AVG_FRAC) * ft;
 	double fps = 1.0 / rolling_ft;
@@ -92,17 +92,17 @@ void CIngameScreenRendering::better_cl_showfps()
 
 	auto& console_font = CEngineFontRendering::the().console_font();
 
-	// label width/height based on the font
+
 	int lw = console_font.calc_text_width(label);
 	int lh = console_font.get_text_height();
 
 	Vector2D pos = {};
 	switch (ingamescreen_better_cl_showfps_position.get_value())
 	{
-		case 0: pos = Vector2D(0, 0); break;								// top left
-		case 1: pos = Vector2D((float)(w - lw), 0); break;					// top right
-		case 2: pos = Vector2D((float)(w - lw), (float)(h - lh)); break;	// bottom right
-		case 3: pos = Vector2D(0, (float)(h - lh)); break;					// bottom left
+		case 0: pos = Vector2D(0, 0); break;
+		case 1: pos = Vector2D((float)(w - lw), 0); break;
+		case 2: pos = Vector2D((float)(w - lw), (float)(h - lh)); break;
+		case 3: pos = Vector2D(0, (float)(h - lh)); break;
 	}
 
 	console_font.render_text_colored(pos, ingamescreen_better_cl_showfps_background.get_value(),
@@ -111,7 +111,7 @@ void CIngameScreenRendering::better_cl_showfps()
 
 void CIngameScreenRendering::better_cl_showfps_on_unload()
 {
-	// restore original cl_showfps state
+
 
 	if (ingamescreen_better_cl_showfps.get_value())
 	{

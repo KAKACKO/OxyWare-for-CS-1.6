@@ -30,7 +30,7 @@
 #define FAKEPLAYERRENDERER_H
 #pragma once
 
-// useful when creating an entity
+
 enum EEntityIdentifier
 {
 	ENT_ID_NONE = 0x00000000,
@@ -44,11 +44,11 @@ public:
 	DECL_BASIC_CLASS(CFakePlayerRenderer);
 	
 public:
-	// schedule entity for later rendering
+
 	void render_player(hl::cl_entity_t& ent, EEntityIdentifier id);
 
 private:
 	void render_internal(int flags, hl::cl_entity_t& ent);
 };
 
-#endif // FAKEPLAYERRENDERER_H
+#endif

@@ -62,4 +62,4 @@ private:
 	std::filesystem::path m_selected_cfg = {};
 };
 
-#endif // CHEATSETTINGS_H
+#endif

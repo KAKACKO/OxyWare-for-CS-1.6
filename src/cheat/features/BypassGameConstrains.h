@@ -52,12 +52,12 @@ public:
 	void update_disable_sponly_cvars();
 
 private:
-	// helper for noclip
+
 	float prev_dm;
 
 	std::vector<std::string> m_saved_sponly_cvars;
 
-	// renderer cvars
+
 	void save_renderer_cvars();
 	void restore_renderer_cvars();
 
@@ -77,8 +77,8 @@ private:
 	float prev_lightgamma;
 	bool m_just_disabled_renderer_cvars = false;
 
-	// sp-only cvars
+
 	bool m_just_disabled_sponly_cvars = false;
 };
 
-#endif // FORCEENABLEDISABLED_H
+#endif

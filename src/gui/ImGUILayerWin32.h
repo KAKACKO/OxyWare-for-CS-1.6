@@ -48,4 +48,4 @@ public:
 	inline HWND as_hwnd() const { return reinterpret_cast<HWND>(m_window_handle); }
 };
 
-#endif // IMGUILAYERWIN32_H
+#endif

@@ -48,4 +48,4 @@ private:
 	void auto_zoom();
 };
 
-#endif // AUTOMATION_H
+#endif

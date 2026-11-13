@@ -94,7 +94,7 @@ void CUIFeatureList::on_render()
 
 						if (check_for_overflow)
 						{
-							// if there isn't enough space below us to fit all features, shift to the side and start again.
+
 							if (current_y_position + (label_size.y + 2.0f) > g_imgui_platform_layer_i->get_screen_size().y)
 							{
 								n_shifts++;

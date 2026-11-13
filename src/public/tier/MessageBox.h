@@ -30,7 +30,7 @@
 #define MESSAGEBOX_H
 #pragma once
 
-// note that this isn't the standard's source_location.
+
 #include "source_location.h"
 
 #include "Console.h"
@@ -59,13 +59,10 @@ static const messagebox_parameters_t mbox_parameters[MB_Count] =
 
 class CMessageBox
 {
-	// use this class as pure static class.
+
 
 public:
 
-	//
-	// All of this template-sugar because of optional SourceLocation parameter at the end.
-	//
 
 private:
 	template <EMessageBoxType type, class... _Types>
@@ -95,4 +92,4 @@ public:
 	using display_warning = display_generic_t<MB_Warning, _Types...>;
 };
 
-#endif // MESSAGEBOX_H
+#endif

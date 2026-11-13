@@ -40,37 +40,37 @@ VarColor crosshair_color("crosshair_color", "Color of the crosshair", CColor(0, 
 
 constexpr static int g_gap_size_by_weapon_index[MAX_WEAPONS][2] =
 {
-	{ 4, 3 }, // 0  -> WEAPON_NONE
-	{ 8, 3 }, // 1	-> WEAPON_P228
-	{ 4, 3 }, // 2	-> WEAPON_GLOCK
-	{ 8, 3 }, // 3	-> WEAPON_SCOUT
-	{ 8, 3 }, // 4	-> WEAPON_HEGRENADE
-	{ 9, 4 }, // 5	-> WEAPON_XM1014
-	{ 6, 3 }, // 6	-> WEAPON_C4
-	{ 9, 3 }, // 7	-> WEAPON_MAC10
-	{ 3, 3 }, // 8	-> WEAPON_AUG
-	{ 8, 3 }, // 9	-> WEAPON_SMOKEGREN
-	{ 4, 3 }, // 10	-> WEAPON_ELITE
-	{ 8, 3 }, // 11	-> WEAPON_FIVESEVEN
-	{ 6, 3 }, // 12	-> WEAPON_UMP45
-	{ 4, 3 }, // 13	-> WEAPON_SG550
-	{ 4, 3 }, // 14	-> WEAPON_GALIL
-	{ 4, 3 }, // 15	-> WEAPON_FAMAS
-	{ 8, 3 }, // 16	-> WEAPON_USP
-	{ 8, 3 }, // 17	-> WEAPON_GLOCK18
-	{ 8, 3 }, // 18	-> WEAPON_AWP
-	{ 6, 2 }, // 19	-> WEAPON_MP5N
-	{ 6, 3 }, // 20	-> WEAPON_M249
-	{ 8, 6 }, // 21	-> WEAPON_M3
-	{ 4, 3 }, // 22	-> WEAPON_M4A1
-	{ 7, 3 }, // 23	-> WEAPON_TMP
-	{ 6, 4 }, // 24	-> WEAPON_G3SG1
-	{ 8, 3 }, // 25	-> WEAPON_FLASHBANG
-	{ 8, 3 }, // 26	-> WEAPON_DEAGLE
-	{ 5, 3 }, // 27	-> WEAPON_SG552
-	{ 4, 4 }, // 28	-> WEAPON_AK47
-	{ 7, 3 }, // 29	-> WEAPON_KNIFE
-	{ 7, 3 }, // 30	-> WEAPON_P90
+	{ 4, 3 },
+	{ 8, 3 },
+	{ 4, 3 },
+	{ 8, 3 },
+	{ 8, 3 },
+	{ 9, 4 },
+	{ 6, 3 },
+	{ 9, 3 },
+	{ 3, 3 },
+	{ 8, 3 },
+	{ 4, 3 },
+	{ 8, 3 },
+	{ 6, 3 },
+	{ 4, 3 },
+	{ 4, 3 },
+	{ 4, 3 },
+	{ 8, 3 },
+	{ 8, 3 },
+	{ 8, 3 },
+	{ 6, 2 },
+	{ 6, 3 },
+	{ 8, 6 },
+	{ 4, 3 },
+	{ 7, 3 },
+	{ 6, 4 },
+	{ 8, 3 },
+	{ 8, 3 },
+	{ 5, 3 },
+	{ 4, 4 },
+	{ 7, 3 },
+	{ 7, 3 },
 };
 
 float CVanillaCrosshair::get_weapon_max_speed_for_crosshair(int weapon_id)
@@ -143,10 +143,10 @@ void CVanillaCrosshair::draw()
 		return;
 	}
 
-	// for time-based calculations, rather then fps-based
+
 	static uint32_t prev_cross_time = GetTickCount();
 
-	// simulate 100fps frametimes...
+
 	bool flip_every_N_ms = false;
 	if (GetTickCount() - prev_cross_time > 10)
 	{
@@ -163,12 +163,12 @@ void CVanillaCrosshair::draw()
 
 	bool use_vanilla_gap = (crosshair_gap.get_value() == 0);
 
-	// apply settings on the gap
+
 	gap = use_vanilla_gap ? gap : crosshair_gap.get_value();
 
 	EWeaponAccuracyFlags accuracy_flags = current_weapon->calc_wpn_accuracy_flags();
 
-	// dynamic crosshair, based on movement, playermove flags, weapon velocity, etc.
+
 	if (accuracy_flags != WPNACCFLAG_NONE && crosshair_dynamic.get_value() != 0)
 	{
 		int player_flags = CLocalState::the().get_player_flags();
@@ -224,14 +224,14 @@ void CVanillaCrosshair::draw()
 		m_alpha = std::max(m_alpha, 120);
 	}
 
-	// reset the counter if it "overflows".
+
 	if (*shots_fired_ptr > 600)
 	{
 		*shots_fired_ptr = 1;
 	}
 	m_ammo_last_check = *shots_fired_ptr;
 
-	// clamp before we render
+
 	if (m_crosshair_gap <= (float)gap)
 	{
 		m_crosshair_gap = (float)gap;
@@ -270,19 +270,19 @@ void CVanillaCrosshair::draw()
 
 	if (type == 0)
 	{
-		fillrgba(w / 2 - (int)crosshair_dist - bar_size + 1, h / 2 - t_c, bar_size, t, r, g, b, a);		// left
-		fillrgba(w / 2 + (int)crosshair_dist, h / 2 - t_c, bar_size, t, r, g, b, a);					// right
-		fillrgba(w / 2 - t_c, h / 2 - (int)crosshair_dist - bar_size + 1, t, bar_size, r, g, b, a);		// top
-		fillrgba(w / 2 - t_c, h / 2 + (int)crosshair_dist, t, bar_size, r, g, b, a);					// bottom
+		fillrgba(w / 2 - (int)crosshair_dist - bar_size + 1, h / 2 - t_c, bar_size, t, r, g, b, a);
+		fillrgba(w / 2 + (int)crosshair_dist, h / 2 - t_c, bar_size, t, r, g, b, a);
+		fillrgba(w / 2 - t_c, h / 2 - (int)crosshair_dist - bar_size + 1, t, bar_size, r, g, b, a);
+		fillrgba(w / 2 - t_c, h / 2 + (int)crosshair_dist, t, bar_size, r, g, b, a);
 	}
-	else if (type == 1) // T-shaped
+	else if (type == 1)
 	{
-		fillrgba(w / 2 - (int)crosshair_dist - bar_size + 1, h / 2 - (t / 2), bar_size, t, r, g, b, a);		// left
-		fillrgba(w / 2 + (int)crosshair_dist, h / 2 - (t / 2), bar_size, t, r, g, b, a);					// right
-//		fillrgba(w / 2 - (t / 2), h / 2 - (int)crosshair_dist - bar_size + 1, t, bar_size, r, g, b, a);		// top
-		fillrgba(w / 2 - (t / 2), h / 2 + (int)crosshair_dist, t, bar_size, r, g, b, a);					// bottom
+		fillrgba(w / 2 - (int)crosshair_dist - bar_size + 1, h / 2 - (t / 2), bar_size, t, r, g, b, a);
+		fillrgba(w / 2 + (int)crosshair_dist, h / 2 - (t / 2), bar_size, t, r, g, b, a);
+
+		fillrgba(w / 2 - (t / 2), h / 2 + (int)crosshair_dist, t, bar_size, r, g, b, a);
 	}
-	else if (type == 2) // circle
+	else if (type == 2)
 	{
 #if 0
 		float step = (std::numbers::pi * 2) / 100;
@@ -292,23 +292,23 @@ void CVanillaCrosshair::draw()
 			float x = (w / 2) + (10 * cosf(angle));
 			float y = (h / 2) + (10 * sinf(angle));
 
-			fillrgba(x, y, 1, 1, r, g, b, a);	// left
+			fillrgba(x, y, 1, 1, r, g, b, a);
 		}
 #else
-		// would be inefficient to use fillRGBA for this.
+
 		int segments = std::clamp((int)(crosshair_dist / 3.0f), 16, 64);
 		CEngineRendering::the().render_circle_opengl((float)(w / 2), (float)(h / 2), crosshair_dist, segments, (float)t, !crosshair_translucent.get_value(), r, g, b, a);
 #endif
 	}
-#if 0 // little silly, would need some work xD
-	else if (type == 3) // spinner
+#if 0
+	else if (type == 3)
 	{
 		auto render_spinner_line = [&](int delta_angle)
 		{
 			int segments = std::clamp((int)(crosshair_dist / 3), 16, 64);
 			float rad1 = 10.0f, rad2 = 20.0f;
 
-			// would be inefficient to use fillRGBA for this.
+
 			static int ii = 0, ms = 0;
 			if (GetTickCount() > ms + 100)
 			{
@@ -317,7 +317,7 @@ void CVanillaCrosshair::draw()
 
 				ms = GetTickCount();
 			}
-			float theta = 2.0f * std::numbers::pi * float(ii) / float(segments); // get the current angle
+			float theta = 2.0f * std::numbers::pi * float(ii) / float(segments);
 
 			float x1 = w / 2 + rad1 * cosf(theta + delta_angle);
 			float y1 = h / 2 + rad1 * sinf(theta + delta_angle);

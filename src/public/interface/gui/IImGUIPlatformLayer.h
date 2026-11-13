@@ -40,7 +40,7 @@ enum EImGUIPlatform
 	IMPLATFORM_win32,
 };
 
-// Each platform interface implements this (glfw or win32, ...) for a specific window
+
 class ImGUIBaseLayer
 {
 public:
@@ -71,7 +71,7 @@ enum EGUICursor
 	GUICURSOR_None, 
 };
 
-// interface that can be accessed from external modules
+
 class IImGUIPlatformLayer : public IBaseInterface
 {
 public:
@@ -87,7 +87,7 @@ public:
 	virtual void override_cursor(EGUICursor to) = 0;
 	virtual void should_render_imgui_cursor(bool should_or_not) = 0;
 
-	// screen size
+
 	virtual Vector2D get_screen_size() = 0;
 };
 
@@ -95,4 +95,4 @@ extern IImGUIPlatformLayer* g_imgui_platform_layer_i;
 
 #define IIMGUIPLATFORMLAYER_INTERFACEID "IImGUIPlatformLayer"
 
-#endif // IIMGUIPLATFORMLAYER_H
+#endif

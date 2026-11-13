@@ -42,4 +42,4 @@ public:
 	void scale_fov();
 };
 
-#endif // FIELDOFVIEWCHANGER_H
+#endif

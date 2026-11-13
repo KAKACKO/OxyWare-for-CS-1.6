@@ -32,60 +32,60 @@ gui_color_translation_t g_gui_color_translation[GUICLR_MAX] =
 {
 	{ GUICLR_Invalid,						"invalid" },
 
-	// text
+
 	{ GUICLR_TextLight,						"Text light" },
 	{ GUICLR_TextRegular,					"Text regular" },
 	{ GUICLR_TextDark,						"Text dark" },
 	{ GUICLR_TextBlack,						"Text black" },
 	{ GUICLR_TextWhite,						"Text white" },
 
-	// active color
+
 	{ GUICLR_FrameBg,						"Frame bg" },
 	{ GUICLR_FrameBgHovered,				"Frame bg hovered" },
 	{ GUICLR_FrameBgActive,					"Frame bg active" },
 	{ GUICLR_FrameBgSelected,				"Frame bg selected" },
 	{ GUICLR_FrameActive,					"Frame active" },
 
-	// windows
+
 	{ GUICLR_WindowBackground,				"Window bg" },
 	{ GUICLR_ChildBackground,				"Child bg" },
 
-	// buttons
+
 	{ GUICLR_Button,						"Button" },
 
-	// url
+
 	{ GUICLR_URLHovered,					"URL hovered" },
 
-	// scrollbar
+
 	{ GUICLR_ScrollbarGrab,					"Scrollbar grab" },
 
-	// checkbox
+
 	{ GUICLR_CheckBoxBackground,			"Checkbox bg" },
 	{ GUICLR_CheckBoxCheckMark,				"Checkbox check mark" },
 
-	// slider
+
 	{ GUICLR_SliderHovered,					"Slider hovered" },
 
-	// input text
+
 	{ GUICLR_InputTextBg,					"Intput text bg" },
 
-	// separator
+
 	{ GUICLR_Separator,						"Separator" },
 
-	// tabs
+
 	{ GUICLR_Tab,							"Tab" },
 	{ GUICLR_TabHovered,					"Tab hovered" },
 	{ GUICLR_TabActive,						"Tab active" },
 
-	// resize grip
+
 	{ GUICLR_ResizeGrip,					"Resize grip" },
 	{ GUICLR_ResizeGripHovered,				"Resize grip hovered" },
 	{ GUICLR_ResizeGripActive,				"Resize grip active" },
 
-	// tables
+
 	{ GUICLR_TableHeaderBg,					"Table header bg" },
 
-	// listbox
+
 	{ GUICLR_ListBoxBackground,				"Listbox bg" },
 	{ GUICLR_ListBoxBorder,					"Listbox border" },
 	{ GUICLR_ListBoxArrowBackground,		"Listbox arrow bg" },

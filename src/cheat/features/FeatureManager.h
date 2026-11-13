@@ -129,4 +129,4 @@ private:
 	bool m_initialized = false;
 };
 
-#endif // FEATUREMANAGER_H
+#endif

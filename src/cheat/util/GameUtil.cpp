@@ -36,12 +36,7 @@ bool CGameUtil::is_fully_connected()
 
 	auto cl = CMemoryHookMgr::the().cl().get();
 
-	// this is set when svc_serverinfo is issued (after the first disconnect)
-	// now we're fully connected and we'll soon render frames.
-	//
-	// this is just a sanity check for scenarious when we're in a level transition, 
-	// the state remains ca_active, but it really isn't. Only after svc_serverinfo is
-	// issued, it's updated back to ca_connected and levelname is set.
+
 	if (!cl->levelname || !cl->levelname[0])
 		return false;
 
@@ -50,7 +45,7 @@ bool CGameUtil::is_fully_connected()
 
 bool CGameUtil::is_sp()
 {
-	// if loopback is on, we're single.
+
 	return CMemoryHookMgr::the().cls()->netchan.remote_address.type == hl::NA_LOOPBACK;
 }
 
@@ -58,7 +53,7 @@ void CGameUtil::reset_all_in_states()
 {
 	auto cmd = CMemoryHookMgr::the().cl_enginefuncs()->pfnGetFirstCmdFunctionHandle();
 
-	// if you disable these, you get weird (mouse) look glitches, where you can only move on the yaw axes. So keep these blacklisted.
+
 	static const char* except_these[] =
 	{
 		"klook", 
@@ -68,10 +63,10 @@ void CGameUtil::reset_all_in_states()
 
 	while (cmd)
 	{
-		// execute all 'in' commands, e.g. "-moveleft, -attack, ..."
+
 		if (cmd->name[0] == '-')
 		{
-			// see for blacklisted commands.
+
 			bool skip_this_one = false;
 			for (size_t i = 0; i < OX_ARRAYSIZE(except_these); i++)
 			{
@@ -96,7 +91,7 @@ bool CGameUtil::world_to_screen(Vector world, Vector2D& screen)
 {
 	hl::qboolean z_clipped = CMemoryHookMgr::the().cl_enginefuncs()->pTriAPI->WorldToScreen(world, screen);
 
-	// get the real screen size. in fullscreen, the monitor size and in windowed mode, the window size.
+
 	Vector2D screen_size = CVideoModeUtil::the().get_real_screen_size();
 	if (screen_size.IsZero())
 	{
@@ -110,7 +105,7 @@ bool CGameUtil::world_to_screen(Vector world, Vector2D& screen)
 		return false;
 	}
 
-	// transform to screen scale if withing bounds (-1, +1)
+
 	if (screen.x < 1.0f && screen.x > -1.0f && 
 		screen.y < 1.0f && screen.y > -1.0f)
 	{
@@ -211,7 +206,7 @@ unsigned int CGameUtil::get_current_app_id()
 		}
 	}
 
-	// unknown appid
+
 	CConsole::the().info("Unrecognized app id for your game: {}", current_gamedir);
 	return 0;
 }
@@ -231,7 +226,7 @@ int CGameUtil::get_build_number()
 
 bool CGameUtil::is_spectator()
 {
-	// NOTENOTE: This cannot be retreived from LocalState because LocalState update code depends on this!
+
 	auto local = CLocalState::the().local_player();
 	if (!local)
 		return false;
@@ -244,9 +239,9 @@ bool CGameUtil::is_spectator()
 hl::SCREENINFO CGameUtil::get_engine_screen_info()
 {
 	hl::SCREENINFO info;
-	info.iSize = sizeof(hl::SCREENINFO); // must be set before you request it from the engine!
+	info.iSize = sizeof(hl::SCREENINFO);
 
-	// the function fails if the size differs/isn't set orl when the pointer passed is null.
+
 	CMemoryHookMgr::the().cl_enginefuncs()->pfnGetScreenInfo(&info);
 
 	return info;
@@ -259,7 +254,7 @@ std::string CGameUtil::parse_viewmodel_name(hl::model_t* model)
 		return "empty";
 	}
 
-	// expect something like /models
+
 	std::string vm_str = CGenericUtil::the().remove_extension_from_path(model->name);
 
 	vm_str = std::filesystem::path(vm_str).filename().string();
@@ -269,25 +264,19 @@ std::string CGameUtil::parse_viewmodel_name(hl::model_t* model)
 
 float CGameUtil::compute_ground_angle_for_origin(const Vector& origin, float trace_distance)
 {
-	Vector trace_end = Vector(origin.x, origin.y, -trace_distance); // trace as back as this
+	Vector trace_end = Vector(origin.x, origin.y, -trace_distance);
 
 	hl::pmtrace_t* tr = CMemoryHookMgr::the().cl_enginefuncs()->pfnPM_TraceLine(
 		(Vector)origin, trace_end, PM_TRACELINE_ANYVISIBLE, CLocalState::the().get_current_hull_tracing(), -1);
 	
-	// plane normal returns the [0, 1] scale of rotation of the plane [0°, 90°].
-	//
-	//	  plane			|  		
-	//		|  			|  		   0
- 	//		|-----> 1	|   90°----^----- plane
-	//		|			|  
-	//		0°			|  
-	//
+
+
 	return CMath::the().rad2deg(acosf(tr->plane.normal.z));
 }
 
 float CGameUtil::compute_distance_to_ground(const Vector& origin, float trace_distance)
 {
-	Vector trace_end = Vector(origin.x, origin.y, -trace_distance); // trace as back as this
+	Vector trace_end = Vector(origin.x, origin.y, -trace_distance);
 
 	auto cl_enginefuncs = CMemoryHookMgr::the().cl_enginefuncs();
 	
@@ -300,22 +289,11 @@ float CGameUtil::compute_distance_to_ground(const Vector& origin, float trace_di
 float CGameUtil::compute_edge_distance(const Vector& origin, float edge_trace_distance)
 {
 #if 0
-	//
-	// this method is slow and doesn't work. Just saying, because some cheats
-	// use it anyways. Lol.
-	//
+
 
 	float starting_distance = 250.0f;
 
-	// X...X...X
-	// .\  |  /.
-	// . \ | / .
-	// .  \|/  .
-	// X---o---X
-	// .  /|\  .
-	// . / | \ .
-	// ./  |  \.
-	// X...X...X
+
 	static Vector2D vertices[] =
 	{
 		{ -1,  0 },
@@ -332,24 +310,18 @@ float CGameUtil::compute_edge_distance(const Vector& origin, float edge_trace_di
 
 	for (int i = 0; i < 8; i++)
 	{
-		//
-		// get a traseresult from tracing to the ground
-		//
 
-		Vector trace_end = Vector(origin.x, origin.y, -4096.0f); // trace as back as this
+
+		Vector trace_end = Vector(origin.x, origin.y, -4096.0f);
 
 		hl::pmtrace_t* gnd_tr = cl_enginefuncs->pfnPM_TraceLine(
 			(Vector)origin, trace_end, PM_TRACELINE_ANYVISIBLE, CLocalState::the().get_current_hull_tracing(), -1);
 
-		//
-		// get distance to a nearest edge
-		//
 
-		// fraction is a [0, 1] scale of the distance between two traced points
 		Vector vec_dist = (trace_end - origin) * gnd_tr->fraction;
 		Vector surface_beneath = origin;
 		surface_beneath.z -= vec_dist.z;
-		surface_beneath.z -= 0.1f; // trace a little bit beneath the surface, so we can check for the edge.
+		surface_beneath.z -= 0.1f;
 
 		Vector desired_edge = surface_beneath;
 		desired_edge.x += vertices[i][0] * starting_distance;
@@ -358,9 +330,7 @@ float CGameUtil::compute_edge_distance(const Vector& origin, float edge_trace_di
 		hl::pmtrace_t* edge_tr = cl_enginefuncs->pfnPM_TraceLine(
 			desired_edge, surface_beneath, PM_TRACELINE_ANYVISIBLE, CLocalState::the().get_current_hull_tracing(), -1);
 
-		// lower the distance on the lowest possible distance, therefore we find the closest edge
-		// we start from the "ending" point and end on "starting" point for a reason. It is to check
-		// if there's air or still a surface.
+
 		if (edge_tr->startsolid == FALSE)
 		{
 			Vector dt = edge_tr->endpos - surface_beneath;
@@ -371,40 +341,31 @@ float CGameUtil::compute_edge_distance(const Vector& origin, float edge_trace_di
 	return starting_distance;
 #else
 
-	//
-	// Note: Doesn't work on ramps.
-	//
 
 	auto cl_enginefuncs = CMemoryHookMgr::the().cl_enginefuncs();
 
-//	auto t1 = std::chrono::high_resolution_clock::now();
 
 	float desired_edge_dist = FLT_MAX;
 
 	static auto trace_endpos_helper = [&](const Vector& start, const Vector& end, int N) -> float
 	{
-		// Note: there were some really, really, really weird issues with this lambda capturing. If i tried
-		//		 to use `cl_enginefuncs` used above, basically what happened was that the pointer suddenly
-		//		 inside this lambda scope became invalid? I don't understand at all. Anyway, this works..
+
+
 		hl::pmtrace_t* tr = CMemoryHookMgr::the().cl_enginefuncs()->pfnPM_TraceLine(
 			(Vector)start, (Vector)end, PM_TRACELINE_ANYVISIBLE, CLocalState::the().get_current_hull_tracing(), -1);
 		return tr->endpos[N];
 	};
 
-	Vector trace_end = Vector(origin.x, origin.y, -4096.0f); // trace as back as this
+	Vector trace_end = Vector(origin.x, origin.y, -4096.0f);
 	
 	hl::pmtrace_t* surface_tr = cl_enginefuncs->pfnPM_TraceLine(
 		(Vector)origin, trace_end, PM_TRACELINE_ANYVISIBLE,
 		CLocalState::the().get_current_hull_tracing(), -1);
 
 	Vector surface_beneath = surface_tr->endpos;
-	surface_beneath.z -= 0.1f; // trace a little bit beneath the surface, so we can check for the edge.
+	surface_beneath.z -= 0.1f;
 
-	//
-	// find the closest edge.
-	//
 
-	// how far to trace from the origin
 	float d = edge_trace_distance;
 
 	desired_edge_dist = std::min(desired_edge_dist,						 trace_endpos_helper(surface_beneath + Vector(d, 0.0f, 0.0f), surface_beneath, 0) - surface_beneath[0]);
@@ -412,7 +373,6 @@ float CGameUtil::compute_edge_distance(const Vector& origin, float edge_trace_di
 	desired_edge_dist = std::min(desired_edge_dist,						 trace_endpos_helper(surface_beneath + Vector(0.0f, d, 0.0f), surface_beneath, 1) - surface_beneath[1]);
 	desired_edge_dist = std::min(desired_edge_dist, surface_beneath[1] - trace_endpos_helper(surface_beneath - Vector(0.0f, d, 0.0f), surface_beneath, 1));
 
-//	CConsole::the().info("{} microseconds", std::chrono::duration<float, std::micro>(std::chrono::high_resolution_clock::now() - t1).count());
 
 	return desired_edge_dist == edge_trace_distance ? 0.0f : desired_edge_dist;
 #endif
@@ -446,13 +406,13 @@ void CGameUtil::record_hud_command(const char* cmdname)
 
 	auto realtime = CMemoryHookMgr::the().realtime().get();
 
-	// Prepare new command header
+
 	hud_command_t cmd;
 	cmd.cmd = 3;
 	cmd.time = *realtime - cls->demostarttime;
 	cmd.frame = *host_framecount - cls->demostartframe;
 
-	// Prepare name buffer
+
 	memset(cmd.szNameBuf, NULL, sizeof(cmd.szNameBuf));
 	strncpy(cmd.szNameBuf, cmdname, sizeof(cmd.szNameBuf) - 1);
 	cmd.szNameBuf[sizeof(cmd.szNameBuf) - 4] = '\0';
@@ -462,7 +422,7 @@ void CGameUtil::record_hud_command(const char* cmdname)
 	prev_frame = *host_framecount;
 }
 
-// taken from hlsdk
+
 static char com_token[1500];
 const char *COM_Parse(const char *data)
 {
@@ -475,16 +435,16 @@ const char *COM_Parse(const char *data)
 	if (!data)
 		return NULL;
 
-	// skip whitespace
+
 skipwhite:
 	while ((c = *data) <= ' ')
 	{
 		if (c == 0)
-			return NULL;                    // end of file;
+			return NULL;
 		data++;
 	}
 
-	// skip // comments
+
 	if (c == '/' && data[1] == '/')
 	{
 		while (*data && *data != '\n')
@@ -493,7 +453,6 @@ skipwhite:
 	}
 
 
-	// handle quoted strings specially
 	if (c == '\"')
 	{
 		data++;
@@ -510,7 +469,7 @@ skipwhite:
 		}
 	}
 
-	// parse single characters
+
 	if (c == '{' || c == '}' || c == ')' || c == '(' || c == '\'' || c == ',')
 	{
 		com_token[len] = c;
@@ -519,7 +478,7 @@ skipwhite:
 		return data + 1;
 	}
 
-	// parse a regular word
+
 	do
 	{
 		com_token[len] = c;
@@ -542,13 +501,13 @@ std::vector<std::string> CGameUtil::tokenize_goldsrc_command(const char* text)
 
 	while (1)
 	{
-		// Skip whitespace up to a /n
+
 		while (*text && *text <= ' ' && *text != '\n')
 		{
 			text++;
 		}
 
-		// A newline seperates commands in the buffer
+
 		if (*text == '\n')
 		{
 			text++;
@@ -558,12 +517,12 @@ std::vector<std::string> CGameUtil::tokenize_goldsrc_command(const char* text)
 		if (!*text)
 			break;
 
-		// Parse the actual text and retreive tokens
+
 		text = COM_Parse(text);
 		if (!text)
 			break;
 
-		// Exceeded the token length
+
 		if ((strlen(com_token) + 1) >= CMD_MAX_TOKEN_LENGTH)
 			break;
 
@@ -613,7 +572,7 @@ void CGameUtil::locate_engine_compile_timestamp()
 	static const char *mon[12] =
 	{ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
-	// walk down the binary until we come across any of the months.
+
 	const char* date_string_final = nullptr;
 	for (int i = 0; i < 11; i++)
 	{

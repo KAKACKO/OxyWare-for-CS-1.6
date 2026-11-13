@@ -26,9 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// VirtualMemorymanager.h -- Basic class for VMM (Virtual Memory Management)
-//
 
 #ifndef VIRTUALMEMORYMANAGER_H
 #define VIRTUALMEMORYMANAGER_H
@@ -82,4 +79,4 @@ private:
 	bool read_internal(HANDLE process_handle, PVOID at, PVOID what, size_t size);
 };
 
-#endif // VIRTUALMEMORYMANAGER_H
+#endif

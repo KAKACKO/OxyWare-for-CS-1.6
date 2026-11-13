@@ -32,7 +32,7 @@
 
 #include "platform.h"
 
-// All interfaces derive from this.
+
 class IBaseInterface
 {
 public:
@@ -44,7 +44,7 @@ public:
 typedef IBaseInterface* (*GetInterfaceInstanceFn)(const char *identifier);
 typedef IBaseInterface* (*InstantiateInterfaceFn)();
 
-// Used internally to register classes.
+
 class CInterfaceRegistrator
 {
 public:
@@ -52,38 +52,38 @@ public:
 
 public:
 	InstantiateInterfaceFn	m_create_fn;
-	const char				*m_interface_id; // aka version or name
+	const char				*m_interface_id;
 
 	CInterfaceRegistrator*				 m_next;
 	inline static CInterfaceRegistrator* s_registered_interfaces;
 };
 
-// Use this to expose a singleton interface with a global variable you've created.
+
 #define EXPOSE_SINGLE_INTERFACE_GLOBALVAR(className, interfaceName, interfaceID, globalVarName) \
 	static CInterfaceRegistrator __g_exposed_interface_##className##interfaceName##([]() { return (IBaseInterface *)&globalVarName; }, interfaceID);
 
-// Use this to expose a singleton interface. This creates the global variable for you automatically.
+
 #define EXPOSE_SINGLE_INTERFACE(className, interfaceName, interfaceID) \
 	static className __g_##className##_singleton;\
 	EXPOSE_SINGLE_INTERFACE_GLOBALVAR(className, interfaceName, interfaceID, __g_##className##_singleton)
 
-// expose interface late (lazy-initialize)
+
 #define LAZY_EXPOSE_SINGLE_INTERFACE(className, interfaceName, interfaceID) \
 	void lazy_expose_single_interface_##className() \
 	{ \
 		EXPOSE_SINGLE_INTERFACE(className, interfaceName, interfaceID); \
 	}
 
-// use this for declaration
+
 #define LAZY_EXPOSED_INTERFACE_DECL(className) \
 	extern void lazy_expose_single_interface_##className();
 
-// use this to instantiate the interface at runtime
+
 #define CALL_LAZY_EXPOSED_INTERFACE(className) \
 	LAZY_EXPOSED_INTERFACE_DECL(className) \
 	lazy_expose_single_interface_##className();
 
-// Used to retreive interface pointers by client modules
+
 extern "C"
 {
 	DLLEXPORT IBaseInterface* GetInterfaceInstance(const char* identifier);
@@ -91,7 +91,7 @@ extern "C"
 
 GetInterfaceInstanceFn LocateExportedInterfaceGetterFn(const wchar_t* module_name);
 
-// Locates exported interface inside the module
+
 template <typename T>
 T* LocateExportedInterface(const wchar_t* module_name, const char* identifier)
 {
@@ -102,7 +102,7 @@ T* LocateExportedInterface(const wchar_t* module_name, const char* identifier)
 	return reinterpret_cast<T*>(GetInterfaceInstanceFn(identifier));
 }
 
-// Valve interface system
+
 namespace hl
 {
 
@@ -110,6 +110,6 @@ typedef IBaseInterface* (*CreateInterfaceFn)(const char *pName, int *pReturnCode
 
 CreateInterfaceFn Sys_GetFactory(HMODULE hModule);
 
-} // namespace hl
+}
 
-#endif // INTERFACE_H
+#endif

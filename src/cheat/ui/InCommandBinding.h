@@ -30,10 +30,10 @@
 #define UIINCOMMANDBINDING_H
 #pragma once
 
-// to keep track of the UI element representing a single incommand.
+
 struct ui_incmd_element_t
 {
-	// flags
+
 	bool f_disable_ingame_key;
 };
 
@@ -56,7 +56,7 @@ private:
 
 	BaseInCommand* m_in_cmd_to_be_rebound;
 
-	// key is the name of the incommand
+
 	std::unordered_map<std::string, ui_incmd_element_t> m_ui_elements;
 
 	ui_incmd_element_t* retreive_ui_element_or_insert_new(BaseInCommand* in_cmd);
@@ -65,4 +65,4 @@ private:
 	void keep_ui_elements_up_to_date();
 };
 
-#endif // UIINCOMMANDBINDING_H
+#endif

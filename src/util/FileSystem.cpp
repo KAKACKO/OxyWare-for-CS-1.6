@@ -36,9 +36,6 @@ public:
 	CFileSystem();
 	~CFileSystem();
 
-	//
-	// File system operations
-	//
 
 	bool is_directory(const std::filesystem::path& path);
 	bool is_file(const std::filesystem::path& path);
@@ -65,9 +62,6 @@ public:
 	std::filesystem::path get_relative_to_appdata(const std::filesystem::path& full_path);
 	std::filesystem::path get_relative_to_appdata_ex(const std::filesystem::path& additional_path, const std::filesystem::path& full_path);
 
-	//
-	// Other
-	//
 
 	std::error_code get_last_error() const
 	{
@@ -81,11 +75,6 @@ private:
 CFileSystem g_filesystem;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CFileSystem, IFileSystem, IFILESYSTEM_INTERFACEID, g_filesystem);
 
-//-------------------------------------------------------------------------------
-//
-// CFileSystem implementation
-//
-//-------------------------------------------------------------------------------
 
 CFileSystem::CFileSystem()
 {
@@ -221,7 +210,7 @@ bool CFileSystem::rename(const std::filesystem::path& from, const std::filesyste
 
 bool CFileSystem::move(const std::filesystem::path& from, const std::filesystem::path& to)
 {
-	// overwrite the destination with source and remove the source
+
 
 	if (!copy(from, to, ECopyOptions::overwrite_existing))
 	{
@@ -238,7 +227,7 @@ bool CFileSystem::move(const std::filesystem::path& from, const std::filesystem:
 
 bool CFileSystem::replace(const std::filesystem::path& what, const std::filesystem::path& with)
 {
-	// overwrite the destination with source
+
 
 	if (!copy(what, with, ECopyOptions::overwrite_existing))
 	{
@@ -342,7 +331,7 @@ std::filesystem::path CFileSystem::locate_halflife_dir()
 	}
 	else
 	{
-		// locate it using steam
+
 		const char* path = g_registry_i->read_string(REG_STEAM, "SteamPath");
 		if (!path)
 		{
@@ -350,8 +339,6 @@ std::filesystem::path CFileSystem::locate_halflife_dir()
 			return {};
 		}
 
-		// TODO: Parse 'libraryfolders.vdf' inside 'steamapps/'. There are directories to 
-		//		 more steamapps/ directories, if any.
 
 		halflife_dir = std::filesystem::path(path + std::string("\\steamapps\\common\\Half-Life\\"));
 	}

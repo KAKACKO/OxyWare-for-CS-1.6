@@ -46,7 +46,7 @@ enum EMenuChildFlags
 {
 	MCHILDF_None = BIT(-1),
 
-	MCHILDF_DontApplyFilter = BIT(0),	// don't apply search filter
+	MCHILDF_DontApplyFilter = BIT(0),
 };
 
 class IMenuChild
@@ -111,7 +111,7 @@ public:
 private:
 	void validate()
 	{
-		// validity checks
+
 		assert(m_child_size.y != 0 && "Child height cannot be 0.");
 		assert(m_header.length() != 0 && "Invalid child header.");
 	}
@@ -124,7 +124,7 @@ protected:
 
 	Vector2D m_child_size;
 
-	// collapse metadata
+
 	bool m_supports_collapse = false, m_is_collapsed = false;
 	bool m_is_hovered = false;
 
@@ -133,31 +133,30 @@ protected:
 	EMenuChildFlags m_flags = MCHILDF_None;
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
 enum EMenuTabId
 {
 	MENU_TAB_Blank,
 
-	// Visuals
+
 	MENU_TAB_World,
 	MENU_TAB_Rendering,
 	MENU_TAB_Screen,
 
-	// Miscellaneous
+
 	MENU_TAB_Triggerbot,
 	MENU_TAB_Exploits,
 	MENU_TAB_Movement,
 	MENU_TAB_PlayerList,
 
-	// Config
+
 	MENU_TAB_Config,
 	MENU_TAB_Theme,
 	MENU_TAB_Language,
 	MENU_TAB_Binds,
 	MENU_TAB_InCommands,
 
-	// Other
+
 	MENU_TAB_VariableList,
 	MENU_TAB_CommandList,
 	MENU_TAB_Others,
@@ -176,16 +175,14 @@ enum EMenuTabGroupId
 	MENU_TAB_GROUP_COUNT,
 };
 
-// used inside menu to determine what is currently selected
+
 struct ContentsSelectionContext
 {
 	EMenuTabId	id;
 	std::string	section;
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
-// optional division of menu tab
 class MenuTabSection
 {
 public:
@@ -207,9 +204,7 @@ public:
 	std::string m_desc;
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
-// represents an entry within a tab section
 class MenuTab
 {
 public:
@@ -230,9 +225,7 @@ public:
 	std::string m_label, m_desc;
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
-// represents group containing several menu entries
 class MenuTabGroup
 {
 public:
@@ -255,7 +248,6 @@ private:
 	void render_current_label(Vector2D& offset, Vector2D& relative_offset, const Vector2D& child_size);
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
 class CUIMenu final : public IRenderingContext_Generic
 {
@@ -270,33 +262,31 @@ public:
 	void on_destroy();
 
 private:
-	// menu contents
+
 	void handle_menu_contents_rendering();
 
-	// render section buttons
+
 	void render_menu_contents_section_buttons();
 
-	// tabs on the left
+
 	void render_menu_tabs();
 
-	// misc decoration rendering
+
 	void render_menu_decoration(const Vector2D& window_pos, const Vector2D& window_size);
 
 	ContentsSelectionContext m_current_context_selection;
 
-	// Active offset for rendering tabs & section labels.
-	// Relative active offset is not counting the child position.
+
 	Vector2D m_sectab_absolute_active_offset, m_sectab_relative_active_offset;
 
 	std::unordered_map<EMenuTabGroupId, MenuTabGroup> m_tab_groups;
 
 	bool m_menu_contents_changed = false;
 
-	// helper
+
 	std::optional<MenuTabSection*> get_selected_section();
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
 class CMenuContentsGrid
 {
@@ -304,7 +294,7 @@ public:
 	DECL_BASIC_CLASS(CMenuContentsGrid);
 
 public:
-	// precompute the grid for a tab section
+
 	void precompute(const Vector2D& contents_size, const MenuTabSection& section, bool force_compute = false);
 
 	inline float get_accumulated_height() { return m_accumulated_height; }
@@ -317,7 +307,7 @@ public:
 private:
 	Vector2D m_contents_size;
 
-	// total height of all children
+
 	float m_accumulated_height;
 
 	uint32_t last_compute_time;
@@ -325,12 +315,11 @@ private:
 	bool m_scheduled_precomputation = false;
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
 class CMenuSearchFilterContext
 {
 public:
-	// call every frame
+
 	void update();
 
 	void render_search_box(const Vector2D& position);
@@ -360,7 +349,6 @@ private:
 
 extern CMenuSearchFilterContext g_search_filter_context;
 
-//----------------------------------------------------------------------------------------------------------------------
 
 class CMenuWidgetDescription
 {
@@ -376,7 +364,6 @@ private:
 	std::string m_description;
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
 #define DECL_CHILD(name)									\
 class name final : public IMenuChild						\
@@ -389,7 +376,7 @@ public:														\
 	void contents() override;								\
 }
 
-// just a namespace, really
+
 struct MenuChilden
 {
 	struct World
@@ -480,4 +467,4 @@ struct MenuChilden
 	};
 };
 
-#endif // UIMENU_H
+#endif

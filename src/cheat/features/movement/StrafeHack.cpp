@@ -26,10 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// Please, note that this code was based on the one from Tkz. Damn I wish I could do vector 
-// and trigonometry math as AntiValve did... errghhh..
-//
 
 #include "precompiled.h"
 
@@ -54,15 +50,15 @@ struct direction_data_t
 {
 	EDirection dir;
 	float angle_rad;
-	bool view_direction; // "forward" for true or "left" for false
+	bool view_direction;
 };
 
 static direction_data_t s_direction_data[5] =
 {
-	{ DIR_FORWARD,	0.0f,								true	}, // 0°
-	{ DIR_RIGHT,	std::numbers::pi_v<float> / 2.0f,	false	}, // 90°
-	{ DIR_BACK,		std::numbers::pi_v<float>,			true	}, // 180°
-	{ DIR_LEFT,		-(std::numbers::pi_v<float> / 2.0f),false	}, // -90° or 270°
+	{ DIR_FORWARD,	0.0f,								true	},
+	{ DIR_RIGHT,	std::numbers::pi_v<float> / 2.0f,	false	},
+	{ DIR_BACK,		std::numbers::pi_v<float>,			true	},
+	{ DIR_LEFT,		-(std::numbers::pi_v<float> / 2.0f),false	},
 };
 
 void CMovementStrafeHack::update()
@@ -79,7 +75,7 @@ void CMovementStrafeHack::update()
 		return;
 	}
 
-	// normally disable strafing on surf if not enabled
+
 	bool is_surfing = CLocalState::the().is_surfing();
 	if (is_surfing)
 	{
@@ -97,9 +93,7 @@ void CMovementStrafeHack::update()
 		}
 	}
 	
-	//
-	// decide direction
-	//
+
 
 	static direction_data_t* current_dir = &s_direction_data[DIR_FORWARD];
 
@@ -139,24 +133,18 @@ void CMovementStrafeHack::update()
 
 	auto vel_3d = pmove->velocity + Vector(1.0f, 1.0f, 0.0f);
 
-	// [-pi, pi], cl->viewangles[YAW] in radians, but based on velocity and adapted to tangens range of values.
+
 	float va_vel_tangens = atanf(vel_3d.y / vel_3d.x);
-	float yaw_rad = CMath::the().deg2rad(cl->viewangles[YAW]); // yaw in radians
+	float yaw_rad = CMath::the().deg2rad(cl->viewangles[YAW]);
 
 	float adif = va_vel_tangens - yaw_rad - current_dir->angle_rad;
 
-	//
-	// make transition between direction change smooth, so that we don't loose speed
-	//
 
-	// this formula will create half circle on the +y axis. this is so that we can transition smoothly from a direction to another
 	adif = sin(adif);
 	float half_a_circle = sqrt(1.0f - CMath::the().pow2(adif));
 	adif = atanf(adif / half_a_circle);
 
-	// this should be something around ~436 * the boost. I assume that this is based out of the maximal possible vanilla maxspeed, 
-	// which is 260 with scout * the multiplier (that gets us to maxspeed), i.e. 310 u/s. When you combine this together with X&Y
-	// velocity vectors, you get ~438. (sqrt(310*310+310*310), i.e. sqrt((310*310)*2) or sqrt(2)*310)
+
 	float sm_factor = ((260.0f * BUNNYJUMP_MAX_SPEED_FACTOR) * std::numbers::sqrt2_v<float>);
 	cmd->sidemove = sm_factor * (adif > 0 ? 1 : -1);
 
@@ -174,7 +162,7 @@ void CMovementStrafeHack::update()
 	cmd->forwardmove = (cmd->sidemove) * (osin * ncos - ocos * nsin);
 	cmd->sidemove *= (osin * nsin + ocos * ncos);
 
-	// add a little bit of forward velocity when not doing on a steep turn
+
 	float fs = 0;
 	if (atanf(9999 / vel_2d) >= abs(adif))
 	{
@@ -185,7 +173,7 @@ void CMovementStrafeHack::update()
 
 		float vel = CMath::the().pow2(view_dir[0] * vel_3d[0]) + CMath::the().pow2(view_dir[1] * vel_3d[1]);
 
-		// this will generate a smooth curve towards the +x
+
 		float fm_factor = 69.0f * 100000;
 		fs = sqrt(fm_factor / vel);
 	}
@@ -194,28 +182,25 @@ void CMovementStrafeHack::update()
 
 	cmd->forwardmove *= movement_strafe_hack_boost.get_value();
 
-	//
-	// swap moves depending on the direction
-	//
 
 	float sdmw = cmd->sidemove;
 	float fdmw = cmd->forwardmove;
 
 	switch (current_dir->dir)
 	{
-		case DIR_FORWARD: // forward
+		case DIR_FORWARD:
 			cmd->forwardmove = fdmw;
 			cmd->sidemove = sdmw;
 			break;
-		case DIR_RIGHT: // right
+		case DIR_RIGHT:
 			cmd->forwardmove = -sdmw;
 			cmd->sidemove = fdmw;
 			break;
-		case DIR_BACK: // back
+		case DIR_BACK:
 			cmd->forwardmove = -fdmw;
 			cmd->sidemove = -sdmw;
 			break;
-		case DIR_LEFT: // left
+		case DIR_LEFT:
 			cmd->forwardmove = sdmw;
 			cmd->sidemove = -fdmw;
 			break;
@@ -234,9 +219,9 @@ void CMovementStrafeHack::render_debug()
 	auto vel_3d = pmove->velocity + Vector(1.0f, 1.0f, 0.0f);
 	auto vel_2d = CLocalState::the().get_local_velocity_2d();
 
-	// [-pi, pi], cl->viewangles[YAW] in radians, but based on velocity and adapted to tangens range of values.
+
 	float va_vel_tangens = atanf(vel_3d.y / vel_3d.x);
-	float yaw_rad = CMath::the().deg2rad(cl->viewangles[YAW]); // yaw in radians
+	float yaw_rad = CMath::the().deg2rad(cl->viewangles[YAW]);
 
 	float adif = va_vel_tangens - yaw_rad - s_direction_data[DIR_FORWARD].angle_rad;
 	CEngineFontRendering::the().render_debug("adif: {}", CMath::the().rad2deg(adif));
@@ -244,4 +229,3 @@ void CMovementStrafeHack::render_debug()
 	CEngineFontRendering::the().render_debug("va_based_on_vel: {}", CMath::the().rad2deg(va_vel_tangens));
 	CEngineFontRendering::the().render_debug("max forwardmove: {}", (pmove->maxspeed * BUNNYJUMP_MAX_SPEED_FACTOR) * std::numbers::sqrt2);
 }
-

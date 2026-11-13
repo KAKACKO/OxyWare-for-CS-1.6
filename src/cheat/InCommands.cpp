@@ -58,7 +58,7 @@ public:
 	bool does_meet_activation_conditions(EActivationCondition act_cond);
 
 private:
-	// config I/O provider
+
 	void provide_cfg_load_export_callbacks();
 
 	EInCommandFlags parse_flags_out_of_string(const std::string& flags_str);
@@ -73,11 +73,6 @@ private:
 CInCommands g_in_commands;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CInCommands, IInCommands, IINCOMMANDS_INTERFACEID, g_in_commands);
 
-//-------------------------------------------------------------------------------
-//
-// CInCommands implementation
-//
-//-------------------------------------------------------------------------------
 
 CInCommands::CInCommands()
 {
@@ -143,7 +138,7 @@ void CInCommands::register_incommands_per_module(StaticInCommandContainer* incom
 
 	CConsole::the().info("Registering {} incommands from module {}...", list.size(), module_name);
 
-	// Merge vars from other modules into one continuous list.
+
 	for (BaseInCommand* var : list)
 	{
 		add_command(var);
@@ -160,7 +155,7 @@ void CInCommands::create_incommands_from_json(const nh::json& json)
 	}
 	catch (...)
 	{
-		// there aren't any incommands
+
 		return;
 	}
 
@@ -196,16 +191,16 @@ void CInCommands::create_incommands_from_json(const nh::json& json)
 			}
 		};
 
-		// key bound
+
 		if (!try_to_parse("key", key_str))
 		{
 			continue;
 		}
 
-		// flags
+
 		if (!try_to_parse("flags", flags_str, true))
 		{
-			// doesn't have to return, this is optional
+
 		}
 
 		auto in_cmd = get_incommand(incmd_name);
@@ -224,7 +219,7 @@ void CInCommands::create_incommands_from_json(const nh::json& json)
 			}
 		}
 
-		// parse flags
+
 		EInCommandFlags flags = parse_flags_out_of_string(flags_str);
 
 		if (flags != IN_FLAG_None)
@@ -239,7 +234,7 @@ void CInCommands::export_incommands_to_json(nh::json& json)
 	for (const auto& [name, in_cmd] : m_in_commands)
 	{
 		int vk = in_cmd->get_key_bound();
-		if (vk == NULL) // unbound
+		if (vk == NULL)
 		{
 			json["in_commands"][name]["key"] = "unbound";
 			continue;
@@ -316,9 +311,6 @@ void CInCommands::provide_cfg_load_export_callbacks()
 		return;
 	}
 
-	//
-	// provide config load function.
-	//
 
 	auto load_fn = [](nh::json& json)
 	{
@@ -327,9 +319,6 @@ void CInCommands::provide_cfg_load_export_callbacks()
 
 	(*cheat_settings)->provide_load_fn(load_fn);
 
-	//
-	// provide config export function.
-	//
 
 	auto export_fn = [](nh::json& json)
 	{
@@ -354,16 +343,16 @@ EInCommandFlags CInCommands::parse_flags_out_of_string(const std::string & flags
 				current_token.push_back(c);
 			}
 
-			// trim space
-			current_token.erase(current_token.find_last_not_of(' ') + 1); // suffixing spaces
-			current_token.erase(0, current_token.find_first_not_of(' ')); // prefixing spaces
+
+			current_token.erase(current_token.find_last_not_of(' ') + 1);
+			current_token.erase(0, current_token.find_first_not_of(' '));
 
 			if (current_token == incommand_flags_to_str[IN_FLAG_DisableInGameKey])
 			{
 				flags |= IN_FLAG_DisableInGameKey;
 			}
 
-			current_token.clear(); // throw out after used
+			current_token.clear();
 
 		}
 		else
@@ -376,7 +365,7 @@ EInCommandFlags CInCommands::parse_flags_out_of_string(const std::string & flags
 
 std::string CInCommands::create_string_out_of_flags(EInCommandFlags flags)
 {
-	// we have a custom formatter for flags, so use that
+
 	return std::format("{}", flags);
 }
 

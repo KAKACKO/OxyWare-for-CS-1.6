@@ -26,9 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// platform.h -- Platform-specific lowlevel declarations.
-//
 
 #ifndef PLATFORM_H
 #define PLATFORM_H
@@ -36,28 +33,17 @@
 
 #include "version.h"
 
-// Disable that stupid warning
+
 #define _CRT_SECURE_NO_WARNINGS
 
 #define DLLEXPORT						__declspec(dllexport)
 #define C_DLLEXPORT			extern "C"	__declspec(dllexport)
 
-//---------------------------------------------------------------------------------
-// PHNT, thank you guys
-// 
-//	https://github.com/processhacker/phnt
-//---------------------------------------------------------------------------------
 
-//#define PHNT_VERSION PHNT_WINXP // Windows XP
-//#define PHNT_VERSION PHNT_WS03 // Windows Server 2003
-//#define PHNT_VERSION PHNT_VISTA // Windows Vista
-//#define PHNT_VERSION PHNT_WIN7 // Windows 7
-//#define PHNT_VERSION PHNT_WIN8 // Windows 8
-//#define PHNT_VERSION PHNT_WINBLUE // Windows 8.1
-#define PHNT_VERSION PHNT_THRESHOLD // Windows 10
+#define PHNT_VERSION PHNT_THRESHOLD
 
-//#define NOGDI
-#define NOMINMAX // FUCK YOU
+
+#define NOMINMAX
 
 #include <phnt/phnt_windows.h>
 #include <phnt/phnt.h>
@@ -66,12 +52,10 @@
 #include <knownfolders.h>
 
 #ifdef small
-#undef small // bruh
+#undef small
 #endif
 
-//---------------------------------------------------------------------------------
 
-// Bypass the POSIX deprecation errors
 #define stricmp _stricmp
 #define strnicmp _strnicmp
 #define wcsicmp _wcsicmp
@@ -83,7 +67,7 @@
 #include <chrono>
 using namespace std::chrono_literals;
 
-// nlohmann json
+
 #include "json.h"
 
-#endif // PLATFORM_H
+#endif

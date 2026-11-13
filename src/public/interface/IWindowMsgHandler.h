@@ -26,9 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// IWindowMsgHandler.h -- Takes care over the WNDPROC windows message handler.
-//
 
 #ifndef IWINDOWMESSAGEHANDLER_H
 #define IWINDOWMESSAGEHANDLER_H
@@ -38,8 +35,8 @@
 
 enum EWndProcReturnType
 {
-	WNDPROCRET_Custom,		// custom return value
-	WNDPROCRET_Generic,		// call CallWindowProcA
+	WNDPROCRET_Custom,
+	WNDPROCRET_Generic,
 };
 
 typedef std::function<void(UINT uMsg, WPARAM wParam, LPARAM lParam)> WndProcCallbackFn;
@@ -59,4 +56,4 @@ extern IWindowMsgHandler* g_window_msg_handler_i;
 
 #define IWINDOWMSGHANDLER_INTERFACEID "IWindowMsgHandler"
 
-#endif // IWINDOWMESSAGEHANDLER_H
+#endif

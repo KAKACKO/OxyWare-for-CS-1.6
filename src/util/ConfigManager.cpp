@@ -30,7 +30,7 @@
 
 VarInteger save_cfg_interval_sec("save_cfg_interval_sec", "Iterval in seconds for how often current settings should be saved.", 30, 9, 60);
 
-// writes a cheat settings config file from the configs/ directory.
+
 BaseCommand export_config(
 	"export_config", "<config name>", "Exports a json config file",
 	[&](BaseCommand* cmd, const CmdArgs& args)
@@ -48,7 +48,7 @@ BaseCommand export_config(
 	}
 );
 
-// loads a cheat settings config file from the configs/ directory.
+
 BaseCommand load_config(
 	"load_config", "<config name>", "Loads a json config file",
 	[&](BaseCommand* cmd, const CmdArgs& args)
@@ -66,7 +66,6 @@ BaseCommand load_config(
 	}
 );
 
-//-------------------------------------------------------------------------------------------------
 
 IConfigManager* g_config_mgr_i = nullptr;
 
@@ -79,7 +78,7 @@ public:
 	bool initialize();
 	void shutdown();
 
-	// should by called by only one thread.
+
 	void update();
 
 	bool load_configuration(ECfgType type, const std::string& relative_cfg_path, bool silent = false);
@@ -106,17 +105,17 @@ private:
 	CfgFile_CheatSettings m_cheat_settings_cfg;
 	CfgFile_CheatTheme m_cheat_theme_cfg;
 
-	// just to access it through query from external code.
+
 	std::unordered_map<std::string, GenericConfigFile*> m_registered_config_types;
 
 	void init_config_types()
 	{
-		// NOTE: that this is called in ctor.
+
 
 		m_registered_config_types["cheat_settings"] = &m_cheat_settings_cfg;
 		m_registered_config_types["cheat_theme"] = &m_cheat_theme_cfg;
 
-		// DON'T FORGET TO ADD NEW ONES AS YOU ADD THEM AS CLASS MEMBERS.
+
 	}
 
 	std::vector<std::function<void()>> m_on_save_callbacks;
@@ -125,11 +124,6 @@ private:
 CConfigManager g_config_mgr;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CConfigManager, IConfigManager, ICONFIGMANAGER_INTERFACEID, g_config_mgr);
 
-//-------------------------------------------------------------------------------
-//
-// CConfigManager implementation
-//
-//-------------------------------------------------------------------------------
 
 CConfigManager::CConfigManager()
 {
@@ -145,8 +139,8 @@ CConfigManager::~CConfigManager()
 
 bool CConfigManager::initialize()
 {
-	// default config is the one that gets filled with default values each time we start our cheat
-	// saved config is the one that holds current configuration.
+
+
 	write_configuration(CFG_CheatSettings, "default.json");
 	load_configuration(CFG_CheatSettings, "saved.json");
 
@@ -160,7 +154,7 @@ void CConfigManager::shutdown()
 {
 	CConsole::the().info("Shutting down Config Manager...");
 
-	// write changed settings
+
 	write_configuration(CFG_CheatSettings, "saved.json");
 
 	for (auto& callback : m_on_save_callbacks)
@@ -171,7 +165,7 @@ void CConfigManager::shutdown()
 
 void CConfigManager::update()
 {
-	// see if enabled
+
 	if (save_cfg_interval_sec.get_value() == save_cfg_interval_sec.get_min())
 	{
 		return;
@@ -181,7 +175,7 @@ void CConfigManager::update()
 	{
 		write_configuration(CFG_CheatSettings, "saved.json", true);
 
-		// execute on-save callbacks.
+
 		for (auto& callback : m_on_save_callbacks)
 		{
 			callback();
@@ -307,4 +301,3 @@ void CConfigManager::provide_on_save_callback(const std::function<void()>& callb
 {
 	m_on_save_callbacks.push_back(callback);
 }
-

@@ -46,9 +46,7 @@ public:
 	}
 
 public:
-	//
-	// testing
-	//
+
 
 	virtual void add_to_test() override
 	{
@@ -63,7 +61,6 @@ private:
 	std::string m_cmd_name;
 };
 
-//---------------------------------------------------------------------------------
 
 class CHLCommandsDetourMgr
 {
@@ -74,7 +71,7 @@ public:
 	bool install_hooks();
 	void uninstall_hooks();
 
-	// detoured commands
+
 	inline auto& in_speed_down_fn() { static HLCmd_FnDetour_t fnhook; return fnhook; }
 	inline auto& in_speed_up_fn() { static HLCmd_FnDetour_t fnhook; return fnhook; }
 	inline auto& screenshot_fn() { static HLCmd_FnDetour_t fnhook; return fnhook; }
@@ -89,4 +86,4 @@ private:
 	static void snapshot_f();
 };
 
-#endif // HLCOMMANDDETOUR_H
+#endif

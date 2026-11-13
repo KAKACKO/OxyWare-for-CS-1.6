@@ -32,14 +32,14 @@
 
 #include "resource/resource.h"
 
-// UI
+
 IGLFWApp* g_glfw_app_i = nullptr;
 IGUIWidgets* g_gui_widgets_i = nullptr;
 IGUIFontManager* g_gui_fontmgr_i = nullptr;
 IGUIThemeManager* g_gui_thememgr_i = nullptr;
 IGUIWindowRendering* g_gui_window_rendering_i = nullptr;
 
-// Util
+
 IRegistry* g_registry_i = nullptr;
 IFileSystem* g_filesystem_i = nullptr;
 IVariableManager* g_variablemgr_i = nullptr;
@@ -57,9 +57,8 @@ enum
 
 int CMainLoader::run(HINSTANCE hinst)
 {
-	// Relative module paths and the dependency path sent to the injected DLL
-	// must be anchored to this executable, regardless of a shortcut's Start In
-	// directory or the directory of the process that launched us.
+
+
 	wchar_t executable_path[32768]{};
 	auto path_length = GetModuleFileNameW(nullptr, executable_path, OX_ARRAYSIZE(executable_path));
 	if (!path_length || path_length >= OX_ARRAYSIZE(executable_path) ||
@@ -88,7 +87,7 @@ int CMainLoader::run(HINSTANCE hinst)
 	CConsole::the().initialize(EOutputModule::LOADER, g_devconsole_i);
 	CConsole::the().info("Loader working directory: {}", std::filesystem::current_path().string());
 
-	// load modules
+
 	if (!load_and_initialize_dependencies())
 	{
 		release_handles();
@@ -118,7 +117,7 @@ int CMainLoader::run(HINSTANCE hinst)
 
 bool CMainLoader::load_and_initialize_dependencies()
 {
-	// Util
+
 	if (!CDependencyLoader::the().load_and_initialize_module(LOADTYPE_NATIVE, {}, WMODULE_UTIL, [&](const auto& mod)
 	{
 		 g_registry_i = mod.get_interface<IRegistry>(IREGISTRY_INTERFACEID);
@@ -137,7 +136,7 @@ bool CMainLoader::load_and_initialize_dependencies()
 		return false;
 	}
 
-	// UI
+
 	if (!CDependencyLoader::the().load_and_initialize_module(LOADTYPE_NATIVE, {}, WMODULE_GUI, [&](const auto& mod)
 	{
 		g_glfw_app_i = mod.get_interface<IGLFWApp>(IGLFWAPP_INTERFACEID);
@@ -156,7 +155,7 @@ bool CMainLoader::load_and_initialize_dependencies()
 
 	g_variablemgr_i->register_variables_and_commands_per_module(&g_static_variable_container, &g_static_command_container, MODULE_LOADER);
 
-	// after all modules have been loaded
+
 	if (!g_variablemgr_i->initialize())
 	{
 		return RET_FAILURE;
@@ -188,21 +187,12 @@ bool CMainLoader::check_supported_os_version()
 {
 	auto ver = CGenericUtil::the().get_os_version();
 
-	//
-	// https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-osversioninfoexa#remarks
-	//
 
-	// windows 10/11:
 	if (ver.dwMajorVersion >= 10)
 	{
 		return true;
 	}
 
-	// windows 8/8.1: TODO
-	//if (ver.dwMajorVersion >= 6 && ver.dwMinorVersion >= 2)
-	//{
-	//	return true;
-	//}
 
 	return false;
 }
@@ -238,10 +228,7 @@ bool CMainLoader::run_frame()
 
 void CMainLoader::set_window_icon()
 {
-	// we set the icon through winapi, because glfw is just fucking stupid. I have wasted like 4
-	// hours trying to resolve this, only because glfw doesn't allow the user (AFAIK) to set both
-	// the smaller and bigger icon (for window title and taskbar). I don't know why the fuck not, but
-	// whatever. This does it just alright.
+
 
 	auto load_icon_image = [this](DWORD idi, int w, int h) -> HANDLE
 	{
@@ -272,14 +259,14 @@ bool CMainLoader::is_already_launched()
 	m_loader_mutex = CreateMutexA(NULL, TRUE, "oxyware_launcher_mutex");
 	if (CGenericUtil::the().get_last_win_error() == ERROR_ALREADY_EXISTS)
 	{
-		// already running somewhere
+
 		return true;
 	}
 
 	unsigned int waitResult = WaitForSingleObject(m_loader_mutex, NULL);
 	if (waitResult != WAIT_OBJECT_0 && waitResult != WAIT_ABANDONED)
 	{
-		// already running somewhere
+
 		return true;
 	}
 
@@ -290,8 +277,8 @@ void CMainLoader::release_handles()
 {
 	if (m_loader_mutex != NULL)
 	{
-		ReleaseMutex(m_loader_mutex); // Explicitly release mutex
-		CloseHandle(m_loader_mutex); // close handle before terminating
+		ReleaseMutex(m_loader_mutex);
+		CloseHandle(m_loader_mutex);
 	}
 }
 
@@ -303,7 +290,7 @@ void CMainLoader::unload_dependencies()
 
 	CDependencyLoader::the().unload_all();
 
-	// At this point all of the interfaces we obtained are gone.
+
 	g_devconsole_i = nullptr;
 	g_glfw_app_i = nullptr;
 	g_gui_widgets_i = nullptr;	
@@ -311,7 +298,7 @@ void CMainLoader::unload_dependencies()
 	g_gui_thememgr_i = nullptr;
 	g_gui_window_rendering_i = nullptr;
 
-	// Util
+
 	g_registry_i = nullptr;
 	g_filesystem_i = nullptr;
 	g_variablemgr_i = nullptr;

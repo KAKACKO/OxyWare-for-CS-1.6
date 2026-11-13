@@ -39,29 +39,29 @@ struct blob_info_t
 	char	m_szPath[10];
 	char	m_szDescribe[32];
 	char	m_szCompany[22];
-	DWORD	m_dwMagic;				// Magic number that we use to identify whenether this file has been encrypted or not
+	DWORD	m_dwMagic;
 };
 
 struct blob_hdr_t
 {
 	DWORD	m_dwCheckSum;
 	WORD	m_wSectionCount;
-	DWORD	m_dwExportPoint;		// VA to some function, we don't care about that here
-	DWORD	m_dwImageBase;			// Base virtual address of this image (0x1D00000)
-	DWORD	m_dwEntryPoint;			// VA to entry point
-	DWORD	m_dwImportTable;		// VA to import table
+	DWORD	m_dwExportPoint;
+	DWORD	m_dwImageBase;
+	DWORD	m_dwEntryPoint;
+	DWORD	m_dwImportTable;
 };
 
 struct blob_section_t
 {
-	DWORD	m_dwVirtualAddress;		// VA from the image base
-	DWORD	m_dwVirtualSize;		// The total size of the section when loaded into memory, in bytes. 
-	// If this value is greater than the SizeOfRawData member, the section is filled with zeroes
+	DWORD	m_dwVirtualAddress;
+	DWORD	m_dwVirtualSize;
 
-	DWORD	m_dwDataSize;			// Raw data size of the section
-	DWORD	m_dwDataAddress;		// RA from the base of encrypted buffer
 
-	BOOL	m_bIsSpecial;			// Some valve thing to indicate whenether the section is special or not. Not important at all.
+	DWORD	m_dwDataSize;
+	DWORD	m_dwDataAddress;
+
+	BOOL	m_bIsSpecial;
 };
 
-#endif // BLOB_H
+#endif

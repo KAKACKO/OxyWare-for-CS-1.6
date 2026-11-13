@@ -30,31 +30,28 @@
 #define SECURITYMODULEHOOK_H
 #pragma once
 
-//-----------------------------------------------------------------------------
 
-// void __cdecl CommonLoadSecurityModule(void *nAddrModule)
 struct CommonLoadSecurityModule_FnHook_t final : public GenericMemoryFnHook_cdecl<void, void*> { bool install(); };
 
-// void CloseSecurityModule(void);
+
 struct CloseSecurityModule_FnDetour_t final : public GenericMemoryFnDetour_cdecl<>
 {
 	bool install();
 	static void CloseSecurityModule();
 };
 
-// modfuncs_t g_modfuncs
+
 struct g_modfuncs_MemoryHook final : public GenericMemoryHook<hl::modfuncs_t>
 {
 	bool install() override;
 	void test_hook() override;
 };
 
-//-----------------------------------------------------------------------------
 
 template<class T>
 struct callback_table_hook_t
 {
-	// store the pointer as well as the original one, so that we can restore pointers on unload later.
+
 	T* ptr, original;
 
 	void install(const char* name, T* _ptr, const T& original);
@@ -87,9 +84,6 @@ public:
 
 	inline static auto& g_modfuncs() { static g_modfuncs_MemoryHook hook; return hook; };
 
-	//
-	// things we set at setup
-	//
 
 	inline static auto& engdata() { return s_engdata; }
 	inline static auto cl_enginefuncs() { return s_enginefunc_hook.ptr; }
@@ -98,9 +92,7 @@ public:
 	inline static auto keybindings() { return s_keybindings; }
 	inline static auto cls() { return s_cls; }
 
-	//
-	// setters, don't call this code.
-	//
+
 	void set_engdata(hl::engdata_t* engdata_ptr)
 	{
 		s_engdata = *engdata_ptr;
@@ -109,16 +101,16 @@ public:
 private:
 	inline static hl::engdata_t s_engdata;
 	
-	// callback tables
+
 	inline static callback_table_hook_t<hl::cl_enginefunc_t> s_enginefunc_hook;
 	inline static callback_table_hook_t<hl::cl_enginefunc_dst_t> s_enginefunc_dst_hook;
 	inline static callback_table_hook_t<hl::cldll_func_t> s_cl_funcs_hook;
 
-	// regular pointer to pointer hooks
+
 	inline static char** s_keybindings;
 	inline static hl::client_static_t* s_cls;
 
 	bool m_initialized = false;
 };
 
-#endif // SECURITYMODULEHOOK_H
+#endif

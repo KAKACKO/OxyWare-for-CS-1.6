@@ -35,7 +35,7 @@ HANDLE CGenericUtil::get_current_process_handle()
 
 HANDLE CGenericUtil::get_current_thread_handle()
 {
-	return (HANDLE)-2; // yes really, don't ask why.
+	return (HANDLE)-2;
 }
 
 DWORD CGenericUtil::get_last_win_error()
@@ -118,7 +118,7 @@ void CGenericUtil::open_folder_inside_explorer(const std::string & folder_path)
 	ShellExecuteA(NULL, "open", folder_path.c_str(), NULL, NULL, SW_SHOWDEFAULT);
 }
 
-// https://stackoverflow.com/questions/36543301/detecting-windows-10-version/36545162#36545162
+
 typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
 RTL_OSVERSIONINFOW CGenericUtil::get_os_version()
 {
@@ -147,7 +147,7 @@ std::string CGenericUtil::get_os_version_str()
 	return std::format("{}.{} build {}", osver.dwMajorVersion, osver.dwMinorVersion, osver.dwBuildNumber);
 }
 
-// https://stackoverflow.com/questions/940707/how-do-i-programmatically-get-the-version-of-a-dll-or-exe-file
+
 file_version_t CGenericUtil::get_file_version(const std::string& path)
 {
 	DWORD  verHandle = 0;
@@ -168,8 +168,8 @@ file_version_t CGenericUtil::get_file_version(const std::string& path)
 					VS_FIXEDFILEINFO *verInfo = (VS_FIXEDFILEINFO *)lpBuffer;
 					if (verInfo->dwSignature == 0xfeef04bd)
 					{
-						// This returns product version, not file version. For more info see:
-						// https://stackoverflow.com/questions/38068477/why-does-getfileversioninfo-on-kernel32-dll-in-windows-10-return-version-6-2
+
+
 						file_version_t v = 
 						{ 
 							(verInfo->dwProductVersionMS >> 16) & 0xffff,
@@ -193,10 +193,10 @@ file_version_t CGenericUtil::get_file_version(const std::string& path)
 
 std::filesystem::path CGenericUtil::get_windows_directory(const std::filesystem::path& subdir)
 {
-	// NOTE: Duplicate inside LibraryLoader code
+
 
 	uintptr_t* volatile pNtSystemRoot = (uintptr_t*)0x7FFE0030;
-	return std::filesystem::path((const wchar_t*)pNtSystemRoot) / subdir; // cool, isn't it?
+	return std::filesystem::path((const wchar_t*)pNtSystemRoot) / subdir;
 
 }
 
@@ -259,11 +259,11 @@ void CGenericUtil::pop_page_protection()
 {
 	assert(m_page_protection_patch_address != NULL && m_page_protection_patch_size != NULL && "Tried to pop non-pushed page protection!");
 
-	DWORD dummy; // the function fails if we don't provde it this.
+	DWORD dummy;
 	BOOL success = VirtualProtect((LPVOID)m_page_protection_patch_address, m_page_protection_patch_size, m_old_page_protection_flags, &dummy) != FALSE;
 	if (success)
 	{
-		// call this because we modified the memory
+
 		FlushInstructionCache(get_current_process_handle(), (LPCVOID)m_page_protection_patch_address, m_page_protection_patch_size);
 	}
 	else

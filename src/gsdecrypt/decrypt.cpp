@@ -27,12 +27,12 @@
 */
 #include "precompiled.h"
 
-// The encrypted file always has @ character at this offset inside th file
+
 #define AT_SIGN_CHARACTER_OFFSET 60
 
 bool CDecryptProcessor::process_file(const std::filesystem::path& file_in, reconstructed_blob_module_info_t& info, uint32_t filesize)
 {
-	// Read and allocate data
+
 	std::ifstream ifs(file_in, std::ios_base::in | std::ios_base::binary);
 
 	if (ifs.bad())
@@ -41,7 +41,7 @@ bool CDecryptProcessor::process_file(const std::filesystem::path& file_in, recon
 		return false;
 	}
 
-	// Files smaller than this are just not gonna work
+
 	if (filesize < 4096)
 	{
 		CConsole::the().error("File has invalid length ({} bytes)", filesize);
@@ -54,18 +54,18 @@ bool CDecryptProcessor::process_file(const std::filesystem::path& file_in, recon
 		return false;
 	}
 
-	// Read the whole file contents
+
 	ifs.read((char*)m_filebuffer, filesize);
 	ifs.close();
 
-	// Decrypt the buffer, gain blob information, build pe header
+
 	if (!CBlobAlgorithm::the().decrypt_file_buffer(m_filebuffer, m_buffer_size, info))
 	{
 		CConsole::the().error("Failed to decrypt the file using original Valve blob algorithm!");
 		return false;
 	}
 
-	// We don't need this buffer anymore
+
 	deallocate_buffer();
 
 	return true;

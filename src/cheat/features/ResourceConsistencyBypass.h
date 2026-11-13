@@ -39,9 +39,9 @@ public:
 	DECL_BASIC_CLASS(CResourceConsistencyBypass);
 
 public:
-	// return true if we detour the full function or false if we need to pass it to the engine
+
 	bool detour_consistency_info(hl::sizebuf_t* msg);
 
 };
 
-#endif // RESOURCECONSISTENCYBYPASS_H
+#endif

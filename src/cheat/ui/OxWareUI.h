@@ -43,10 +43,10 @@ public:
 	void swapbuffers_detour(HDC hdc);
 	void destroy();
 
-	// if some interactive window is up, disable ingame input.
+
 	bool should_disable_ingame_input() const { return is_any_ui_rendering(); }
 
-	// applies only for interactible UI rendering contexts
+
 	bool is_any_ui_rendering() const { return m_is_any_interactible_rendering_context_active; }
 
 	IRenderingContext* find_context(const std::string& id) const;
@@ -63,7 +63,7 @@ public:
 
 	inline HWND get_window_handle() const { return m_hwnd; }
 
-	// forces interactible context rendering. don't use this.
+
 	void internal_force_interactible_rendering()
 	{
 		m_is_any_interactible_rendering_context_active = true;
@@ -121,4 +121,4 @@ void COxWareUI::instantiate_single_rendering_context(T** to_be_instantiated, IRe
 	m_rendering_contexts.push_back(ctx);
 }
 
-#endif // OXWAREUI_H
+#endif

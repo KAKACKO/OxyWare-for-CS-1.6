@@ -26,12 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// SpriteManager.cpp -- Sprite management.
-// 
-// Note: This code is taken from my old cheat, you could probably parse these sprites out of the actual files, but I don't
-//		 want to dive into that now.
-//
 
 #include "precompiled.h"
 
@@ -66,7 +60,7 @@ std::unordered_map<std::string, SpriteAtlas_t> CSpriteMgr::s_sprite_atlas_map =
 
 std::unordered_map<std::string, Sprite_t> CSpriteMgr::s_sprite_map =
 {
-	// 640hud1
+
 	{ "d_knife",		{ "d_knife",		{ 192, 0   }, { 48, 16 }, &s_sprite_atlas_map.at("640hud1") } },
 	{ "d_ak47",			{ "d_ak47",			{ 192, 80  }, { 48, 16 }, &s_sprite_atlas_map.at("640hud1") } },
 	{ "d_awp",			{ "d_awp",			{ 192, 128 }, { 48, 16 }, &s_sprite_atlas_map.at("640hud1") } },
@@ -93,30 +87,30 @@ std::unordered_map<std::string, Sprite_t> CSpriteMgr::s_sprite_map =
 	{ "d_elite",		{ "d_elite",		{ 52 , 240 }, { 57, 16 }, &s_sprite_atlas_map.at("640hud1") } },
 	{ "d_headshot",		{ "d_headshot",		{ 0  , 240 }, { 36, 16 }, &s_sprite_atlas_map.at("640hud1") } },
 
-	// 640hud2
+
 	{ "d_famas",		{ "d_famas",		{ 192, 144 }, { 48, 16 }, &s_sprite_atlas_map.at("640hud2") } },
 	{ "d_galil",		{ "d_galil",		{ 192, 160 }, { 48, 16 }, &s_sprite_atlas_map.at("640hud2") } },
 	{ "item_battery",	{ "item_battery",	{ 176, 0   }, { 44, 44 }, &s_sprite_atlas_map.at("640hud2") } },
 	{ "item_healthkit",	{ "item_healthkit",	{ 176, 48  }, { 44, 44 }, &s_sprite_atlas_map.at("640hud2") } },
 	{ "item_longjump",	{ "item_longjump",	{ 176, 96  }, { 44, 44 }, &s_sprite_atlas_map.at("640hud2") } },
 
-	// 640hud3 
+
 	{ "selection",		{ "selection",		{ 0, 180 }, { 170, 45 }, &s_sprite_atlas_map.at("640hud3") } },
 
-	// 640hud4
+
 	{ "title_half",		{ "title_half",		{ 0, 226 }, { 256, 30 }, &s_sprite_atlas_map.at("640hud4") } },
 
-	// 640hud5
+
 	{ "train_back",		{ "train_back",		{ 170, 0   }, { 72 , 72 }, &s_sprite_atlas_map.at("640hud5") } },
 	{ "train_stop",		{ "train_stop",		{ 170, 72  }, { 72 , 72 }, &s_sprite_atlas_map.at("640hud5") } },
 	{ "train_forward1",	{ "train_forward1",	{ 170, 144 }, { 72 , 72 }, &s_sprite_atlas_map.at("640hud5") } },
 	{ "title_life",		{ "title_life",		{ 0  , 226 }, { 220, 30 }, &s_sprite_atlas_map.at("640hud5") } },
 
-	// 640hud6
+
 	{ "train_forward2", { "train_forward2", { 170, 0  }, { 72, 72 }, &s_sprite_atlas_map.at("640hud6") } },
 	{ "train_forward3", { "train_forward3", { 96 , 72 }, { 24, 24 }, &s_sprite_atlas_map.at("640hud6") } },
 
-	// 640hud7
+
 	{ "bucket1",		{ "bucket1",		{ 168, 72  }, { 20, 20 }, &s_sprite_atlas_map.at("640hud7") } },
 	{ "bucket2",		{ "bucket2",		{ 188, 72  }, { 20, 20 }, &s_sprite_atlas_map.at("640hud7") } },
 	{ "bucket3",		{ "bucket3",		{ 208, 72  }, { 20, 20 }, &s_sprite_atlas_map.at("640hud7") } },
@@ -166,36 +160,36 @@ std::unordered_map<std::string, Sprite_t> CSpriteMgr::s_sprite_map =
 	{ "hostage3",		{ "hostage3",		{ 48 , 213 }, { 48, 25 }, &s_sprite_atlas_map.at("640hud7") } },
 	{ "hostage2",		{ "hostage2",		{ 96 , 213 }, { 48, 25 }, &s_sprite_atlas_map.at("640hud7") } },
 	{ "hostage1",		{ "hostage1",		{ 144, 213 }, { 48, 25 }, &s_sprite_atlas_map.at("640hud7") } },
-	// Still from 640hud7, but not included in hud.txt
+
 	{ "flashbang_ammo",	{ "flashbang_ammo",	{ 48 , 96  }, { 24, 24 }, &s_sprite_atlas_map.at("640hud7") } },
 	{ "hegrenade_ammo",	{ "hegrenade_ammo",	{ 72 , 96  }, { 24, 24 }, &s_sprite_atlas_map.at("640hud7") } },
 	{ "smokegren_ammo",	{ "smokegren_ammo",	{ 144, 96  }, { 24, 24 }, &s_sprite_atlas_map.at("640hud7") } },
 
-	// 640hud8
+
 	{ "dmg_poison",		{ "dmg_poison",		{ 128, 0 }, { 64, 64 }, &s_sprite_atlas_map.at("640hud8") } },
 	{ "dmg_bio",		{ "dmg_bio",		{ 128, 0 }, { 64, 64 }, &s_sprite_atlas_map.at("640hud8") } },
 	{ "dmg_chem",		{ "dmg_chem",		{ 0  , 0 }, { 64, 64 }, &s_sprite_atlas_map.at("640hud8") } },
 	{ "dmg_drown",		{ "dmg_drown",		{ 64 , 0 }, { 64, 64 }, &s_sprite_atlas_map.at("640hud8") } },
 	{ "dmg_shock",		{ "dmg_shock",		{ 192, 0 }, { 64, 64 }, &s_sprite_atlas_map.at("640hud8") } },
 
-	// 640hud9
+
 	{ "dmg_gas",		{ "dmg_gas",		{ 0  , 0 }, { 64, 64 }, &s_sprite_atlas_map.at("640hud9") } },
 	{ "dmg_cold",		{ "dmg_cold",		{ 64 , 0 }, { 64, 64 }, &s_sprite_atlas_map.at("640hud9") } },
 	{ "dmg_heat",		{ "dmg_heat",		{ 128, 0 }, { 64, 64 }, &s_sprite_atlas_map.at("640hud9") } },
 	{ "dmg_rad",		{ "dmg_rad",		{ 192, 0 }, { 64, 64 }, &s_sprite_atlas_map.at("640hud9") } },
 
-	// 640hud16
+
 	{ "d_fiveseven",	{ "d_fiveseven",	{ 192, 0  }, { 32, 16 }, &s_sprite_atlas_map.at("640hud16") } },
 	{ "d_sg550",		{ "d_sg550",		{ 192, 48 }, { 48, 16 }, &s_sprite_atlas_map.at("640hud16") } },
 	{ "d_ump45",		{ "d_ump45",		{ 192, 80 }, { 48, 16 }, &s_sprite_atlas_map.at("640hud16") } },
 
-	// radar640
+
 	{ "radar",			{ "radar",			{ 0, 0 }, { 128, 128 }, &s_sprite_atlas_map.at("radar640") } },
 
-	// radaropaque640
+
 	{ "radaropaque",	{ "radaropaque",	{ 0, 0 }, { 128, 128 }, &s_sprite_atlas_map.at("radaropaque640") } },
 
-	// crosshairs
+
 	{ "autoaim_c",		{ "autoaim_c",		{ 96, 0 }, { 24, 24 }, &s_sprite_atlas_map.at("crosshairs") } },
 };
 
@@ -203,7 +197,7 @@ std::unordered_map<int, std::string> CSpriteMgr::m_wpn_id_for_sprite_name =
 {
 	{ WEAPON_NONE,			"" },
 	{ WEAPON_P228,			"d_p228" },
-	{ WEAPON_GLOCK,			"d_glock18" },		// not used anyway
+	{ WEAPON_GLOCK,			"d_glock18" },
 	{ WEAPON_SCOUT,			"d_scout" },
 	{ WEAPON_HEGRENADE,		"hegrenade_ammo" },
 	{ WEAPON_XM1014,		"d_xm1014" },
@@ -233,7 +227,7 @@ std::unordered_map<int, std::string> CSpriteMgr::m_wpn_id_for_sprite_name =
 	{ WEAPON_KNIFE,			"d_knife" },
 	{ WEAPON_P90,			"d_p90" },
 
-	// TODO?
+
 	{ WEAPON_SHIELDGUN,		"" },
 };
 
@@ -306,21 +300,21 @@ bool CSpriteMgr::initialize_engine_sprite_data()
 	{
 		CConsole::the().info("{}...", key);
 		
-		// model_t*
+
 		if (!val.precache_engine_model())
 		{
 			CConsole::the().error("Couldn't get engine model");
 			return false;
 		}
 
-		// msprite_t*
+
 		if (!val.get_cached_sprite_data())
 		{
 			CConsole::the().error("Couldn't retrieve internal sprite data");
 			return false;
 		}
 
-		// HSPRITE_t
+
 		if (!val.precache_engine_sprite())
 		{
 			return false;
@@ -364,7 +358,7 @@ void CSpriteMgr::render_current_weapon_sprite() const
 			return;
 		}
 
-		// default greenish color that most of the cstrike screen sprites have.
+
 		CColor color = RGB_GREENISH;
 
 		auto clr = hud_color.get_value();
@@ -391,7 +385,7 @@ void CSpriteMgr::render_velocity() const
 
 	rolling_velocity = 0.9f * rolling_velocity + (1.0f - 0.9f) * velocity;
 
-	// default orangeish color that most of the cstrike screen sprites have.
+
 	CColor color = RGB_ORANGEISH;
 
 	auto clr = hud_color.get_value();
@@ -430,7 +424,7 @@ Vector2D CSpriteMgr::render_digit(uint8_t digit, const Vector2D& position, const
 
 Vector2D CSpriteMgr::render_number(int64_t number, const Vector2D& position, const CColor& color, bool centerize) const
 {
-	// Handle negative values
+
 	if (number < 0)
 	{
 		Sprite_t* minus = get_sprite("minus");
@@ -470,16 +464,16 @@ Vector2D CSpriteMgr::render_number(int64_t number, const Vector2D& position, con
 template<uint8_t Precision> requires(Precision < std::numeric_limits<double>::max_digits10 && Precision > 0)
 Vector2D CSpriteMgr::render_float_number(double number, const Vector2D& position, const CColor& color, bool centerize) const
 {
-	// TODO: This isn't working properly (unfinished)
+
 	return {};
 
 	double base = std::round(number);
 	double fraction = (double)number - (int64_t)number;
 
-	// base
+
 	Vector2D off = render_number(base, position, color);
 
-	// fraction
+
 	off.x += 5;
 	double fraction_scaled = fraction * std::pow(10, (Precision > 1) ? Precision - 1 : Precision);
 	off = render_number(std::round(std::abs(fraction_scaled)), off, color);
@@ -496,18 +490,17 @@ void CSpriteMgr::initialize()
 
 	CConsole::the().info("Initializitng sprite manager...");
 
-	// Setup current resolution scale which we'll be rendering sprites on.
+
 	m_resolution_scale = CGameUtil::the().get_engine_screen_info().iWidth < 640 ? 320 : 640;
 
-	// Retrieve data such as model_t or msprite_t.
-	// This has to be done explicitly after the constexpr declaration.
+
 	if (!initialize_engine_sprite_data())
 	{
 		CConsole::the().error("Couldn't retrieve engine sprite data");
 		return;
 	}
 
-	// get random number and get the width&height out of it
+
 	auto number = get_sprite("number_0");
 	if (number)
 	{
@@ -515,7 +508,7 @@ void CSpriteMgr::initialize()
 	}
 	else
 	{
-		m_cstrike_sprite_font_size = { 20, 25 }; // for some reason failed? this shouldn't happen...
+		m_cstrike_sprite_font_size = { 20, 25 };
 	}
 
 	CConsole::the().info("All sprites initialized.");
@@ -530,13 +523,13 @@ void CSpriteMgr::update()
 	if (!hud_render.get_value())
 		return;
 	
-	// render current weapon
+
 	if (hud_render_current_weapon.get_value())
 	{
 		render_current_weapon_sprite();
 	}
 	
-	// render velocity
+
 	if (hud_render_velocity.get_value())
 	{
 		render_velocity();
@@ -552,7 +545,7 @@ Sprite_t* CSpriteMgr::get_sprite(const std::string& name) const
 	}
 	catch (...)
 	{
-		//CConsole::the().error("Tried to find unknown sprite: '{}'", name);
+
 	}
 
 	return sprite;
@@ -567,7 +560,7 @@ SpriteAtlas_t* CSpriteMgr::get_sprite_atlas(const std::string& name) const
 	}
 	catch (...)
 	{
-		//CConsole::the().error("Tried to find unknown sprite atlas: '{}'", name);
+
 	}
 
 	return sprite_atlas;

@@ -30,11 +30,7 @@
 #define PRECOMPILED_H
 #pragma once
 
-//-------------------------------------------------------------------
-//
-// Public headers
-// 
-//-------------------------------------------------------------------
+
 #include <commondefs.h>
 #include <vector.h>
 
@@ -59,42 +55,26 @@
 
 #include <DependencyLoader.h>
 
-//-------------------------------------------------------------------
-//
-// Shared
-// 
-//-------------------------------------------------------------------
+
 #include "Console.h"
 #include "BaseVariable.h"
 
-//-------------------------------------------------------------------
-//
-// C++ Standard
-// 
-//-------------------------------------------------------------------
+
 #include <unordered_map>
 #include <functional>
 #include <set>
 #include <assert.h>
 
-//-------------------------------------------------------------------
-//
-// HLSDK
-// 
-//-------------------------------------------------------------------
+
 namespace hl
 {
 #include <hlsdk/interface/IFileSystem.h>
 #include <hlsdk/interface/IEngineAPI.h>
-} // namespace hl
+}
 
-//-------------------------------------------------------------------
-//
-// Current project
-// 
-//-------------------------------------------------------------------
+
 #include "loader.h"
 #include "loaderui.h"
 #include "DependencyLoader.h"
 
-#endif // PRECOMPILED_H
+#endif

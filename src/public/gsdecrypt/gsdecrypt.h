@@ -46,17 +46,17 @@ struct reconstructed_export_entry_t
 	uint32_t	va;
 };
 
-// information you retreive after decrypting the file
+
 struct reconstructed_blob_module_info_t
 {
-	// blob data in case you need it
+
 	struct 
 	{
 		blob_info_t info;
 		blob_hdr_t  header;
 	} blob;
 
-	// PE format data
+
 	IMAGE_DOS_HEADER dos_hdr;
 	IMAGE_NT_HEADERS nt_headers;
 	std::vector<IMAGE_SECTION_HEADER> pe_section_table;
@@ -64,24 +64,23 @@ struct reconstructed_blob_module_info_t
 	std::vector<reconstructed_import_entry_t> m_imports;
 	std::vector<reconstructed_export_entry_t> m_exports;
 
-	// helper functions
+
 	inline auto& dos() const { return dos_hdr; }
 	inline auto& opt() const { return nt_headers.OptionalHeader; }
 	inline auto& file() const { return nt_headers.FileHeader; }
 };
 
-// GoldSource DLL decryptor for older builds
-// https://github.com/oxiKKK/goldsource-dll-decryptor
+
 class CGSDecrypt
 {
 public:
 	DECL_BASIC_CLASS(CGSDecrypt);
 
 public:
-	// decrypts the input file and writes the result into a new byte stream.
+
 	bool decrypt_dll(const std::filesystem::path& encrypted_file, reconstructed_blob_module_info_t& info);
 
 	bool is_dll_encrypted(const std::filesystem::path& encrypted_file);
 };
 
-#endif // GSDECRYPT_H
+#endif

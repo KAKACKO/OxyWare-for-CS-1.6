@@ -76,7 +76,7 @@ class IVariableManager : public IBaseInterface
 public:
 	virtual bool initialize() = 0;
 
-	// variable and command lookups
+
 	virtual BaseVariable* query_variable(const char* name) = 0;
 	virtual BaseCommand* query_command(const char* name) = 0;
 
@@ -96,4 +96,4 @@ extern IVariableManager* g_variablemgr_i;
 
 #define IVARIABLEMANAGER_INTERFACEID "IVariableManager"
 
-#endif // IVARIABLEMANAGER_H
+#endif

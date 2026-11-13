@@ -51,14 +51,14 @@ void CMovementEdgeBug::update(float frametime)
 	float fall_vel = CLocalState::the().get_fall_velocity();
 	if (fall_vel < 0.0f || fall_vel < movement_eb_min_fall_velocity.get_value())
 	{
-		// don't execute while falling upwards.
+
 		return;
 	}
 
 	float edge_dist = CLocalState::the().get_edge_dist();
 	if (edge_dist > MAXIMAL_DESIRED_EDGE_DIST || edge_dist < movement_eb_edge_dist.get_value())
 	{
-		// don't exceed the tracing limig at which we compute the acutal edge distance.
+
 		return;
 	}
 	
@@ -68,11 +68,7 @@ void CMovementEdgeBug::update(float frametime)
 		return;
 	}
 
-	//
-	// alright, we have passed everything, let's speed up.
-	//
 
 	float intensity = movement_eb_intensity.get_value();
 	CEngineSpeedControl::the().classic_cs16_cheating_scene_speedhack(35.0f * intensity);
 }
-

@@ -41,7 +41,7 @@ bool CRemovals::remove_viewmodel()
 	return ::remove_viewmodel.get_value();
 }
 
-// Ts, CTs, Enemy, Both
+
 VarInteger remove_players_team("remove_players_team", "Removes players depending on their team.", 0, 0, 5);
 
 bool CRemovals::remove_player(int id)
@@ -65,15 +65,15 @@ bool CRemovals::remove_player(int id)
 	int local_team = local ? local->get_team() : hl::UNASSIGNED;
 
 	if (
-		// only terrorists
+
 		(selected_team == 1 && player_team == hl::TERRORIST) ||
-		// only cts
+
 		(selected_team == 2 && player_team == hl::CT) ||
-		// only our team
+
 		(selected_team == 3 && player_team == local_team) ||
-		// only enemy team
+
 		(selected_team == 4 && player_team != local_team) ||
-		// both teams
+
 		(selected_team == 5 && (player_team == hl::TERRORIST || player_team == hl::CT)))
 	{
 		return true;

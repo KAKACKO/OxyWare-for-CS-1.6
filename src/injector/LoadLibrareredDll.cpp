@@ -26,40 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// LoadLibrareredDll.cpp -- Defines a LoadLibrary injector interface.
-// 
-// STEPS OF LOAD LIBRARY INJECTION METHOD
-//
-//	1) MEMORY ALLOCATION
-//			a)	Allocate memory inside the TARGET process for the shellcode execution context as well as
-//				for the shellcode itself.
-// 
-//	2) WRITING TO TARGET PROCESS'S MEMORY
-//			a)	Write the shellcode execution context as well as the shellcode itself to the allocated
-//				memory region inside target process.
-// 
-//	3) CREATING A NEW THREAD IN THE TARGET PROCESS
-//			-	A new thread will be created which will execute the shellcode. The thread is
-//				located at the shellcode section base address, and as a parameter it is being
-//				passed the shellcode data execution context address.
-//			-	The dll entry point will be called.
-//
-//	4) WAITING FOR THE DLL TO RESPOND, IF IT IS A COMMUNICATIVE DLL.
-//
-
-//
-//
-//
-//	READ OR YOU WILL HAVE TO DEAL WITH ANNOYING BUGS THAT WILL TAKE A LOG OF TIME TO FIX !!!!
-// 
-//		DON'T build with INCREMENTAL LINKING on!!! Otherwise the shellcode part of the injection will not work properly!
-//		Incremental linking creates a function jump table inside the binary, therefore, when e.g. calculating the size
-//		of the shellcode it will fail! because the function pointer for the shellcode routine will point to an entry inside
-//		a jump table! Same with writing the shellcode to the target proces!
-//
-//
-//
 
 #include "precompiled.h"
 
@@ -91,11 +57,11 @@ void CLoadLibrareredDll::unload(bool tell_client_dll)
 	if (m_unloaded) return;
 	if (target_process_exited()) { finish_unload(true); return; }
 
-	// only parent client modules provides communication interface
+
 	if (tell_client_dll && is_communicative_dll())
 	{
 		if (m_requested_injected_dll_unload) return;
-		// the client module doesn't know about this, we'll have to tell them.
+
 		m_requested_injected_dll_unload = true;
 		m_unload_request_time = std::chrono::high_resolution_clock::now();
 
@@ -168,7 +134,7 @@ bool CLoadLibrareredDll::communicate_with_injected_dll(EClient2Injector & code)
 		return false;
 	}
 
-	// keep in sync between injector and client dll
+
 	loadlibrary_shellcode_execution_context_t sec;
 	if (!read_execution_context_back(&sec))
 	{
@@ -180,7 +146,7 @@ bool CLoadLibrareredDll::communicate_with_injected_dll(EClient2Injector & code)
 
 	m_shellcode_execution_context = sec;
 
-	// see if the module has responded within a defined time. if not, it failed to sucessfully initialize.
+
 	if (c2m == C2I_None)
 	{
 		if (calc_current_load_and_init_threshold_seconds() > k_load_and_init_threshold_seconds)
@@ -193,7 +159,7 @@ bool CLoadLibrareredDll::communicate_with_injected_dll(EClient2Injector & code)
 		}
 	}
 
-	// we told the module that we're unloading and now we're waiting for it to respond..
+
 	if (m_requested_injected_dll_unload)
 	{
 		if (!m_unload_timeout_reported && calc_time_elapsed_since_unload_request_seconds() > k_seconds_for_the_client_dll_to_unload)
@@ -253,7 +219,7 @@ bool CLoadLibrareredDll::inject_dll_to()
 		m_target_process_handle = CInjectorUtils::the().open_process(m_exe_name.c_str());
 	}
 
-	// when injecting to current process, the handle is actually -1.
+
 	if (!is_injecting_to_current_process() && m_target_process_handle == INVALID_HANDLE_VALUE)
 	{
 		CConsole::the().error("The target process specified couldn't be found.");
@@ -303,7 +269,6 @@ bool CLoadLibrareredDll::inject_dll_to()
 		return false;
 	}
 
-	// now the dll is injected and we have to wait for its response, if there'll be any.
 
 	return true;
 }
@@ -349,7 +314,7 @@ bool CLoadLibrareredDll::read_execution_context_back(loadlibrary_shellcode_execu
 		(PVOID)get_target_process_shellcode_execution_context_addr(), sec))
 	{
 		CConsole::the().error("Couldn't read target process memory while trying to communicate with it.");
-		return false; // sudden target process crash or mapped dll unload
+		return false;
 	}
 
 	return true;
@@ -407,7 +372,7 @@ bool CLoadLibrareredDll::write_data_into_target_process()
 {
 	update_shellcode_execution_context_data();
 
-	// write the context, first
+
 	if (!CVirtualMemoryManager::the().write(
 		m_target_process_handle, (LPVOID)get_target_process_shellcode_execution_context_addr(),
 		&m_shellcode_execution_context, sizeof(m_shellcode_execution_context)))
@@ -417,7 +382,7 @@ bool CLoadLibrareredDll::write_data_into_target_process()
 
 	CConsole::the().info("Shellcode context at 0x{:08X}", get_target_process_shellcode_execution_context_addr());
 
-	// then write the communication interface block
+
 	if (is_communicative_dll())
 	{
 		if (!write_ipc_block((LPVOID)get_target_process_ipc_block_addr()))
@@ -428,13 +393,7 @@ bool CLoadLibrareredDll::write_data_into_target_process()
 		CConsole::the().info("Communication interface block at 0x{:08X}", get_target_process_ipc_block_addr());
 	}
 
-	//
-	// NOTE: DON'T build with INCREMENTAL LINKING on!!! Otherwise 'shellcode_routine' will point to a jump table entry
-	//		 generated by the compiler and not to the actual address. Now, I'm not entirely sure whether this is because
-	//		 the function is a static member function, nonetheless, if you don't disable it, this will fail.
-	//
 
-	// now write the actual shellcode
 	if (!CVirtualMemoryManager::the().write(
 		m_target_process_handle, (LPVOID)get_target_process_shellcode_addr(),
 		shellcode_routine, calc_shellcode_routine_size_in_bytes()))
@@ -467,8 +426,8 @@ bool CLoadLibrareredDll::execute_shellcode_in_target_process()
 	}
 	else
 	{
-		// if not communicative, there's no way of us knowing that it initialized.. just wait here
-		// if it hangs, we're fucked.. TODO
+
+
 		NtWaitForSingleObject(m_entry_thread, FALSE, NULL);
 		read_execution_context_back(&m_shellcode_execution_context);
 	}
@@ -488,23 +447,23 @@ void CLoadLibrareredDll::update_shellcode_execution_context_data()
 
 	strcpy_s(m_shellcode_execution_context.m_injected_dll_name, full_path.string().c_str());
 
-	// routines
+
 	m_shellcode_execution_context.pfnLoadLibraryExA = (pfnLoadLibraryExA_t)LoadLibraryExA;
 	m_shellcode_execution_context.pfnOutputDebugStringA = (pfnOutputDebugStringA_t)OutputDebugStringA;
-	// this needs to be from ntdll.dll! we're lucky that it exports such functions anyways.. heh
+
 	m_shellcode_execution_context.pfn_stricmp = (pfn_stricmp_t)GetProcAddress(GetModuleHandleA("ntdll.dll"), "_stricmp");
 	assert(m_shellcode_execution_context.pfnLoadLibraryExA);
 	assert(m_shellcode_execution_context.pfnOutputDebugStringA);
 	assert(m_shellcode_execution_context.pfn_stricmp);
 
-	// debug strings
+
 	strcpy_s(m_shellcode_execution_context.debug_messages[0], "Hello from shellcode.\n");
 	strcpy_s(m_shellcode_execution_context.debug_messages[1], "Calling LoadLibraryExA...\n");
 	strcpy_s(m_shellcode_execution_context.debug_messages[2], "Calling DllPreLoad..\n");
 	strcpy_s(m_shellcode_execution_context.debug_messages[3], "Calling DLL communication entry point...\n");
 	strcpy_s(m_shellcode_execution_context.debug_messages[4], "Shellcode finish.\n");
 
-	// exported procnames
+
 	strcpy_s(m_shellcode_execution_context.export_names[0], EXPOSEMODULE_PROCNAME);
 	strcpy_s(m_shellcode_execution_context.export_names[1], INTERFACEINSTANCEGETTER_PROCNAME);
 	strcpy_s(m_shellcode_execution_context.export_names[2], COMMUNICATIVEDLLENTRYPOINT_PROCNAME);

@@ -93,8 +93,7 @@ void CESP::on_render()
 		render_sound();
 	}
 
-	// experimental
-	//render_bomb_info();
+
 }
 
 void CESP::render_players()
@@ -141,7 +140,7 @@ void CESP::render_bomb_info()
 
 bool CESP::render_player_esp(int index, const CGenericPlayer& player)
 {
-	// check if the player is valid
+
 	if (!player.is_valid() || !player.is_alive() || player.is_out_of_update_for(1.0f) || player.is_local_player() || player.is_local_spectating())
 	{
 		return false;
@@ -156,7 +155,7 @@ bool CESP::render_player_esp(int index, const CGenericPlayer& player)
 #if 0
 	auto& model = entity.associated_model();
 
-	// see if model is valid
+
 	if (!model.is_valid())
 	{
 		return false;
@@ -174,9 +173,6 @@ bool CESP::render_player_esp(int index, const CGenericPlayer& player)
 	{
 		render_esp_box(metrics, player.get_color_based_on_team());
 
-		//
-		// player name
-		//
 
 		if (esp_player_name.get_value())
 		{
@@ -189,9 +185,6 @@ bool CESP::render_player_esp(int index, const CGenericPlayer& player)
 			render_esp_label(metrics, label_text);
 		}
 
-		//
-		// details
-		//
 
 		if (esp_player_details.get_value())
 		{
@@ -204,7 +197,7 @@ bool CESP::render_player_esp(int index, const CGenericPlayer& player)
 
 bool CESP::render_entity_esp(int index, const CGenericEntity& entity)
 {
-	// see if entity is valid
+
 	if (!entity.is_valid() || entity.is_out_of_update_for(1.0f))
 	{
 		return false;
@@ -217,9 +210,6 @@ bool CESP::render_entity_esp(int index, const CGenericEntity& entity)
 	{
 		render_esp_box(metrics, CColor(199, 21, 133, 230), 2.5f);
 
-		//
-		// render text
-		//
 
 		const char* label_text = "none";
 
@@ -259,11 +249,11 @@ bool CESP::render_sound_esp(const PlayerStepSound& step, uint32_t time_limit)
 	uint32_t life_dur = step.get_life_duration_ms();
 	if (life_dur == 0)
 	{
-		// assert there's no division by 0
+
 		life_dur = 1;
 	}
 
-	float current_ratio = ((float)life_dur / time_limit); // get 0-1 ratio
+	float current_ratio = ((float)life_dur / time_limit);
 	int animated_alpha = (int)(255.0f - current_ratio * 255.0f);
 	float animated_scale = 1.0f + (current_ratio * 10.0f);
 	float animated_rouding = 1.0f + (current_ratio * 20.0f);
@@ -287,7 +277,7 @@ bool CESP::render_sound_esp(const PlayerStepSound& step, uint32_t time_limit)
 	Vector2D screen;
 	if (CGameUtil::the().world_to_screen(ground_origin, screen))
 	{
-		if (type == 0) // 2d
+		if (type == 0)
 		{
 			render_circle_with_outline(
 				screen, animated_scale * 1.7f, 16,
@@ -296,10 +286,8 @@ bool CESP::render_sound_esp(const PlayerStepSound& step, uint32_t time_limit)
 		}
 	}
 
-	//
-	// cases rendered outside of the worldtoscreen function
-	//
-	if (type == 1) // 3d
+
+	if (type == 1)
 	{
 		render_space_rotated_circle_with_outline(
 			ground_origin, animated_scale * 2.0f, 32,
@@ -308,9 +296,7 @@ bool CESP::render_sound_esp(const PlayerStepSound& step, uint32_t time_limit)
 	}
 	else if (type == 2)
 	{
-		//
-		// render player esp on stepsound origin
-		//
+
 
 		auto player = CEntityMgr::the().get_player_by_id(step.entid);
 		if (!player)
@@ -318,7 +304,7 @@ bool CESP::render_sound_esp(const PlayerStepSound& step, uint32_t time_limit)
 			return false;
 		}
 
-		// only if the player is out of pvs
+
 		if (!(*player)->is_out_of_update_for(1.0f))
 		{
 			return true;
@@ -330,9 +316,6 @@ bool CESP::render_sound_esp(const PlayerStepSound& step, uint32_t time_limit)
 		{
 			render_esp_box(metrics, (*player)->get_color_based_on_team());
 
-			//
-			// player name
-			//
 
 			if (esp_player_name.get_value())
 			{
@@ -354,21 +337,21 @@ bool CESP::decide_player_enemy(VarBoolean* player_enemy, VarBoolean* player_team
 {
 	int enemy_st = CGameUtil::the().is_player_on_enemy_team(index);
 
-	// filter error cases
+
 	switch (enemy_st)
 	{
-		case -3: // player is unassigned or spectator
+		case -3:
 		{
 			return false;
 		}
-		case -2: // local is unassigned or spectator
-		case -1: // could not get player or local
+		case -2:
+		case -1:
 		{
 			return true;
 		}
 	}
 
-	// check for player team
+
 	if (!player_enemy->get_value() && enemy_st == 1)
 	{
 		return false;
@@ -379,7 +362,7 @@ bool CESP::decide_player_enemy(VarBoolean* player_enemy, VarBoolean* player_team
 		return false;
 	}
 
-	return true; // should not happen
+	return true;
 }
 
 float CESP::get_playerbox_ratio(const CGenericPlayer* player)
@@ -420,11 +403,10 @@ bool CESP::render_planted_bomb_esp(const BombInfo& bomb_info)
 	return true;
 }
 
-//------------------------------------------------------------------------------------------------
 
 bool CESP::origin_to_2d_box(const Vector& origin, const Vector& min, const Vector& max, float box_aspect, ESPBoxMetrics& metrics)
 {
-	// filter out invalid origins
+
 	if (origin.IsZero())
 	{
 		return false;
@@ -433,11 +415,11 @@ bool CESP::origin_to_2d_box(const Vector& origin, const Vector& min, const Vecto
 	auto bbox_min = min;
 	auto bbox_max = max;
 
-	// correct bounding boxes
+
 	if (bbox_min.IsZero()) bbox_min.z = -5.0f;
 	if (bbox_max.IsZero()) bbox_max.z = 5.0f;
 
-	Vector box_top3d = origin + Vector(0.0f, 0.0f, bbox_max.z); // add a little bit of height
+	Vector box_top3d = origin + Vector(0.0f, 0.0f, bbox_max.z);
 	Vector box_bot3d = origin + Vector(0.0f, 0.0f, bbox_min.z);
 
 	Vector2D box_top2d, box_bot2d;
@@ -446,7 +428,7 @@ bool CESP::origin_to_2d_box(const Vector& origin, const Vector& min, const Vecto
 		return false;
 	}
 
-	// add the artifical aspect ratio, if we set one
+
 	if (aspect_ratio_enable.get_value())
 	{
 		box_aspect *= 1.0f / aspect_ratio_value.get_value();
@@ -473,7 +455,7 @@ void CESP::render_esp_label(const ESPBoxMetrics& metrics, const std::string& lab
 	auto text_font = g_gui_fontmgr_i->get_font(FID_SegoeUI, FSZ_10px, FDC_Bold);
 	auto label_size = g_gui_fontmgr_i->calc_font_text_size(text_font, label.c_str());
 
-	float label_padding = 1.0f + 1.0f; // 1 for the box outline thickness
+	float label_padding = 1.0f + 1.0f;
 	Vector2D label_bottom_centered = { metrics.box_botright.x - (metrics.box_wide_half + label_size.x / 2), metrics.box_botright.y + label_padding };
 
 	g_gui_window_rendering_i->render_text_with_background(
@@ -493,7 +475,7 @@ void CESP::render_esp_details(const ESPBoxMetrics& metrics, const CGenericPlayer
 	label += std::format("id: {}\n", player.cl_entity()->index);
 	label += std::format("mins/maxs: {} {}\n", player.get_bounding_box_min(), player.get_bounding_box_max());
 	label += std::format("movetype: {}\n", player.cl_entity()->curstate.movetype);
-//	label += std::format("activity: {}\n", player.);
+
 
 	Vector2D label_top_right = { metrics.box_topright.x + 3.0f, metrics.box_topright.y };
 
@@ -508,13 +490,11 @@ void CESP::render_esp_details(const ESPBoxMetrics& metrics, const CGenericPlayer
 void CESP::render_box_for_four_points(const Vector2D& top_left, const Vector2D& top_right, const Vector2D& bottom_right,
 									  const Vector2D& bottom_left, const CColor& color, float box_tall_half, float corner_ratio)
 {
-	//
-	// render 4 corners using lines. this fixes visual deformation of the box when faced on the far side of fisheye effect.
-	//
+
 
 	switch (esp_box_type.get_value())
 	{
-		case 0: // normal
+		case 0:
 		{
 			render_line_with_outline(top_left, top_right, color);
 			render_line_with_outline(top_right, bottom_right, color);
@@ -523,24 +503,24 @@ void CESP::render_box_for_four_points(const Vector2D& top_left, const Vector2D& 
 
 			break;
 		}
-		case 1: // corner
+		case 1:
 		{
-			float length = box_tall_half * 0.1 * corner_ratio; // px
+			float length = box_tall_half * 0.1 * corner_ratio;
 			length = std::clamp(length, 1.0f, 50.0f);
 
-			// top left
+
 			render_line_with_outline(top_left + Vector2D(0.0f, length), top_left, color);
 			render_line_with_outline(top_left, top_left + Vector2D(length, 0.0f), color);
 
-			// top right
+
 			render_line_with_outline(top_right - Vector2D(length, 0.0f), top_right, color);
 			render_line_with_outline(top_right, top_right + Vector2D(0.0f, length), color);
 
-			// bottom right
+
 			render_line_with_outline(bottom_right - Vector2D(length, 0.0f), bottom_right, color);
 			render_line_with_outline(bottom_right, bottom_right - Vector2D(0.0f, length), color);
 
-			// bottom left
+
 			render_line_with_outline(bottom_left + Vector2D(length, 0.0f), bottom_left, color);
 			render_line_with_outline(bottom_left, bottom_left - Vector2D(0.0f, length), color);
 
@@ -548,9 +528,6 @@ void CESP::render_box_for_four_points(const Vector2D& top_left, const Vector2D& 
 		}
 	}
 
-	//
-	// render box background
-	//
 
 	if (esp_background.get_value())
 	{
@@ -567,7 +544,7 @@ void CESP::render_line_with_outline(const Vector2D& from, const Vector2D& to, co
 {
 	if (esp_box_outline.get_value())
 	{
-		auto c = s_outline_color; // to preserve the alpha, in case it changes
+		auto c = s_outline_color;
 		c.a = color.a;
 		g_gui_window_rendering_i->render_line(g_gui_window_rendering_i->get_current_drawlist(), from, to, c, thicc + 0.5f);
 	}
@@ -578,7 +555,7 @@ void CESP::render_circle_with_outline(const Vector2D& center, float radius, int 
 {
 	if (esp_box_outline.get_value())
 	{
-		auto c = s_outline_color; // to preserve the alpha, in case it changes
+		auto c = s_outline_color;
 		c.a = color.a;
 		g_gui_window_rendering_i->render_circle(g_gui_window_rendering_i->get_current_drawlist(), center, radius, num_segments, c, thicc + 0.5f);
 	}
@@ -597,11 +574,8 @@ void CESP::render_space_rotated_circle_with_outline(const Vector& origin, float 
 		Vector2D vScreenFrom, vScreenTo;
 		if (CGameUtil::the().world_to_screen(vStart, vScreenFrom) && CGameUtil::the().world_to_screen(vEnd, vScreenTo))
 		{
-			//auto c = s_outline_color; // to preserve the alpha, in case it changes
-			//c.a = color.a;
-			//render_line_with_outline(ImVec2(vScreenFrom.x + 1.f, vScreenFrom.y + 1.f),
-			//						 ImVec2(vScreenTo.x + 1.f, vScreenTo.y + 1.f),
-			//						 c, thicc);
+
+
 			render_line_with_outline(ImVec2(vScreenFrom.x, vScreenFrom.y),
 									 ImVec2(vScreenTo.x, vScreenTo.y),
 									 color, thicc);
@@ -609,7 +583,6 @@ void CESP::render_space_rotated_circle_with_outline(const Vector& origin, float 
 	}
 }
 
-//---------------------------------------------------------------------------------------
 
 void CSoundEsp::register_player_step(const Vector& sound_origin, int entid)
 {
@@ -649,20 +622,19 @@ void CSoundEsp::resolve_sound_entid(const Vector& sound_origin, int& entid)
 {
 	if (CGameUtil::the().is_player_index(entid))
 	{
-		return; // valid
+		return;
 	}
 
-	// try to lookup the cache
+
 	auto it = m_resolver_cache.find(entid);
 	if (it != m_resolver_cache.end())
 	{
-		//CConsole::the().info("grabbed from cache {} to {}", entid, (*it).second.resolved_index);
+
 		entid = (*it).second.resolved_index;
-		return; // found a match!
+		return;
 	}
 
-	// some servers have anticheat for sound-esp that they basically send invalid entid when a stepsound is
-	// made, hence confusing our team-recognition code. 
+
 	for (auto& [index, plr] : CEntityMgr::the().m_known_players)
 	{
 		auto ent = plr.cl_entity();
@@ -676,10 +648,10 @@ void CSoundEsp::resolve_sound_entid(const Vector& sound_origin, int& entid)
 			int unresolved = entid;
 			entid = index;
 			m_resolver_cache[unresolved] = index;
-			//CConsole::the().info("resolved {} to {}", unresolved, index);
+
 			return;
 		}
 	}
 
-	//CConsole::the().error("Failed to resolve: {}", entid);
+
 }

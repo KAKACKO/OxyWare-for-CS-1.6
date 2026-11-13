@@ -84,7 +84,7 @@ void MenuChilden::Movement::GroundStrafe::contents()
 		g_gui_widgets_i->add_spacing();
 		g_gui_widgets_i->add_separator();
 
-		if (movement_gs_mode.get_value() == 0) // legit
+		if (movement_gs_mode.get_value() == 0)
 		{
 			g_gui_widgets_i->add_separtor_with_text("Scroll emulation");
 			g_gui_widgets_i->add_text("Ground distance to start scrolling");
@@ -96,7 +96,7 @@ void MenuChilden::Movement::GroundStrafe::contents()
 			int min = movement_gs_legit_ground_dist_min.get_value();
 			int max = movement_gs_legit_ground_dist_max.get_value();
 
-			// auto-correct nonsense values
+
 			if (min > max)
 			{
 				movement_gs_legit_ground_dist_min.set_value(max);
@@ -112,7 +112,7 @@ void MenuChilden::Movement::GroundStrafe::contents()
 
 			CUIMenuWidgets::the().add_description_text("Same settings as in bunnyhop. I don't want to repeat myself here 😉");
 		}
-		else if (movement_gs_mode.get_value() == 1) // rage
+		else if (movement_gs_mode.get_value() == 1)
 		{
 			CUIMenuWidgets::the().add_description_text(
 				"Rage bhop is highly obviously to someone, who analyzes your demo - be careful where you use it. "
@@ -159,7 +159,7 @@ void MenuChilden::Movement::StrafeHelper::contents()
 	&CMovement::the().strafe_helper,
 	[]()
 	{
-		CUIMenuWidgets::the().add_slider("Accumulation", "%0.2f", &movement_strafe_helper_accumulation);//
+		CUIMenuWidgets::the().add_slider("Accumulation", "%0.2f", &movement_strafe_helper_accumulation);
 		CUIMenuWidgets::the().add_checkbox("Accumulation on ground", &movement_strafe_helper_accumulation_on_ground);
 
 		CUIMenuWidgets::the().feature_enabled_section(
@@ -206,7 +206,7 @@ void MenuChilden::Movement::Bunnyhop::contents()
 		g_gui_widgets_i->add_spacing();
 		g_gui_widgets_i->add_separator();
 
-		if (movement_bhop_mode.get_value() == 0) // legit
+		if (movement_bhop_mode.get_value() == 0)
 		{
 			g_gui_widgets_i->add_separtor_with_text("Scroll emulation");
 			g_gui_widgets_i->add_text("Ground distance to start scrolling");
@@ -218,7 +218,7 @@ void MenuChilden::Movement::Bunnyhop::contents()
 			int min = movement_bhop_legit_ground_dist_min.get_value();
 			int max = movement_bhop_legit_ground_dist_max.get_value();
 
-			// auto-correct nonsense values
+
 			if (min > max)
 			{
 				movement_bhop_legit_ground_dist_min.set_value(max);
@@ -234,7 +234,7 @@ void MenuChilden::Movement::Bunnyhop::contents()
 
 			CUIMenuWidgets::the().add_description_text("Helper tries to predict whenever you'll be on ground next frame - therefore can execute a perfect jump on that next frame.");
 		}
-		else if (movement_bhop_mode.get_value() == 1) // rage
+		else if (movement_bhop_mode.get_value() == 1)
 		{
 			CUIMenuWidgets::the().add_description_text(
 				"Rage bhop is highly obviously to someone, who analyzes your demo - be careful where you use it. "

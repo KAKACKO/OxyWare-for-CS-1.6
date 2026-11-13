@@ -26,19 +26,16 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// BytePattern.h -- A simple utility class that enables byte pattern searching in loaded address space.
-//
 
 #ifndef BYTEPATTERN_H
 #define BYTEPATTERN_H
 
 #pragma once
 
-// opcode representing runtine that can be relocated.
+
 #define RELOCABLE_ADDRESS_WILDCARD (uint8_t)('\xCC')
 
-static constexpr size_t k_max_pattern_length = 128; // had to increase once.
+static constexpr size_t k_max_pattern_length = 128;
 
 class CBaseBytePattern
 {
@@ -103,7 +100,7 @@ public:
 	}
 
 protected:
-	std::string m_pattern, m_mask; // the mask is automatically generated
+	std::string m_pattern, m_mask;
 	uintptr_t m_offset;
 };
 
@@ -122,8 +119,7 @@ public:
 
 		m_mask = generate_mask_from_pattern_constexpr(pattern);
 
-		// Doesn't end the nullcharacter if we specify the length however,
-		// the sequence of characters we pass to this function is NULL TERMINATED!
+
 		m_pattern = std::string(pattern, N - 1);
 	}
 
@@ -148,13 +144,13 @@ public:
 	{
 	}
 
-	// ASSUME LENGTH IS NOT INLCUDING THE NULL TERMINATOR!
+
 	CBytePatternRuntime(const char* pattern, size_t length, uintptr_t offset = 0x00000000)
 	{
 		m_offset = offset;
 		m_mask = generate_mask_from_pattern_runtime(pattern, length);
 
-		// Doesn't end the nullcharacter if we specify the length.
+
 		m_pattern = std::string(pattern, length);
 	}
 
@@ -173,4 +169,4 @@ public:
 
 using CBytePattern = CBytePatternWithLengthConstexpr<k_max_pattern_length>;
 
-#endif // BYTEPATTERN_H
+#endif

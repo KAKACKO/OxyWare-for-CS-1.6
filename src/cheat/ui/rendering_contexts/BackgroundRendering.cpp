@@ -39,7 +39,7 @@ void CUIBackgroundRendering::on_render()
 		return;
 	}
 
-	// can happen that this gets called before the interface hook is initialized. oh well
+
 	auto gameuifuncs = CHLInterfaceHook::the().IGameUI();
 	if (gameuifuncs && gameuifuncs->IsGameUIActive())
 	{
@@ -71,7 +71,7 @@ void CUIBackgroundRendering::on_render()
 	g_gui_widgets_i->create_new_window(
 		"background_rendering", window_flags, [&]()
 		{
-#if 0 // debug: render a rect around bounds of this window
+#if 0
 			g_gui_window_rendering_i->render_box_outline(
 				g_gui_window_rendering_i->get_current_drawlist(), 
 				screen_pos, screen_pos + screen_size,

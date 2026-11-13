@@ -62,7 +62,7 @@ protected:
 	T m_value, m_default, m_min, m_max;
 };
 
-// use with bigger objects
+
 template<typename T>
 class VariableValueRef
 {
@@ -115,7 +115,7 @@ public:
 		add_to_global_list();
 	}
 
-	// getters
+
 	virtual const char* get_name() const { return m_name.c_str(); }
 	virtual const char* get_description() const { return m_desc.c_str(); }
 
@@ -128,7 +128,7 @@ public:
 
 	virtual bool has_bounds() const { return m_has_bounds; }
 
-	// class that derives from this has to override these.
+
 	virtual void set_from_string(const std::string& new_value)
 	{
 		assert(0 && "You have to override this function from your class! (set_from_string)");
@@ -152,11 +152,10 @@ protected:
 	std::string m_value_string, m_default_string, m_min_string, m_max_string;
 	bool m_has_bounds = false;
 
-	// set automatically
+
 	const char* m_module_owner;
 };
 
-//--------------------------------------------------------------------------------------------------------------------
 
 class VarFloat final : public BaseVariable, public VariableValue<float>
 {
@@ -346,7 +345,7 @@ private:
 	}
 };
 
-// accepts only "yes" and "no" format.
+
 class VarBoolean final : public BaseVariable, public VariableValue<bool>
 {
 public:
@@ -519,7 +518,7 @@ private:
 	}
 };
 
-class VarString final : public BaseVariable // don't need variable value. BaseVariable itself contains strings.
+class VarString final : public BaseVariable
 {
 public:
 	VarString(const char* name, const char* description, const char* value)
@@ -542,16 +541,12 @@ public:
 	}
 };
 
-//--------------------------------------------------------------------------------------------------------------------
 
-// maximum amount of variables that our list can hold
-static constexpr size_t k_max_variables_per_module = 1024; // 5th June, increased from 128 to 256
-														   // 25th July, increased from 256 to 1024 so that we don't have to deal with this no more.
-static constexpr size_t k_max_variables_absolute = 1024; // used in VariableManager
+static constexpr size_t k_max_variables_per_module = 1024;
 
-// This class is used in order to register/unregister all variables that are declared globally. Note that this is only
-// a "temporary" storage, and isn't really used for variable lookup. The VaraibleManager then collects all variables stored 
-// by this container and creates its own list.
+static constexpr size_t k_max_variables_absolute = 1024;
+
+
 class StaticVariableContainer
 {
 public:
@@ -560,7 +555,7 @@ public:
 	inline auto& get_variable_list() const { return m_variables; }
 
 private:
-	// call only once
+
 	void reserve_limit();
 
 	bool see_for_overflow(BaseVariable* current_var);
@@ -571,19 +566,16 @@ private:
 
 extern StaticVariableContainer g_static_variable_container;
 
-// called once global variable is instantiated.
+
 inline void BaseVariable::add_to_global_list()
 {
 	g_static_variable_container.add_variable(this);
 }
 
-//--------------------------------------------------------------------------------------------------------------------
-// COMMANDS
-//
 
 struct CmdArgs
 {
-	// implicit constructor
+
 	CmdArgs(const std::vector<std::string>& _args) : args(_args) {}
 
 	std::string get(size_t pos) const
@@ -642,7 +634,7 @@ public:
 	inline const char* get_description() const { return m_description.c_str(); }
 	inline ECommandFlags get_flags() const { return m_flags; }
 
-	// usage
+
 	inline bool has_usage() const { return !m_usage.empty(); }
 	inline const char* get_usage() const { return m_usage.c_str(); }
 
@@ -672,15 +664,11 @@ protected:
 	ECommandFlags m_flags;
 };
 
-//--------------------------------------------------------------------------------------------------------------------
 
-// maximum amount of variables that our list can hold
 static constexpr size_t k_max_commands_per_module = 64;
-static constexpr size_t k_max_commands_absolute = 64 * 8; // used in VariableManager
+static constexpr size_t k_max_commands_absolute = 64 * 8;
 
-// This class is used in order to register/unregister all variables that are declared globally. Note that this is only
-// a "temporary" storage, and isn't really used for variable lookup. The VaraibleManager then collects all variables stored 
-// by this container and creates its own list.
+
 class StaticCommandContainer
 {
 public:
@@ -689,7 +677,7 @@ public:
 	inline auto& get_command_list() const { return m_commands; }
 
 private:
-	// call only once
+
 	void reserve_limit();
 
 	bool see_for_overflow(BaseCommand* current_var);
@@ -700,10 +688,10 @@ private:
 
 extern StaticCommandContainer g_static_command_container;
 
-// called once global variable is instantiated.
+
 inline void BaseCommand::add_to_global_list()
 {
 	g_static_command_container.add_command(this);
 }
 
-#endif // BASEVARIABLE_H
+#endif

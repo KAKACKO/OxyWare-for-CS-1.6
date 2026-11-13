@@ -44,4 +44,4 @@ public:
 	static InCommand thirdperson;
 };
 
-#endif // THIRDPERSON_H
+#endif

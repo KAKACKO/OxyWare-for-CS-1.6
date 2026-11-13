@@ -64,4 +64,4 @@ public:
 	bool remove_sniper_scope();
 };
 
-#endif // REMOVALS_H
+#endif

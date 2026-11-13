@@ -42,20 +42,20 @@ public:
 
 	virtual bool is_valid() const { return m_ent != nullptr; }
 
-	// getters
+
 	hl::cl_entity_t* cl_entity() const { return m_ent; }
 	const CGenericMdl& associated_model() const { return m_model; }
 
 	Vector get_bounding_box_min() const { return m_ent->curstate.mins; }
 	Vector get_bounding_box_max() const { return m_ent->curstate.maxs; }
 
-	// true if entity didn't receive any state updates for an interval.
+
 	bool is_out_of_update_for(float interval) const;
 
 protected:
-	hl::cl_entity_t* m_ent = nullptr; // can't be null when iterated over the list
+	hl::cl_entity_t* m_ent = nullptr;
 
 	CGenericMdl m_model;
 };
 
-#endif // GENERICENT_H
+#endif

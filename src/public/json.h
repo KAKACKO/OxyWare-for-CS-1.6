@@ -30,16 +30,15 @@
 #define JSON_H
 #pragma once
 
-// don't inlcude nlohmann/json directory, use this header file instead.
-// as a convenience, it also creates a new typedef for the json class.
+
 #include <nlohmann/json.hpp>
 namespace nh
 {
 using namespace nlohmann;
 	using json = nlohmann::ordered_json;
-//	using ordered_json = nlohmann::ordered_json;
+
 }
 
 #include "custom_json_types.h"
 
-#endif // JSON_H
+#endif

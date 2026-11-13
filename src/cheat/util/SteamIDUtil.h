@@ -30,8 +30,7 @@
 #define STEAMIDUTIL_H
 #pragma once
 
-// old steam id, used by goldsrc e.g. in "status" command.
-// see TSteamGlobalUserID in SteamCommon.h
+
 struct Steam2ID_t
 {
 	uint16_t m_SteamInstanceID;
@@ -47,8 +46,7 @@ struct Steam2ID_t
 	} m_SteamLocalUserID;
 };
 
-// new steam id
-// see CSteamID in steamclientpublic.h
+
 union Steam3ID_t
 {
 	Steam3ID_t() :
@@ -63,10 +61,10 @@ union Steam3ID_t
 
 	struct
 	{
-		uint32_t		m_unAccountID : 32; // unique account identifier
-		uint32_t		m_unAccountInstance : 20; // dynamic instance ID
-		uint32_t		m_EAccountType : 4;  // type of account - can't show as EAccountType, due to signed / unsigned difference
-		hl::EUniverse	m_EUniverse : 8;  // universe this account belongs to
+		uint32_t		m_unAccountID : 32;
+		uint32_t		m_unAccountInstance : 20;
+		uint32_t		m_EAccountType : 4;
+		hl::EUniverse	m_EUniverse : 8;
 	};
 
 	struct
@@ -84,43 +82,42 @@ public:
 	DECL_BASIC_CLASS(CSteamIDUtil);
 
 public:
-	// converts team id to steam3/2 id: "[letter:1:W]"
+
 	std::string render_steam3_id_variant_1(Steam3ID_t steam3_id);
 
-	// converts team id to steam3/2 id: "STEAM_X:Y:Z"
-	std::string render_steam3_id_variant_2(Steam3ID_t steam3_id);
-	std::string render_steam2_id_variant_2(Steam3ID_t steam3_id); // NOTE: we need to check for steam through steamid3
 
-	// render steam account
+	std::string render_steam3_id_variant_2(Steam3ID_t steam3_id);
+	std::string render_steam2_id_variant_2(Steam3ID_t steam3_id);
+
+
 	std::string render_steam_account(Steam3ID_t steam3_id);
 
-	// steam id to steamcommunity url
+
 	std::string steam_id_to_url(Steam3ID_t steam3_id);
 
-	// sub path by account path that is used in steamcommunity url
+
 	std::string sub_path_from_account_type(Steam3ID_t steam3_id);
 
-	// returns steam identifier for account id
+
 	Steam3ID_t get_steam_id_account_identifier(Steam3ID_t steam3_id);
 
-	// converts steam id to community id
+
 	Steam3ID_t convert_to_steam_community_id(Steam3ID_t steam3_id);
 
-	// convert steam id 3 to steam id 2 and vice versa
+
 	Steam2ID_t to_steam2(Steam3ID_t steam3_id);
 
-	// tries to determine if player is using steam or nonsteam depending on their steam id
-	// see the function for more details
+
 	bool is_steam_user(Steam3ID_t steam3_id);
 
-	// true if bot
+
 	bool is_bot(Steam3ID_t steam3_id);
 
-	// validates steam id
+
 	bool is_valid(Steam3ID_t steam3_id);
 
-	// true if player used steam id changer.
+
 	bool is_using_sid_changer(Steam3ID_t steam3_id);
 };
 
-#endif // STEAMIDUTIL_H
+#endif

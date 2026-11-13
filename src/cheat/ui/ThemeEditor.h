@@ -54,4 +54,4 @@ private:
 	static UIStatusWidget m_status_widget;
 };
 
-#endif // THEMEEDITOR_H
+#endif

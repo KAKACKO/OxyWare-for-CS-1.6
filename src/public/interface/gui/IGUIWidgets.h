@@ -40,17 +40,17 @@ enum ETextProperties
 {
 	TEXTPROP_None = 0,
 
-	// decorations
+
 	TEXTPROP_Slim = BIT(1),
 	TEXTPROP_Disabled = BIT(2),
 
-	// colors
+
 	TEXTPROP_ColorWhite = BIT(3),
 	TEXTPROP_ColorRegular = BIT(4),
 	TEXTPROP_ColorDark = BIT(5),
 	TEXTPROP_ColorBlack = BIT(6),
 
-	// properties
+
 	TEXTPROP_Wrapped = BIT(7),
 };
 
@@ -80,9 +80,7 @@ typedef void(__cdecl*SectionTabFn)(void* arg);
 class IGUIWidgets : public IBaseInterface
 {
 public:
-	//
-	// Windows
-	//
+
 
 	virtual void set_next_window_size(const Vector2D& size, ImGuiCond condition = ImGuiCond_None) = 0;
 	virtual void set_next_window_pos(const Vector2D& pos, ImGuiCond condition = ImGuiCond_None) = 0;
@@ -104,9 +102,6 @@ public:
 
 	virtual void show_font_atlas() = 0;
 
-	//
-	// Properties
-	//
 
 	virtual void push_disabled() = 0;
 	virtual void pop_disabled() = 0;
@@ -148,7 +143,7 @@ public:
 	virtual void pop_executing_popup_code() = 0;
 
 	virtual Vector2D get_current_scroll() = 0;
-	virtual void set_scroll(const Vector2D& xy) = 0; // provide -1 for no scroll
+	virtual void set_scroll(const Vector2D& xy) = 0;
 
 	virtual ImGuiStyle& get_imgui_style() = 0;
 
@@ -159,9 +154,6 @@ public:
 	virtual void push_id(int id) = 0;
 	virtual void pop_id() = 0;
 
-	//
-	// Widgets
-	//
 
 	virtual void add_text(const std::string& text, ETextProperties properties = TEXTPROP_None, ImFont* font = nullptr) = 0;
 	virtual void add_bullet_text(const std::string& text, ETextProperties properties = TEXTPROP_None, ImFont* font = nullptr) = 0;
@@ -217,20 +209,12 @@ public:
 
 	virtual void add_image(ImTextureID id, const Vector2D& size) = 0;
 
-	//
-	// Tables/lists/columns
-	//
+
 	
-	// Adds new imgui table
+
 	virtual void add_table(const std::string& name, uint32_t columns, ImGuiTableFlags flags, const std::function<void()>& header_callback, const std::function<void()>& body_callback) = 0;
 
-	// Use for simple tables such as:
-	// 
-	// name       value
-	// name1      value1
-	// ...
-	// nameN      valueN
-	//
+
 	virtual void add_undecorated_simple_table(const std::string& name, uint32_t columns, const std::function<void()>& body_callback) = 0;
 
 	virtual void table_setup_column_fixed_width(const std::string& name, float width, ImGuiTableColumnFlags flags = ImGuiTableColumnFlags_None) = 0;
@@ -240,7 +224,7 @@ public:
 
 	virtual void table_headers_row() = 0;
 
-	// columns using tables api
+
 	virtual bool begin_columns(const std::string& label, int count_columns, ImGuiTableFlags flags = 0) = 0;
 	virtual void end_columns() = 0;
 	virtual void setup_column_fixed_width(float width, ImGuiTableColumnFlags flags = ImGuiTableColumnFlags_None) = 0;
@@ -248,29 +232,18 @@ public:
 	virtual void goto_next_column() = 0;
 	virtual void goto_next_row() = 0;
 
-	//
-	// Input text buffer operations
-	//
 
 	virtual void delete_chars_on_textinput_buffer(ImGuiInputTextCallbackData* data, int pos, int bytes_count) = 0;
 	virtual void insert_chars_to_textinput_buffer(ImGuiInputTextCallbackData* data, int pos, const char* text, const char* text_end = NULL) = 0;
 
-	//
-	// Tabs
-	//
 
 	virtual void begin_tab(const std::string& label, ImGuiTabBarFlags flags) = 0;
 	virtual void add_tab_item(const std::string& label, bool border, const Vector2D& size, const std::function<void()>& pfn_contents, const Vector2D& child_padding = {}) = 0;
 	virtual void end_tab() = 0;
 
-	//
-	// Custom widgets
-	//
+
 	virtual void add_console() = 0;
 
-	//
-	// rendering
-	//
 
 	virtual void render_arrow(const Vector2D& pos, const CColor& color, EArrowDirection direction) = 0;
 };
@@ -279,4 +252,4 @@ extern IGUIWidgets* g_gui_widgets_i;
 
 #define IGUIWIDGETS_INTERFACEID "IGUIWidgets"
 
-#endif // IGUIWIDGETS_H
+#endif

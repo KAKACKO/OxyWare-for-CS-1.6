@@ -30,18 +30,18 @@
 #define BASETYPES_H
 #pragma once
 
-// for our hooking (from kernel32.dll)
+
 typedef HMODULE(WINAPI*pfnLoadLibraryExW_t)(LPWSTR lpLibFileName, HANDLE hFile, DWORD dwFlags);
 typedef BOOL(WINAPI*pfnFreeLibrary_t)(HMODULE hLibModule);
 typedef BOOL(WINAPI*pfnSetDefaultDllDirectories_t)(DWORD DirectoryFlags);
 
-// and ntdll.dll
+
 typedef VOID(NTAPI*pfnRtlInitUnicodeString_t)(PUNICODE_STRING DestinationString, PCWSTR SourceString);
 typedef NTSTATUS(NTAPI*pfnLdrAddDllDirectory_t)(PUNICODE_STRING NewDirectory, PDLL_DIRECTORY_COOKIE DirectoryCookie);
 
-// session id that is provided to the injected module. This changes every time we inject.
+
 typedef unsigned int session_id_t;
 
 typedef unsigned char byte;
 
-#endif // BASETYPES_H
+#endif

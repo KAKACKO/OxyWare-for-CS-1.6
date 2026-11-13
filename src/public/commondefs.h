@@ -32,7 +32,7 @@
 
 #include "platform.h"
 
-// module names
+
 #define MODULE_ASSETS			"assets.lib"
 #define MODULE_INJECTOR			"injector.lib"
 #define MODULE_LOADER			"loader.exe"
@@ -40,7 +40,7 @@
 #define MODULE_UTIL				"util.dll"
 #define MODULE_TIER				"tier.lib"
 #define MODULE_GUI				"oxui.dll"
-// wstring version
+
 #define WMODULE_ASSETS			L"assets.lib"
 #define WMODULE_INJECTOR		L"injector.lib"
 #define WMODULE_LOADER			L"loader.exe"
@@ -71,17 +71,14 @@
 #define GET_CURRENT_PROCESS_HANDLE()	(HANDLE)-1
 #define GET_CURRENT_THREAD_HANDLE()		(HANDLE)-2
 
-// Disables stuff such as security cookies and such. This is needed for example for the shellcode routine.
-// for more information see this:
-// https://learn.microsoft.com/en-us/cpp/cpp/safebuffers?view=msvc-170&viewFallbackFrom=vs-2017
-// and https://stackoverflow.com/questions/19945479/what-is-security-cookie-in-c
+
 #define DISABLE_SAFEBUFFERS __declspec( safebuffers )
 
-// bit helper
+
 template<typename T>
 consteval T BIT(T N) { return N == -1 ? 0 : (1 << N); }
 
-// decl singleton for a class instance
+
 #define DECL_BASIC_CLASS(name)			\
 	static __forceinline name& the()	\
 	{									\
@@ -93,7 +90,7 @@ consteval T BIT(T N) { return N == -1 ? 0 : (1 << N); }
 #define NULL 0
 #endif
 
-// this allows enumerations to be used as flags, and still remain type-safe!
+
 #define DEFINE_ENUM_BITWISE_OPERATORS( Type ) \
 	inline Type  operator|  ( Type  a, Type b ) { return Type( int( a ) | int( b ) ); } \
 	inline Type  operator&  ( Type  a, Type b ) { return Type( int( a ) & int( b ) ); } \
@@ -107,7 +104,7 @@ consteval T BIT(T N) { return N == -1 ? 0 : (1 << N); }
 	inline Type &operator>>=( Type &a, int  b ) { return a = a >> b; } \
 	inline Type  operator~( Type a ) { return Type( ~int( a ) ); }
 
-// defines increment/decrement operators for enums for easy iteration
+
 #define DEFINE_ENUM_INCREMENT_OPERATORS( Type ) \
 	inline Type &operator++( Type &a      ) { return a = Type( int( a ) + 1 ); } \
 	inline Type &operator--( Type &a      ) { return a = Type( int( a ) - 1 ); } \
@@ -116,16 +113,12 @@ consteval T BIT(T N) { return N == -1 ? 0 : (1 << N); }
 
 #define OX_ARRAYSIZE(x)    (sizeof(x)/sizeof(x[0]))
 
-// the first engine build in which sdl was introduced instead of winapi.
+
 #define FIRST_SDL_BUILD 5943
 
-// first build (that i could find) where this fix got proposed
-// https://github.com/ValveSoftware/halflife/issues/1940#issuecomment-13052903
-#define FIRST_CLMOVE_DPS_DEPENDENCE_BUILD 6100 // something around ~6100
 
-//
-// create a custom std::hash<> for your custom type
-//
+#define FIRST_CLMOVE_DPS_DEPENDENCE_BUILD 6100
+
 
 inline void hash_combine(std::size_t& seed) { }
 
@@ -147,4 +140,4 @@ inline void hash_combine(std::size_t& seed, const T& v, Rest... rest) {
         };\
     }
 
-#endif // COMMONDEFS_H
+#endif

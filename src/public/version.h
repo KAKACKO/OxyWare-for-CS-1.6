@@ -30,17 +30,11 @@
 #define VERSION_H
 #pragma once
 
-// https://semver.org/
-// MAJOR version when you make incompatible API changes, a lot of stuff changed/added
-// MINOR version when you add functionality, bigger improvements
-// PATCH version when you make bug fixes, small improvements
-//
-// for the list of changes, see https://github.com/oxiKKK/oxware/blob/main/changelog.md
 
 #define OXVER_MAJOR		1
 #define OXVER_MINOR		0
 #define OXVER_PATCH		6
-#define OXVER_STRING	"1.0.6" // don't forget to change, too!
+#define OXVER_STRING	"1.0.6"
 
 #if defined(_DEBUG)
 #define OX_BUILD "debug"
@@ -52,4 +46,4 @@
 
 #define OX_COMPILE_TIMESTAMP __DATE__ " " __TIME__ 
 
-#endif // VERSION_H
+#endif

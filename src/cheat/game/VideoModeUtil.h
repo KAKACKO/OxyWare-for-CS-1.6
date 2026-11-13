@@ -39,19 +39,15 @@ public:
 	void initialize();
 	void update();
 
-	// getters
+
 	inline bool is_fullscreen() const { return m_is_fullscreen; }
 	inline bool has_blackbars() const { return m_has_blackbars; }
 
-	// a little bit of information about screensize in this game:
-	//	- when windowed  : m_full_screen_size == m_real_screen_size == size of the window
-	//	- when fullscreen: m_full_screen_size is always the size of your monitor, and
-	//					   when blackbars off: m_real_screen_size is the size of your monitor.
-	//					   when blackbars on:  m_real_screen_size is the size of your monitor excluding the blackbars.
+
 	inline Vector2D get_full_screen_size() const { return m_full_screen_size; }
 	inline Vector2D get_real_screen_size() const { return m_real_screen_size; }
 
-	// size of current videmode
+
 	inline Vector2D get_videomode_screen_size() const { return m_videomode_screen_size; }
 
 	inline Vector2D get_ingame_viewport_pos() const { return m_ingame_viewport_pos; }
@@ -68,4 +64,4 @@ private:
 	Vector2D m_ingame_viewport_pos;
 };
 
-#endif // VIDEOMODEUTIL_H
+#endif

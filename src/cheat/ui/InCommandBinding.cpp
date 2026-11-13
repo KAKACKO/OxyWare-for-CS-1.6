@@ -39,8 +39,7 @@ void CUIInCommandKeyBinding::update()
 
 	keep_ui_elements_up_to_date();
 
-	// We can check this way if we started the key binding mode from our code.
-	// Because it could be started elsewhere, e.g. bindmanager code.
+
 	bool did_start_key_binding_mode = m_in_cmd_to_be_rebound != nullptr;
 
 	if (did_start_key_binding_mode)
@@ -48,7 +47,7 @@ void CUIInCommandKeyBinding::update()
 		int vk_pressed = g_user_input_i->get_bound_key();
 		if (vk_pressed != NULL)
 		{
-			// a key was just bound from the UserInput code
+
 
 			end_key_binding_mode(vk_pressed);
 		}
@@ -101,7 +100,7 @@ void CUIInCommandKeyBinding::render_interactible_list()
 				g_gui_widgets_i->setup_column_fixed_width(50.0f);
 				g_gui_widgets_i->setup_column_fixed_width(285.0f);
 
-				// for the '...' button
+
 				static struct popup_state_t
 				{
 					BaseInCommand* in_cmd;
@@ -119,7 +118,7 @@ void CUIInCommandKeyBinding::render_interactible_list()
 
 						add_keyscan_button(in_cmd, Vector2D(-1.0f, 25.0f));
 
-						// unique insertion
+
 						ui_incmd_element_t* ui_element = retreive_ui_element_or_insert_new(in_cmd);
 
 						g_gui_widgets_i->goto_next_column();
@@ -163,7 +162,7 @@ void CUIInCommandKeyBinding::render_interactible_list()
 					});
 				g_gui_widgets_i->pop_stylevar();
 
-				// on close
+
 				if (was_popup_opened != popup_opened && !popup_opened)
 				{
 					popup_st = {};
@@ -202,7 +201,7 @@ void CUIInCommandKeyBinding::add_keyscan_button(BaseInCommand* in_cmd, const Vec
 
 void CUIInCommandKeyBinding::setup_interactible_list()
 {
-	// before we start the rendering, setup the initial list
+
 
 	g_in_commands_i->for_each_incommand(
 		[&](BaseInCommand* in_cmd)
@@ -245,7 +244,7 @@ ui_incmd_element_t* CUIInCommandKeyBinding::insert_new_ui_element(BaseInCommand*
 
 void CUIInCommandKeyBinding::keep_ui_elements_up_to_date()
 {
-	// refresh the list so that it keeps up to date with the actual list
+
 	static uint32_t t = GetTickCount();
 	if (GetTickCount() - t > 500)
 	{

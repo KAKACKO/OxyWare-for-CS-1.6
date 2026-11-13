@@ -26,15 +26,12 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// MemoryHook.h -- Resposibility of hooking an address inside memory of another dll.
-//
 
 #ifndef MEMORYHOOK_H
 #define MEMORYHOOK_H
 #pragma once
 
-// objects that reperesents a generic hookable memory address.
+
 template<typename T>
 class GenericMemoryHook : public TestableHook
 {
@@ -42,7 +39,7 @@ public:
 	inline bool is_initialized() const { return !m_module_name.empty() && !m_name.empty(); }
 	inline bool is_installed() const { return is_initialized() && m_address != nullptr; }
 
-	// getters
+
 	inline std::string get_name() const { return m_name; }
 	inline std::string get_module_name() const { return m_name; }
 
@@ -60,15 +57,13 @@ protected:
 #endif
 	}
 
-	// generic handlers for finding the hook inside memory
+
 	virtual bool install_using_bytepattern(size_t dereference_count, const std::function<void(uintptr_t** address)>& modify_address = NULL);
 	virtual bool install_using_exported_name(const char* export_name);
 	virtual bool install_using_memory_address(uintptr_t* memory_address, size_t dereference_count = 0, const std::function<void(uintptr_t** address)>& modify_address = NULL);
 
 private:
-	//
-	// convenience code
-	//
+
 
 	void on_hook_install_begin(const char* install_method)
 	{
@@ -93,19 +88,17 @@ private:
 	}
 
 public:
-	//
-	// testing
-	//
+
 
 	virtual void add_to_test()
 	{
 		CHookTests::the().add_for_testing("MemoryHook", this);
 	}
 
-	// default testing for this hook
+
 	virtual void default_test_hook()
 	{
-		// see if the address isn't invalid
+
 		CHookTests::the().run_seh_protected_block(
 			m_name,
 			[&]()
@@ -127,15 +120,15 @@ protected:
 
 		uintptr_t addr = (uintptr_t)m_address;
 
-		// see if there's a detour installed
+
 		uint8_t op = *((uint8_t*)m_address);
 		bool is_detoured = op == (uint8_t)'\xE9';
 
-		// see if in address space of presumed module.
+
 		bool out_of_range = (addr >= base && addr < ((end - 1) - sizeof(uintptr_t)));
 		if (!out_of_range)
 		{
-			// if it's detoured, then it's completely outside of the dll address space
+
 			if (!is_detoured)
 			{
 				CConsole::the().error("Hook '{}' out of range: is 0x{:08X} but the range is [0x{:08X}; 0x{:08X}] (module: {})",
@@ -144,11 +137,11 @@ protected:
 			}
 		}
 
-		return true; // ok
+		return true;
 	}
 
 public:
-	// get either base or specific element if this is an array.
+
 	T* get() const
 	{
 		assert(is_installed() && "The hook isn't installed!");
@@ -163,7 +156,7 @@ protected:
 	uintptr_t* m_address = nullptr;
 };
 
-// Searches for a byte pattern of where the memory you wanna hook is used (e.g. a global variable), then dereferences it to get its base address.
+
 template<typename T>
 inline bool GenericMemoryHook<T>::install_using_bytepattern(size_t dereference_count, const std::function<void(uintptr_t** address)>& modify_address)
 {
@@ -177,7 +170,7 @@ inline bool GenericMemoryHook<T>::install_using_bytepattern(size_t dereference_c
 	}
 
 	CBytePattern p = g_bytepattern_bank_i->get_pattern(m_name);
-//	CConsole::the().dinfo("{}", p.pattern_as_string()); // print pattern
+
 	if (p.empty())
 	{
 		on_hook_install_fail("Couldn't find byte pattern for current hook inside the bank!!!");
@@ -191,7 +184,7 @@ inline bool GenericMemoryHook<T>::install_using_bytepattern(size_t dereference_c
 		return false;
 	}
 
-	// dereference it to get the base address of it
+
 	for (size_t i = 0; i < dereference_count; i++)
 	{
 		m_address = *reinterpret_cast<uintptr_t**>(m_address);
@@ -241,7 +234,7 @@ inline bool GenericMemoryHook<T>::install_using_memory_address(uintptr_t* memory
 		return false;
 	}
 
-	// dereference it to get the base address of it
+
 	for (size_t i = 0; i < dereference_count; i++)
 	{
 		m_address = *reinterpret_cast<uintptr_t**>(m_address);
@@ -256,7 +249,6 @@ inline bool GenericMemoryHook<T>::install_using_memory_address(uintptr_t* memory
 	return true;
 }
 
-//-----------------------------------------------------------------------------
 
 template <typename T>
 class RestorableGenericMemoryHook : public GenericMemoryHook<T>
@@ -274,171 +266,154 @@ private:
 	T m_saved;
 };
 
-//-----------------------------------------------------------------------------
 
-// HWND *pmainwindow;
 struct pmainwindow_MemoryHook final : public GenericMemoryHook<HWND*>
 {
 	bool install() override;
 	void test_hook() override;
 };
 
-// qboolean host_initialized
+
 struct host_initialized_MemoryHook final : public GenericMemoryHook<hl::qboolean>
 {
 	bool install() override;
 	void test_hook() override;
 };
 
-// edict_t* sv_player
+
 struct sv_player_MemoryHook final : public GenericMemoryHook<hl::edict_t*>
 {
 	bool install() override;
 };
 
-// client_state_t cl;
+
 struct cl_MemoryHook final : public GenericMemoryHook<hl::client_state_t>
 {
 	bool install() override;
 	void test_hook() override;
 };
 
-// globalvars_t gGlobalVariables;
+
 struct gGlobalVariables_MemoryHook final : public GenericMemoryHook<hl::globalvars_t>
 {
 	bool install() override;
 	void test_hook() override;
 };
 
-// float scr_fov_value;
+
 struct scr_fov_value_MemoryHook final : public GenericMemoryHook<float>
 {
 	bool install() override; 
 	void test_hook() override;
 };
 
-// extra_player_info_t g_PlayerExtraInfo[MAX_PLAYERS + 1];
+
 struct g_PlayerExtraInfo_MemoryHook final : public GenericMemoryHook<hl::extra_player_info_t> 
 {
 	bool install() override; 
 	void test_hook() override;
 };
 
-// extra_player_info_old_t g_PlayerExtraInfo[MAX_PLAYERS + 1];
-// this version forbids some members that were added in 8684
+
 struct g_PlayerExtraInfoOld_MemoryHook final : public GenericMemoryHook<hl::extra_player_info_old_t>
 {
 	bool install() override; 
 	void test_hook() override;
 };
 
-// engine_studio_api_t engine_studio_api
+
 struct engine_studio_api_MemoryHook final : public GenericMemoryHook<hl::engine_studio_api_t> 
 {
 	bool install() override;
 	void test_hook() override;
 };
 
-// svc_func_t cl_parsefuncs[]
+
 struct cl_parsefuncs_MemoryHook final : public GenericMemoryHook<hl::svc_func_t> 
 { 
 	bool install() override;
 	void test_hook() override;
 };
 
-// playermove_t* pmove;
+
 struct pmove_MemoryHook final : public GenericMemoryHook<hl::playermove_t*>
 { 
 	bool install() override;
 	void test_hook() override;
 };
 
-// UserMsg* gClientUserMsgs;
+
 struct gClientUserMsgs_MemoryHook final : public GenericMemoryHook<hl::UserMsg*> 
 { 
 	bool install() override; 
 	void test_hook() override;
 };
 
-// int g_iShotsFired;
+
 struct g_iShotsFired_MemoryHook final : public GenericMemoryHook<int> 
 { 
 	bool install() override; 
 };
 
-// model_t* r_model;
-// currently rendered model inside the studio code.
+
 struct r_model_MemoryHook final : public GenericMemoryHook<hl::model_t*> 
 { 
 	bool install() override; 
 };
 
-// studiohdr_t* pstudiohdr;
-// header of currently rendered model inside the studio code.
+
 struct pstudiohdr_MemoryHook final : public GenericMemoryHook<hl::studiohdr_t*> 
 {
 	bool install() override; 
 };
 
-// r_studio_interface_t* pStudioAPI;
+
 struct pStudioAPI_MemoryHook final : public GenericMemoryHook<hl::r_studio_interface_t*> 
 { 
 	bool install() override; 
 	void test_hook() override;
 };
 
-// cl_entity_t* currententity;
+
 struct currententity_MemoryHook final : public GenericMemoryHook<hl::cl_entity_t*>
 { 
 	bool install() override; 
 };
 
-// int host_framecount;
+
 struct host_framecount_MemoryHook final : public GenericMemoryHook<int>
 { 
 	bool install() override; 
 	void test_hook() override;
 };
 
-// double realtime;
+
 struct realtime_MemoryHook final : public GenericMemoryHook<double>
 { 
 	bool install() override; 
 	void test_hook() override;
 };
 
-// IVideoMode* videomode;
+
 struct IVideoMode_MemoryHook final : public GenericMemoryHook<hl::IVideoMode*>
 { 
 	bool install() override; 
 	void test_hook() override;
 };
 
-// double 1000.0;
-//
-// This is a strange one. This hook hooks a global variable generated by the compiler when the binary is built.
-// It is a constant (1000.0) that is frequently used within the hw.dll code in functions like CL_Move, CL_AdjustClock
-// or CL_RunUsercmd. This is used by some client-side movement-related functions in formulas that affects the overall
-// frametimes when dealing with the movement. I have no fucking idea who discovered this, but it's the most random
-// thing I have ever seen. Hooking random compiler-generated global variable, that is just a "1000.0" constant defined
-// inside code, that is randomly distributed all over the entire code as a compiler optimization... Heh, I have just no words...
-// Well, as stupid as it may seem, it really works...
-//
-// see the commentary inside classic_cs16_cheating_scene_speedhack() more more details.
-//
+
 struct random_1k_speedhack_modifier_constant_MemoryHook final : public GenericMemoryHook<double>
 { 
 	bool install() override; 
 	void test_hook() override;
 };
 
-// keydest_t key_dest;
+
 struct key_dest_MemoryHook final : public GenericMemoryHook<hl::keydest_t>
 { 
 	bool install() override; 
 };
 
-//-----------------------------------------------------------------------------
 
 class CMemoryHookMgr
 {
@@ -449,9 +424,6 @@ public:
 	bool install_hooks();
 	void uninstall_hooks();
 
-	//
-	// individual hooks
-	//
 
 	inline static auto& pmainwindow() { static pmainwindow_MemoryHook hook; return hook; };
 	inline static auto& host_initialized() { static host_initialized_MemoryHook hook; return hook; };
@@ -476,9 +448,6 @@ public:
 	inline static auto& random_1k_speedhack_modifier_constant() { static random_1k_speedhack_modifier_constant_MemoryHook hook; return hook; };
 	inline static auto& key_dest() { static key_dest_MemoryHook hook; return hook; };
 
-	//
-	// we can get these from elsewhere
-	//
 
 	static hl::cl_enginefunc_t* cl_enginefuncs();
 	static hl::cldll_func_t* cl_funcs();
@@ -486,4 +455,4 @@ public:
 	static char** keybindings();
 };
 
-#endif // MEMORYHOOK_H
+#endif

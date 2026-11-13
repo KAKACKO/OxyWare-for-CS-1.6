@@ -31,7 +31,6 @@
 VarBoolean debug_render_info("debug_render_info", "Renders some information on the screen", false);
 VarBoolean debug_render_info_misc("debug_render_info_misc", "Renders miscellaneous information on the screen", false);
 
-//-----------------------------------------------------------------------------
 
 int EngineFont::render_text(const Vector2D& where, bool background, const std::string& text) const
 {
@@ -79,7 +78,6 @@ void EngineFont::initialize()
 	m_font_height = CEngineFontRendering::the().get_char_height(m_handle);
 }
 
-//-----------------------------------------------------------------------------
 
 void CEngineFontRendering::initialize()
 {
@@ -126,24 +124,24 @@ void CEngineFontRendering::render_debug_impl(const std::string& text)
 
 	if (pos.IsZero())
 	{
-		// initialize
+
 		switch (m_render_side)
 		{
 			case LEFT:
 			{
-				pos = Vector2D(50, 50); // top left
+				pos = Vector2D(50, 50);
 				break;
 			}
 			case RIGHT:
 			{
-				pos = Vector2D(CVideoModeUtil::the().get_real_screen_size().x - 50.0f - 200.0f, 50); // top right
+				pos = Vector2D(CVideoModeUtil::the().get_real_screen_size().x - 50.0f - 200.0f, 50);
 				break;
 			}
 		}
 	}
 	else
 	{
-		// already initialized, inrement on y axis
+
 		pos.y += m_debug_font.get_text_height();
 	}
 	m_debug_text.push_back({ text, pos });
@@ -254,11 +252,10 @@ void CEngineFontRendering::debug_repaint()
 	}
 }
 
-//--------------------------------------------------------------------------------------------------------------------
 
 void CEngineRendering::initialize()
 {
-	// initialize fonts
+
 	CEngineFontRendering::the().initialize();
 }
 
@@ -278,7 +275,7 @@ void CEngineRendering::repaint()
 	if (!g_cheat_info_i->is_game_ui_running())
 	{
 		auto local = CLocalState::the().local_player();
-		if (local) // render only if alive
+		if (local)
 		{
 			CMovementVisualInfo::the().render();
 		}
@@ -287,7 +284,7 @@ void CEngineRendering::repaint()
 
 void CEngineRendering::render_circle_opengl(float cx, float cy, float radius, int num_segments, float width, bool blend, int r, int g, int b, int a)
 {
-	// https://stackoverflow.com/questions/22444450/drawing-circle-with-opengl
+
 
 	glDisable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
@@ -302,12 +299,12 @@ void CEngineRendering::render_circle_opengl(float cx, float cy, float radius, in
 	glBegin(GL_LINE_LOOP);
 	for (int ii = 0; ii < num_segments; ii++)
 	{
-		float theta = 2.0f * std::numbers::pi_v<float> *float(ii) / float(num_segments); // get the current angle
+		float theta = 2.0f * std::numbers::pi_v<float> *float(ii) / float(num_segments);
 
-		float x = radius * cosf(theta); // calculate the x component
-		float y = radius * sinf(theta); // calculate the y component
+		float x = radius * cosf(theta);
+		float y = radius * sinf(theta);
 
-		glVertex2f(x + cx, y + cy); // output vertex
+		glVertex2f(x + cx, y + cy);
 
 	}
 	glEnd();

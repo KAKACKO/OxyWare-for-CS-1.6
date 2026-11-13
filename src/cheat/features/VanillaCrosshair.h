@@ -58,4 +58,4 @@ private:
 	int m_alpha;
 };
 
-#endif // VANILLACROSSHAIR_H
+#endif

@@ -32,9 +32,9 @@
 
 enum EKeyType
 {
-	REG_OXWARE,		// "Software\\oxware"
-	REG_VALVE,		// "Software\\Valve\\Half-Life\\Settings"
-	REG_STEAM,		// "Software\\Valve\\Steam"
+	REG_OXWARE,
+	REG_VALVE,
+	REG_STEAM,
 
 	REG_COUNT, 
 };
@@ -51,7 +51,7 @@ public:
 	virtual const char* read_string(EKeyType type, const char* key, const char* default_value = nullptr) = 0;
 	virtual void write_string(EKeyType type, const char* key, const char* value) = 0;
 
-	// if not found, NULL is returned.
+
 	virtual HKEY get_key(EKeyType type) = 0;
 };
 
@@ -59,4 +59,4 @@ extern IRegistry* g_registry_i;
 
 #define IREGISTRY_INTERFACEID "IRegistry"
 
-#endif // IREGISTRY_H
+#endif

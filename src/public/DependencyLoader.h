@@ -47,17 +47,17 @@ enum ELoadType
 {
 	LOADTYPE_UNINITIALIZED,
 
-	LOADTYPE_NATIVE,		// native LoadLibraryEx load
-	LOADTYPE_MANUALMAP,		// manual mapped module
+	LOADTYPE_NATIVE,
+	LOADTYPE_MANUALMAP,
 };
 
-// represents a loadable module managed by the dependency loader
+
 class LoadableModuleObject
 {
 public:
 	inline bool has_any_interfaces() const { return m_getinterfaceinstance_fn != nullptr; }
 
-	// Just some comparisons on strings...
+
 	inline bool operator==(LoadableModuleObject& a) { return a.m_name == m_name; }
 	inline bool operator!=(LoadableModuleObject& a) { return a.m_name != m_name; }
 	inline bool operator>(LoadableModuleObject& a) { return a.m_name > m_name; }
@@ -91,10 +91,10 @@ private:
 	GetInterfaceInstanceFn find_getinterfaceinstance_func();
 
 private:
-	std::filesystem::path m_filepath = {}; // path to the module
+	std::filesystem::path m_filepath = {};
 	std::wstring m_name = L"none";
 
-	// NOTE that if the module unexpectedly unloads, this points to invalid memory!
+
 	IBaseModule* m_basemodule_ptr = nullptr;
 
 	HMODULE m_handle = NULL;
@@ -105,7 +105,7 @@ private:
 	GetInterfaceInstanceFn m_getinterfaceinstance_fn = nullptr;
 };
 
-// Load dlls that we need in order to function properly
+
 class CDependencyLoader
 {
 public:
@@ -151,4 +151,4 @@ private:
 	IBaseInjector* m_injector = nullptr;
 };
 
-#endif // DEPENDENCYLOADER_H
+#endif

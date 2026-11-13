@@ -48,4 +48,4 @@ public:
 	inline GLFWwindow* as_glfw_window() const { return reinterpret_cast<GLFWwindow*>(m_window_handle); }
 };
 
-#endif // IMGUILAYERGLFW_H
+#endif

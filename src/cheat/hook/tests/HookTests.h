@@ -30,19 +30,12 @@
 #define HOOKTESTS_H
 #pragma once
 
-// define this to automatically start the testing after the cheat is injected. The testing can be done in two ways:
-//	1) when you inject to a fresh game (ie right after startup)
-//	2) when ingame, some tests have special cases and these cases can be only executed when yo're in game.
-//
-//	HOW TO TEST HOOKS:
-//	a) always have a fresh game (after launch)
-//	b) don't test after you have disconnected from a server. Some internal engine data still remains in the memory and this could make the
-//	   the results of testing inaccurate!
+
 #ifdef _DEBUG
-//#	define OX_ENABLE_HOOK_TESTING
+
 #endif
 
-// use this for memory hooks
+
 class TestableHook
 {
 public:
@@ -71,4 +64,4 @@ private:
 	std::unordered_map<std::string, std::vector<TestableHook*>> m_testable_hooks;
 };
 
-#endif // HOOKTESTS_H
+#endif

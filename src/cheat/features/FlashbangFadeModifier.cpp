@@ -42,7 +42,7 @@ void CFlashbangFadeModifier::update(int& alpha)
 
 	set_fade_color(flashfademod_color.get_value());
 
-	// set before modified
+
 	m_current_fade_alpha = alpha;
 	alpha = (int)((float)alpha * flashfademod_fade_factor.get_value());
 }

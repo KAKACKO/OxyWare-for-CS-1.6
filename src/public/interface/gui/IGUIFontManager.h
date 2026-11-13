@@ -43,27 +43,27 @@ enum EFontDecoration
 
 static const char* g_font_decors[NUM_FONT_DECORATIONS] =
 {
-	"regular",	// FDC_Regular
-	"bold",		// FDC_Bold
-	"light",	// FDC_Light
+	"regular",
+	"bold",
+	"light",
 };
 
 enum EFontId
 {
 	FID_SegoeUI,
 	FID_ProggyClean,
-	// if you add more fonts, don't forget to modify g_font_filenames[], too!
+
 
 	NUM_FONTS,
 };
 
 static const char* g_font_filenames[NUM_FONTS] =
 {
-	"segoeui",			// FID_SegoeUI
-	"proggyclean",		// FID_ProggyClean
+	"segoeui",
+	"proggyclean",
 };
 
-// how big is the smallest font, this serves as a base when we're calculating font sizes
+
 inline static constexpr int k_font_size_base = 10;
 enum EFontSize
 {
@@ -97,20 +97,20 @@ inline static constexpr std::array<float, FSZ_COUNT> s_EFontSizeToFloat =
 	/*FSZ_45px*/ 45.0f,
 };
 
-// wrapper over the enum in imgui so that we don't have to include imgui outside of UI code.
+
 enum FreeTypeBuilderFlags
 {
 	FreeTypeBuilderFlags_None = 0,
-	FreeTypeBuilderFlags_NoHinting = 1 << 0,		// Disable hinting. This generally generates 'blurrier' bitmap glyphs when the glyph are rendered in any of the anti-aliased modes.
-	FreeTypeBuilderFlags_NoAutoHint = 1 << 1,		// Disable auto-hinter.
-	FreeTypeBuilderFlags_ForceAutoHint = 1 << 2,	// Indicates that the auto-hinter is preferred over the font's native hinter.
-	FreeTypeBuilderFlags_LightHinting = 1 << 3,		// A lighter hinting algorithm for gray-level modes. Many generated glyphs are fuzzier but better resemble their original shape. This is achieved by snapping glyphs to the pixel grid only vertically (Y-axis), as is done by Microsoft's ClearType and Adobe's proprietary font renderer. This preserves inter-glyph spacing in horizontal text.
-	FreeTypeBuilderFlags_MonoHinting = 1 << 4,		// Strong hinting algorithm that should only be used for monochrome output.
-	FreeTypeBuilderFlags_Bold = 1 << 5,				// Styling: Should we artificially embolden the font?
-	FreeTypeBuilderFlags_Oblique = 1 << 6,			// Styling: Should we slant the font, emulating italic style?
-	FreeTypeBuilderFlags_Monochrome = 1 << 7,		// Disable anti-aliasing. Combine this with MonoHinting for best results!
-	FreeTypeBuilderFlags_LoadColor = 1 << 8,		// Enable FreeType color-layered glyphs
-	FreeTypeBuilderFlags_Bitmap = 1 << 9			// Enable FreeType bitmap glyphs
+	FreeTypeBuilderFlags_NoHinting = 1 << 0,
+	FreeTypeBuilderFlags_NoAutoHint = 1 << 1,
+	FreeTypeBuilderFlags_ForceAutoHint = 1 << 2,
+	FreeTypeBuilderFlags_LightHinting = 1 << 3,
+	FreeTypeBuilderFlags_MonoHinting = 1 << 4,
+	FreeTypeBuilderFlags_Bold = 1 << 5,
+	FreeTypeBuilderFlags_Oblique = 1 << 6,
+	FreeTypeBuilderFlags_Monochrome = 1 << 7,
+	FreeTypeBuilderFlags_LoadColor = 1 << 8,
+	FreeTypeBuilderFlags_Bitmap = 1 << 9
 };
 DEFINE_ENUM_BITWISE_OPERATORS(FreeTypeBuilderFlags);
 
@@ -119,7 +119,7 @@ class IGUIFontManager
 public:
 	virtual void initialize() = 0;
 
-	// call before ImGui::NewFrame(). Returns true if atlas was rebuilt
+
 	virtual bool pre_newframe() = 0;
 
 	virtual void push_default_font() = 0;
@@ -142,4 +142,4 @@ extern IGUIFontManager* g_gui_fontmgr_i;
 
 #define IGUIFONTMANAGER_INTERFACEID "IGUIFontManager"
 
-#endif // IGUIFONTMANAGER_H
+#endif

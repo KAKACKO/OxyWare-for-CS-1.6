@@ -79,7 +79,7 @@ public:
 			  float max_speed, float reload_time, EWallPenetrationStrength wall_pen_strength,
 			  float max_distance, float range_modifier, 
 			  
-			  // properties
+
 			  bool is_nonattack, bool is_sniper, bool is_pistol, bool is_shotgun, bool is_machinegun,
 			  bool is_submachinegun, bool is_rifle, bool is_knife, bool is_gun, bool is_nade, bool is_c4);
 
@@ -87,9 +87,7 @@ public:
 
 	void update(hl::local_state_t* state, hl::usercmd_t* cmd);
 
-	// Automatic fire means that the fire button doesn't have
-	// to be tapped repeatly in order to shoot.
-	// This only applies to pistols.
+
 	inline bool is_automatic_fire() const { return !is_class_type(WEAPONCLASS_PISTOL); }
 
 	inline bool is_class_type(EWeaponClassType t) const { return m_weapon_class == t; }
@@ -99,7 +97,7 @@ public:
 	bool can_attack() const;
 	bool has_secondary_attack() const;
 
-	// Controls state such as - silenced, famas burst mode, shield drawn
+
 	inline bool state_present(EWeaponState st) const
 	{
 		return m_weapon_data ? FBitSet(m_weapon_data->m_iWeaponState, st) : false;
@@ -125,7 +123,7 @@ public:
 		return m_primary_damage;
 	}
 
-	// gun type
+
 	inline bool is_nonattack() const { return m_is_nonattack; }
 	inline bool is_rifle() const { return m_is_rifle; }
 	inline bool is_sniper() const { return m_is_sniper; }
@@ -147,8 +145,7 @@ public:
 
 	float time_since_last_fired() const;
 
-	// determines whether or not a weapon is useable by the player in its current state.
-	// (does it have ammo loaded? do I have any ammo for the weapon?, etc)
+
 	bool is_useable() const;
 
 	EWeaponAccuracyFlags calc_wpn_accuracy_flags() const;
@@ -159,56 +156,56 @@ private:
 public:
 	WeaponIdType m_weapon_id;
 
-	// Weapon category - pistol, rifle, sniper, ...
+
 	EWeaponClassType m_weapon_class;
 
-	// Type of ammunition, - buckshot, 762nato, 338magnum, ...
+
 	EAmmoType m_ammo_type;
 
-	// Type of bullet - used to calculate penetration
+
 	EBulletType m_bullet_type;
 
-	// Weapon and model names
+
 	std::string m_name, m_model_name;
 
-	// Miscellaneous information
+
 	int m_clip_size;
 	int m_weight;
 	int m_price;
 
-	// Guns like elite, m4a1 & usp silenced/unsilenced have two damages
+
 	int m_primary_damage;
 	int m_secondary_damage;
 
-	// Max walking speed in u/s
+
 	float m_max_speed;
 
-	// Total amount of time it takes to fully reload.
+
 	float m_reload_time;
 
-	// Number of walls the weapon can shoot through (+ 1).
+
 	EWallPenetrationStrength m_wall_penetration_strength;
 
-	// Maximum distance that the bullet will last.
+
 	float m_max_distance;
 
-	// Used when calulating damage.
+
 	float m_range_modifier;
 
-	// Holds the time last time primary attack was used.
+
 	float m_last_time_fired, m_decrease_shots_fired_time;
 
-	// weapon spread - recalculated on each fire
+
 	float m_spread;
 
-	// pointers, these are set each post item update
+
 	hl::local_state_t* m_local_state;
 	hl::weapon_data_t* m_weapon_data;
 	hl::usercmd_t* m_cmd;
 	hl::CBasePlayerWeapon* m_cs_weapon;
 
 private:
-	// properties
+
 	bool m_is_nonattack;
 	bool m_is_rifle;
 	bool m_is_sniper;
@@ -222,7 +219,6 @@ private:
 	bool m_is_c4;
 };
 
-//---------------------------------------------------------------------------------
 
 class CWeapons
 {
@@ -245,4 +241,4 @@ private:
 };
 
 
-#endif // _WEAPONS_H
+#endif

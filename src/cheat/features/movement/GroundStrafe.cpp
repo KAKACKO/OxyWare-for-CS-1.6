@@ -49,12 +49,12 @@ void CMovementGroundStrafe::update(float frametime)
 
 	if (gs_mode == GSMODE_Legit)
 	{
-		// legit GS is more tweakable and more legitimate
+
 		legit_gs(frametime);
 	}
 	else if (gs_mode == GSMODE_Rage)
 	{
-		// rage GS is just blatant but perfect
+
 		rage_gs(frametime);
 	}
 }
@@ -93,11 +93,10 @@ void CMovementGroundStrafe::legit_gs(float frametime)
 		return;
 	}
 
-	// duck if we satisfy following conditions:
+
 	bool perform_duck = (is_onground || gnd_dist < m_simul_start_gnddist);
 
-	// block the duck randomly unless we're really near the ground. this creates sort of a randomization
-	// pattern for ducks.
+
 	bool block_duck = false;
 	if (randomize_duck_pattern(is_onground))
 	{
@@ -108,7 +107,7 @@ void CMovementGroundStrafe::legit_gs(float frametime)
 	{
 		if (gs_eff == GSEFF_RandomFOGBased)
 		{
-			// randomize this as well
+
 			static int cnt = 0;
 			if (++cnt % cl_enginefuncs->pfnRandomLong(1, 10) == 0)
 			{
@@ -149,14 +148,14 @@ void CMovementGroundStrafe::determine_random_gnddist_for_duck_simul(bool on_grou
 		int min = movement_gs_legit_ground_dist_min.get_value();
 		int max = movement_gs_legit_ground_dist_max.get_value();
 
-		// randomize the value each time we hit/leave ground
+
 		if (on_ground)
 		{
-			m_simul_start_gnddist = (float)cl_enginefuncs->pfnRandomLong(min, max); // ground leaving distance
+			m_simul_start_gnddist = (float)cl_enginefuncs->pfnRandomLong(min, max);
 		}
 		else
 		{
-			m_simul_start_gnddist = (float)cl_enginefuncs->pfnRandomLong(min, max); // ground entering distance
+			m_simul_start_gnddist = (float)cl_enginefuncs->pfnRandomLong(min, max);
 		}
 
 		was_on_ground = on_ground;
@@ -165,11 +164,11 @@ void CMovementGroundStrafe::determine_random_gnddist_for_duck_simul(bool on_grou
 
 bool CMovementGroundStrafe::duck_helper(float frametime)
 {
-	// try to predict if we'll be on ground next frame. this is a hard one.
+
 	if (predicted_nextframe_on_ground(frametime))
 	{
-		// releasae the cmd button just in case it wasn't - therefore we can do the +duck at the exact frame
-		// where we land on ground.
+
+
 		CClientMovementPacket::the().set_button_bit(IN_DUCK, false);
 		return true;
 	}
@@ -209,7 +208,7 @@ bool CMovementGroundStrafe::predicted_nextframe_on_ground(float frametime)
 
 	if (is_onground)
 	{
-		// already on ground
+
 		return false;
 	}
 
@@ -218,8 +217,7 @@ bool CMovementGroundStrafe::predicted_nextframe_on_ground(float frametime)
 		return false;
 	}
 
-	// See if our fall distance is bigger than the distance to ground. Then we're
-	// guaranteed to be next frame on the ground.
+
 	return fall_vel > 0.0f && ((fall_vel * frametime) * 2.0f > gnd_dist);
 }
 

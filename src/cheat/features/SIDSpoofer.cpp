@@ -47,35 +47,35 @@ std::optional<int> CSIDSpoofer::spoof(void* pAuthBlob, int cbLength)
 	switch (type)
 	{
 		default:
-		case 0: // revemu2013
+		case 0:
 		{
 			return GenerateRevEmu2013(pAuthBlob, rand() % std::numeric_limits<int32_t>::max());
 		}
-		case 1: // revemu regular
+		case 1:
 		{
 			return GenerateRevEmu(pAuthBlob, rand() % std::numeric_limits<int32_t>::max());
 		}
-		case 2: // revemu old
+		case 2:
 		{
 			return GenerateOldRevEmu(pAuthBlob, rand() % std::numeric_limits<int32_t>::max());
 		}
-		case 3: // avsmp
+		case 3:
 		{
 			return GenerateAVSMP(pAuthBlob, rand() % std::numeric_limits<int32_t>::max());
 		}
-		case 4: // sc2009
+		case 4:
 		{
 			return GenerateSC2009(pAuthBlob, rand() % std::numeric_limits<int32_t>::max());
 		}
-		case 5: // setti
+		case 5:
 		{
 			return GenerateSetti(pAuthBlob);
 		}
-		case 6: // smart steam emu
+		case 6:
 		{
 			return GenerateSmartSteamEmu(pAuthBlob, rand() % std::numeric_limits<int32_t>::max());
 		}
-		case 7: // steam emu
+		case 7:
 		{
 			return GenerateSteamEmu(pAuthBlob, rand() % std::numeric_limits<int32_t>::max());
 		}

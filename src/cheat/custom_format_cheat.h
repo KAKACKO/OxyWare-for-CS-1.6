@@ -26,11 +26,7 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// custom_format.h -- custom types for std::format for our cheat
-//
 
-// mod_type
 template <>
 struct std::formatter<hl::modtype_t> : std::formatter<std::string> {
 	auto format(hl::modtype_t type, std::format_context& ctx) const {
@@ -47,7 +43,6 @@ struct std::formatter<hl::modtype_t> : std::formatter<std::string> {
 };
 
 
-// FORCE_TYPE
 template <>
 struct std::formatter<hl::FORCE_TYPE> : std::formatter<std::string> {
 	auto format(hl::FORCE_TYPE type, std::format_context& ctx) const {
@@ -63,7 +58,7 @@ struct std::formatter<hl::FORCE_TYPE> : std::formatter<std::string> {
 	}
 };
 
-// hl::EUniverse
+
 template <>
 struct std::formatter<hl::EUniverse> : std::formatter<std::string> {
 	auto format(hl::EUniverse type, std::format_context& ctx) const {
@@ -81,7 +76,6 @@ struct std::formatter<hl::EUniverse> : std::formatter<std::string> {
 };
 
 
-// hl::EAccountType
 template <>
 struct std::formatter<hl::EAccountType> : std::formatter<std::string> {
 	auto format(hl::EAccountType type, std::format_context& ctx) const {
@@ -106,7 +100,6 @@ struct std::formatter<hl::EAccountType> : std::formatter<std::string> {
 };
 
 
-// hl::EPersonaState
 template <>
 struct std::formatter<hl::EPersonaState> : std::formatter<std::string> {
 	auto format(hl::EPersonaState type, std::format_context& ctx) const {
@@ -125,4 +118,3 @@ struct std::formatter<hl::EPersonaState> : std::formatter<std::string> {
 		return std::formatter<string>::format("invalid (" + std::to_string((int)type) + ")", ctx);
 	}
 };
-

@@ -26,9 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// ImGUILayerGLFW.cpp -- Implementation of ImGUI layer for Windows
-//
 
 #include "precompiled.h"
 
@@ -36,7 +33,7 @@ bool CImGUILayerWin32::initialize()
 {
 	assert(m_window_handle);
 
-	// Setup Dear ImGui context
+
 	if (!ImGui::CreateContext())
 	{
 		CConsole::the().error("Coudln't create ImGui context.");
@@ -45,7 +42,7 @@ bool CImGUILayerWin32::initialize()
 
 	auto& io = ImGui::GetIO();
 
-	// Disable generating imgui.ini
+
 	io.IniFilename = io.LogFilename = nullptr;
 	io.ConfigFlags |= m_flags;
 
@@ -54,7 +51,7 @@ bool CImGUILayerWin32::initialize()
 	ImGui::StyleColorsDark();
 	g_gui_thememgr_i->initialize_imgui();
 
-	// Setup Platform/Renderer backends
+
 	if (!ImGui_ImplWin32_Init(as_hwnd()))
 	{
 		return false;
@@ -81,19 +78,19 @@ void CImGUILayerWin32::on_render(const std::function<void()>& post_render_callba
 {
 	if (g_gui_fontmgr_i->pre_newframe())
 	{
-		// REUPLOAD FONT TEXTURE TO GPU
+
 		ImGui_ImplOpenGL2_DestroyDeviceObjects();
 		ImGui_ImplOpenGL2_CreateDeviceObjects();
 	}
 
-	// Start the Dear ImGui frame
+
 	ImGui_ImplWin32_NewFrame();
 	ImGui_ImplOpenGL2_NewFrame();
 	ImGui::NewFrame();
 
-	g_gui_fontmgr_i->push_default_font(); // has to be called after ImGui::NewFrame
+	g_gui_fontmgr_i->push_default_font();
 
-	if (m_render_callback) // can be null if client didn't specify
+	if (m_render_callback)
 	{
 		m_render_callback();
 	}

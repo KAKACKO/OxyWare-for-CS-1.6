@@ -30,7 +30,7 @@
 
 #include <hlsdk/engine/keydefs.h>
 
-// allows backward/forward translations between virtual and engine keys and key names.
+
 const std::array<key_t, k_key_range> g_virtual_key_translation =
 {
 	{
@@ -93,7 +93,7 @@ const std::array<key_t, k_key_range> g_virtual_key_translation =
 		{ "kp_minus",		VK_SUBTRACT,	K_KP_MINUS			},
 		{ "kp_plus",		VK_ADD,			K_KP_PLUS			},
 
-		// custom user-defined kb codes
+
 		{ "mwheelup",		VK_MWHEELUP,	K_MWHEELUP			},
 		{ "mwheeldown",		VK_MWHEELDOWN,	K_MWHEELDOWN		},
 
@@ -171,7 +171,7 @@ const std::array<key_t, k_key_range> g_virtual_key_translation =
 		{ "-",				VK_OEM_MINUS,	'-'					},
 		{ ",",				VK_OEM_COMMA,	','					},
 		{ ".",				VK_OEM_PERIOD,	'.'					},
-		{ ";",				VK_OEM_1,		'`'					}, // gs uses '`' as key for the console
+		{ ";",				VK_OEM_1,		'`'					},
 		{ "~",				VK_OEM_3,		'~'					},
 		{ "/",				VK_OEM_2,		'/'					},
 		{ "[",				VK_OEM_4,		'['					},
@@ -179,6 +179,3 @@ const std::array<key_t, k_key_range> g_virtual_key_translation =
 		{ "]",				VK_OEM_6,		']'					},
 	}
 };
-
-//----------------------------------------------------------------------------------
-

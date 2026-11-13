@@ -53,4 +53,4 @@ private:
 
 };
 
-#endif // STRAFEHACK_H
+#endif

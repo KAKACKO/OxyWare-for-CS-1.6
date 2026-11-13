@@ -42,4 +42,4 @@ public:
 	void update();
 };
 
-#endif // VIEWMODELOFFSET_H
+#endif

@@ -43,9 +43,9 @@ public:
 	bool run(injector_information_package_t* ifp);
 	void shutdown();
 
-	bool initialize_phase2(); // called after the engine is fully initialized. (host_initialized set to 1)
+	bool initialize_phase2();
 
-	// if called, we exit in main loop next frame.
+
 	void end_cheat_execution(bool dont_write_unloading_code = false, bool game_exiting_or_restarting = false)
 	{
 		m_requested_to_exit_cheat = true; 
@@ -65,7 +65,7 @@ public:
 	inline bool is_cheat_exiting() { return is_exit_requested() || m_unloading_cheat; }
 	inline bool is_shutted_down() { return m_shutted_down; }
 
-	// this is set when the cheat is shutting down and if the game is exiting/restarting.
+
 	inline bool is_game_exiting_or_restarting() const { return m_game_exiting_or_restarting; }
 
 	int get_build_number() const { return m_gs_build_number; }
@@ -73,7 +73,7 @@ public:
 	bool at_least_once_focused() const { return m_at_least_once_focused; }
 	void set_at_least_once_focused() { m_at_least_once_focused = true; }
 
-	// the name varies from build to build
+
 	const wchar_t* get_engine_fs_module_name() const;
 	const wchar_t* get_engine_module_name() const { return m_engine_module_name; }
 
@@ -95,7 +95,7 @@ private:
 	bool validate_engine_build();
 	bool select_engine_module();
 
-	// check for valve blob encryption
+
 	bool check_for_encrypted_modules();
 
 private:
@@ -110,9 +110,7 @@ private:
 	bool m_phase2_started = false;
 	bool m_hook_initialization_started = false;
 
-	// this is set when the cheat is unloaded from another thread, i.e. remotely from the detoured function, for example.
-	// this allows the remote function itself to tell the loader that we're unloading, instead of it being told after the
-	// shutdown.
+
 	bool m_dont_write_unloading_code = false;
 
 	int m_gs_build_number = 0;
@@ -122,29 +120,23 @@ private:
 
 	bool m_game_exiting_or_restarting = false;
 
-	// true if running version of GoldSrc that has encrypted modules.
+
 	bool m_is_running_encrypted_game = false;
 };
 
-// helper class to sleep the engine whenever we want
-// sometimes, when unloading a cheat, engine can call a function that we hook in a middle of
-// that function being unloaded, this is totally random and results in a crash.
-// this class assures that we first wait for the engine to hang, hence not call any functions
-// at all, and after that we unload the cheat.
-//
-// this also requires the function where the engine hangs to be unloaded as last function.
+
 class CEngineSynchronization
 {
 public:
 	DECL_BASIC_CLASS(CEngineSynchronization);
 
 public:
-	// hang our code until engine acknowledges
+
 	void put_engine_in_sleep();
 
 	void resume_engine();
 
-	// run inside engine frame function
+
 	bool engine_frame();
 
 private:
@@ -159,4 +151,4 @@ private:
 	bool m_engine_should_sleep = false;
 };
 
-#endif // OXWARE_H
+#endif

@@ -28,7 +28,7 @@
 
 #include "precompiled.h"
 
-// We'll use internal imgui here
+
 #include <imgui_internal.h>
 
 using namespace ImGui;
@@ -50,7 +50,7 @@ public:
 	
 	void render_text_with_background(ImDrawList* current, ImFont* font, const Vector2D& at, const CColor& color, const std::string& what);
 
-	// box without and with an outline
+
 	void render_box(ImDrawList* current, const Vector2D& top_left, const Vector2D& bottom_right, const CColor& color, float rounding = 1.0f);
 	void render_box_outline(ImDrawList* current, const Vector2D& top_left, const Vector2D& bottom_right, const CColor& color, float rounding = 1.0f,
 							const CColor& outline_color = {}, float outline_thickness = 1.0f);
@@ -64,11 +64,6 @@ public:
 CGUIWindowRendering g_gui_window_rendering;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CGUIWindowRendering, IGUIWindowRendering, IGUIWINDOWRENDERING_INTERFACEID, g_gui_window_rendering);
 
-//-------------------------------------------------------------------------------
-//
-// CGUIWindowRendering implementation
-// 
-//-------------------------------------------------------------------------------
 
 CGUIWindowRendering::CGUIWindowRendering()
 {
@@ -94,14 +89,14 @@ void CGUIWindowRendering::render_text_with_background(ImDrawList* current, ImFon
 {
 	auto label_size = g_gui_fontmgr_i->calc_font_text_size(font, what.c_str());
 
-	// background
+
 	render_box(
 		get_current_drawlist(),
 		at,
 		at + Vector2D(label_size.x, label_size.y),
 		CColor(0, 0, 0, 70));
 
-	// label
+
 	render_text(
 		get_current_drawlist(),
 		font,
@@ -118,10 +113,10 @@ void CGUIWindowRendering::render_box(ImDrawList* current, const Vector2D& top_le
 void CGUIWindowRendering::render_box_outline(ImDrawList* current, const Vector2D& top_left, const Vector2D& bottom_right, const CColor& color, float rounding,
 											 const CColor& outline_color, float outline_thickness)
 {
-	// contents
+
 	current->AddRectFilled(top_left, bottom_right, color.as_u32(), rounding);
 
-	// outline
+
 	current->AddRect(top_left, bottom_right, outline_color.as_u32(), rounding, 0, outline_thickness);
 }
 

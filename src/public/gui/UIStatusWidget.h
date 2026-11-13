@@ -46,10 +46,10 @@ public:
 
 	enum Type
 	{
-		Info,		// white color
-		Success,	// green color
-		Error,		// red color
-		Warning,	// orange color
+		Info,
+		Success,
+		Error,
+		Warning,
 	};
 
 	void update_status(const std::string& new_status, Type type)

@@ -56,4 +56,4 @@ private:
 	hl::model_t* m_model = nullptr;
 };
 
-#endif // GENERICMDL_H
+#endif

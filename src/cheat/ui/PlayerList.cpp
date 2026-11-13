@@ -58,7 +58,6 @@ void CUIPlayerList::render_ui()
 			g_gui_widgets_i->add_checkbox("Allow BOTs", &m_filter_allow_bots);
 		});
 
-	// NOTE: the "-2" in child vertical sizes is due to random scrollbar appearing when we set -1.0f, I have no idea why..
 
 	if (g_gui_widgets_i->begin_columns(__FUNCTION__, 2))
 	{
@@ -111,7 +110,7 @@ void CUIPlayerList::initialize()
 	m_filter_allow_steam = true;
 	m_filter_allow_non_steam = true;
 
-	// unknown profile picture
+
 	m_bot_pfp = g_texture_manager_i->create_and_register_new_texture_from_filedata("bot_pfp", g_bot_pfp, g_bot_pfp_size);
 	m_nonsteam_pfp = g_texture_manager_i->create_and_register_new_texture_from_filedata("nonsteam_pfp", g_nonsteam_pfp, g_nonsteam_pfp_size);
 	m_invalid_pfp = g_texture_manager_i->create_and_register_new_texture_from_filedata("invalid_pfp", g_invalid_pfp, g_invalid_pfp_size);
@@ -128,11 +127,11 @@ void CUIPlayerList::render_players()
 
 	if (m_update_player_cache)
 	{
-		// clear the cache first, before we re-fill it
+
 		for (auto& cached_player : m_cached_players)
 		{
-			// we want to clear everything except avatar picture. this is one way of doing it.
-			// and it should not create any harm, the struct is small and independent.
+
+
 			BaseTexture avatar_save = cached_player.m_avatar_picture;
 			cached_player = {};
 			cached_player.m_avatar_picture = avatar_save;
@@ -141,7 +140,7 @@ void CUIPlayerList::render_players()
 
 	bool found_selected_plr = false;
 
-	// shrink items vertically
+
 	g_gui_widgets_i->push_stylevar(ImGuiStyleVar_ItemSpacing, { 1.0f, 1.0f });
 
 	auto& known_players = CEntityMgr::the().m_known_players;
@@ -158,7 +157,7 @@ void CUIPlayerList::render_players()
 
 		if (pinfo && pinfo->name && pinfo->name[0])
 		{
-			// display player names in color based on their team.
+
 			g_gui_widgets_i->push_color(ImGuiCol_Text, player.get_color_based_on_team());
 
 			bool is_selected = (m_selected_plr_idx == zero_based_id);
@@ -169,10 +168,10 @@ void CUIPlayerList::render_players()
 
 			g_gui_widgets_i->pop_color();
 		}
-		// we may have player connecting to a server here. or just an invalid one. :)
+
 		else
 		{
-			// if player is connecting, the server doesn't send us any info, only the userid
+
 			if (pinfo && pinfo->name && pinfo->userid != 0)
 			{
 				g_gui_widgets_i->push_color(ImGuiCol_Text, CColor(12, 123, 231, 230));
@@ -197,7 +196,7 @@ void CUIPlayerList::render_players()
 			}
 		}
 
-		// look if the selected player is still valid
+
 		if (m_selected_plr_idx != -1 && !found_selected_plr && zero_based_id == m_selected_plr_idx)
 		{
 			found_selected_plr = true;
@@ -209,7 +208,7 @@ void CUIPlayerList::render_players()
 		}
 	}
 
-	g_gui_widgets_i->pop_stylevar(); // item spacing
+	g_gui_widgets_i->pop_stylevar();
 
 	if (!found_selected_plr)
 	{
@@ -232,7 +231,7 @@ void CUIPlayerList::render_selected_player_info()
 
 	render_player_info(cached_player);
 
-	// NOTE that this should be 64x64, because we retreive a 64x64 avatar picture from steam.
+
 	const float avatar_size = 84.0f;
 
 	g_gui_widgets_i->set_cursor_pos({ window_size.x - (avatar_size + 5.0f), cursor_pos.y });
@@ -250,7 +249,7 @@ void CUIPlayerList::create_cached_player_info(int id, const CGenericPlayer& play
 	cached_player.m_team = player.get_team_as_string();
 	cached_player.m_is_steam_user = CSteamIDUtil::the().is_steam_user(cached_player.m_steam3_id);
 
-	// steam-only data
+
 	if (cached_player.m_is_steam_user && m_is_local_steam)
 	{
 		cached_player.m_steam_name = player.get_steam_persona_name();
@@ -258,7 +257,7 @@ void CUIPlayerList::create_cached_player_info(int id, const CGenericPlayer& play
 		cached_player.m_local_is_friend_with = player.is_local_friend_with();
 	}
 
-	// we're re-precaching avatar images this frame
+
 	if (m_precache_avatar_picture)
 	{
 		update_avatars(id, cached_player);
@@ -271,7 +270,7 @@ void CUIPlayerList::render_player_info(const cached_player_info_t& cached_player
 {
 	if (g_gui_widgets_i->begin_columns("pinfo_1", 2))
 	{
-		// NOTE that this should be 64x64, because we retreive a 64x64 avatar picture from steam.
+
 		const float avatar_size = 64.0f;
 		g_gui_widgets_i->setup_column_fixed_width(k_left_column_width);
 
@@ -391,7 +390,7 @@ void CUIPlayerList::add_additional_steam_info_about_player(const cached_player_i
 
 void CUIPlayerList::manage_timers()
 {
-	// update player avatars every 5s -- ONLY IF LOCAL IS STEAM
+
 	if (m_is_local_steam)
 	{
 		if (GetTickCount() - m_last_avatar_precache_time > 5000)
@@ -405,7 +404,7 @@ void CUIPlayerList::manage_timers()
 		}
 	}
 
-	// update cache player info every 250ms
+
 	if (GetTickCount() - m_last_cache_update_time > 250)
 	{
 		m_update_player_cache = true;
@@ -433,14 +432,14 @@ void CUIPlayerList::update_avatars(int id, cached_player_info_t& cached_player)
 {
 	if (CSteamIDUtil::the().is_bot(cached_player.m_steam3_id))
 	{
-		// BOTs usually have NULL sid
+
 		cached_player.m_avatar_picture = m_bot_pfp;
 		return;
 	}
 
 	if (!CSteamIDUtil::the().is_steam_user(cached_player.m_steam3_id))
 	{
-		// Non-Steam players
+
 		cached_player.m_avatar_picture = m_nonsteam_pfp;
 		return;
 	}
@@ -453,11 +452,11 @@ void CUIPlayerList::update_avatars(int id, cached_player_info_t& cached_player)
 		return;
 	}
 
-	// get 64x64 avatar picture
+
 	int image_id = steam_friends->GetLargeFriendAvatar(cached_player.m_steam3_id.m_unAll64Bits);
-	if (image_id == 0) // no avatar is set, use default one
+	if (image_id == 0)
 	{
-		// if avatars aren't shown in scoreboard, we won't get it either. (that is if scoreboard_showavatars is 1)
+
 		cached_player.m_avatar_picture = m_avatar_not_found; 
 		return;
 	}
@@ -472,7 +471,7 @@ void CUIPlayerList::update_avatars(int id, cached_player_info_t& cached_player)
 		return;
 	}
 
-	// retreive image data straight from steam
+
 	int avatar_image_size = w * h * 4;
 	uint8_t* avatar_image_data = new uint8_t[avatar_image_size];
 	bool does_exist = steam_utils->GetImageRGBA(image_id, avatar_image_data, avatar_image_size);
@@ -484,7 +483,7 @@ void CUIPlayerList::update_avatars(int id, cached_player_info_t& cached_player)
 		return;
 	}
 	
-	// reupload in case it was already uploaded
+
 	cached_player.m_avatar_picture = g_texture_manager_i->reupload_texture_from_pixeldata(avatar_texture_id.c_str(), avatar_image_data, Vector2D((float)w, (float)h));
 
 	delete[] avatar_image_data;

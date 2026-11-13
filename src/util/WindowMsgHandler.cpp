@@ -50,7 +50,7 @@ public:
 private:
 	std::vector<WndProcCallbackFn> m_callbacks;
 
-	// callback that has the ability of returning a value inside the WndProc hook.
+
 	WndProcRetCallbackFn m_return_callback;
 
 	HWND m_window_handle;
@@ -63,11 +63,6 @@ private:
 CWindowMsgHandler g_window_msg_handler;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CWindowMsgHandler, IWindowMsgHandler, IWINDOWMSGHANDLER_INTERFACEID, g_window_msg_handler);
 
-//-------------------------------------------------------------------------------
-//
-// CWindowMsgHandler implementation
-//
-//-------------------------------------------------------------------------------
 
 CWindowMsgHandler::CWindowMsgHandler()
 {
@@ -98,7 +93,7 @@ void CWindowMsgHandler::destroy()
 {
 	CConsole::the().info("Destroying Window Message Handler...");
 
-	// set back
+
 	if (m_wnd_proc)
 	{
 		(WNDPROC)SetWindowLongPtrA(m_window_handle, GWLP_WNDPROC, (LONG)m_wnd_proc);
@@ -126,23 +121,23 @@ void CWindowMsgHandler::run_callbacks(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 LRESULT CWindowMsgHandler::wndproc_hook(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	// run all user added external callbacks
+
 	g_window_msg_handler.run_callbacks(uMsg, wParam, lParam);
 
-	// return callback allows us to remotely return from this routine.
+
 	auto ret_callback = g_window_msg_handler.get_return_callback();
 	if (ret_callback != nullptr)
 	{
 		LRESULT return_value = NULL;
 		EWndProcReturnType ret = ret_callback(hwnd, uMsg, wParam, lParam, &return_value);
 
-		// custom retunr value, return it
+
 		if (ret == WNDPROCRET_Custom)
 		{
 			return return_value;
 		}
 
-		// else, return the generic value.
+
 	}
 
 	return CallWindowProcA(g_window_msg_handler.get_wnd_proc(), hwnd, uMsg, wParam, lParam);

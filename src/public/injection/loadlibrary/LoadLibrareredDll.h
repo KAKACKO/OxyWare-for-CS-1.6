@@ -26,11 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// LoadLibrareredDll.h -- Dll that is injected to a target process through LoadLibrary injection technique.
-//
-//	PS: I know LoadLibrareredDll sounds really bad :D but whatever
-//
 
 #ifndef LOADLIBRAREREDDLL_H
 #define LOADLIBRAREREDDLL_H
@@ -53,7 +48,7 @@ public:
 
 	uintptr_t get_base_address() const { assert(m_successfully_injected); return (uintptr_t)m_target_dll_image_ptr; }
 
-	// functions exported by the injected dll we need
+
 	inline ExposeModuleFn get_ExposeModule_fn() const { assert(m_successfully_injected); return m_shellcode_execution_context.pfnExposeModule; };
 	inline GetInterfaceInstanceFn get_GetInterfaceInstance_fn() const { assert(m_successfully_injected); return m_shellcode_execution_context.pfnGetInterfaceInstance; };
 
@@ -73,7 +68,7 @@ private:
 
 	bool read_execution_context_back(loadlibrary_shellcode_execution_context_t* sec);
 
-	// memory
+
 	bool allocate_memory();
 	bool allocate_target_process_memory();
 
@@ -83,13 +78,13 @@ private:
 		deallocate_target_process_memory();
 	}
 
-	uint8_t* m_target_dll_image_ptr = nullptr;	// memory for the data allocated in target process
+	uint8_t* m_target_dll_image_ptr = nullptr;
 
-	// this includes the size of the shellcode routine + the context etc..
+
 	size_t m_target_process_total_allocated_mem = 0;
 
 private:
-	// operations on the dll image
+
 	bool write_data_into_target_process();
 	bool execute_shellcode_in_target_process();
 
@@ -127,9 +122,9 @@ private:
 		}
 	};
 
-	// Shellcode
+
 	static HINSTANCE __stdcall shellcode_routine(loadlibrary_shellcode_execution_context_t* context);
 	static DWORD calc_shellcode_routine_size_in_bytes();
 };
 
-#endif // LOADLIBRAREREDDLL_H
+#endif

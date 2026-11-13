@@ -2081,7 +2081,8 @@ ImFont* ImFontAtlas::AddFont(const ImFontConfig* font_cfg)
     ImFontConfig& new_font_cfg = ConfigData.back();
     if (new_font_cfg.DstFont == NULL)
         new_font_cfg.DstFont = Fonts.back();
-    if (!new_font_cfg.FontDataOwnedByAtlas)
+    IM_ASSERT(!new_font_cfg.FontDataSharedExternally || !new_font_cfg.FontDataOwnedByAtlas);
+    if (!new_font_cfg.FontDataOwnedByAtlas && !new_font_cfg.FontDataSharedExternally)
     {
         new_font_cfg.FontData = IM_ALLOC(new_font_cfg.FontDataSize);
         new_font_cfg.FontDataOwnedByAtlas = true;

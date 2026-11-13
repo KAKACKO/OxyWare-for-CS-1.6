@@ -26,11 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// vanilla_halflife_dir_file_database.cpp -- database of filenames from the vanilla Windows/Linux/OSX Half-Life directory.
-// 
-// This is used inside the cheat for rechecker bypass.
-//
 
 #include "util/vanilla_halflife_dir_file_database.h"
 
@@ -5096,7 +5091,7 @@ const std::unordered_multiset<std::string> s_8684_vanilla_halflife_directory_fil
 	"voice_speex.so",
 	"vstdlib.dll",
 
-	// 4554 cs
+
 	"FileSystem_steam.dll",
 	"crashhandler.dll",
 	"dbg.dll",

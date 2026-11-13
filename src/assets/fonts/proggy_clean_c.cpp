@@ -26,8 +26,7 @@
 *	IN THE SOFTWARE.
 */
 
-// File: 'ProggyClean.ttf' (41208 bytes)
-// Exported using binary_to_compressed_c.cpp
+
 unsigned int g_proggyclean_compressed_size = 9583;
 unsigned int g_proggyclean_compressed_data[9584/4] =
 {
@@ -232,4 +231,3 @@ unsigned int g_proggyclean_compressed_data[9584/4] =
     0x3820ec8d, 0x200ddc41, 0x0ddc4139, 0xef8d3920, 0xef8d3920, 0xef8d3920, 0xef8d3920, 0xef8d3920, 0xef8d3920, 0xef8d3920, 0xef8d3920, 0xef8d3920, 
     0xef8d3920, 0xef8d3920, 0xef8d3920, 0xef8d3920, 0xef8d3920, 0x00663923, 0x48fa0500, 0x00f762f9, 
 };
-

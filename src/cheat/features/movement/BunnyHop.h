@@ -100,4 +100,4 @@ private:
 	void reset_jump_time();
 };
 
-#endif // BUNNYHOP_H
+#endif

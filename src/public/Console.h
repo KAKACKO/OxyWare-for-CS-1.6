@@ -105,7 +105,7 @@ private:
 
 	bool m_initialized = false;
 
-	// message that has been printed before the console has been initialized.
+
 	struct scheduled_message_t
 	{
 		EOutputCategory category;
@@ -116,4 +116,4 @@ private:
 	std::vector<scheduled_message_t> m_scheduled_messages;
 };
 
-#endif // CONSOLE_H
+#endif

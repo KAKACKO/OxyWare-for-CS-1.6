@@ -26,9 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// IBaseModule.h -- Base class for modules. Every module must implement this class and export it via ExposeModule function.
-//
 
 #ifndef IBASEMODULE_H
 #define IBASEMODULE_H
@@ -44,31 +41,30 @@ class IDeveloperConsole;
 
 enum EUpdateStatus
 {
-	UPDATE_CONTINUE, // continue execution
-	UPDATE_APP_EXIT, // request application exit
+	UPDATE_CONTINUE,
+	UPDATE_APP_EXIT,
 };
 
-// data forwarded by the DependencyLoader to the module that just got loaded.
+
 struct ModuleInitializationContext
 {
 	ILibraryLoader*		libloader_i;
 	IDeveloperConsole*	devconsole_i;
 };
 
-// This actually isn't a classic interface with an identifier, but just a pure virtual
-// class that each module that will be loaded by the loader must derive from.
+
 class IBaseModule
 {
 public:
-	virtual bool initialize(ModuleInitializationContext* context) = 0;	// called on module load
-	virtual void destroy() = 0;				// called on module unload
-	virtual EUpdateStatus update() = 0;		// called every tick by DependencyLoader. 
+	virtual bool initialize(ModuleInitializationContext* context) = 0;
+	virtual void destroy() = 0;
+	virtual EUpdateStatus update() = 0;
 
 	virtual std::string get_module_name() = 0;
 
 	virtual void kill_module() = 0;
 
-	// TODO: module version
+
 };
 
 extern IBaseModule* g_thismodule_i;
@@ -77,4 +73,4 @@ typedef bool (*ExposeModuleFn)(IBaseModule** module_interface, ModuleInitializat
 
 #define EXPOSEMODULE_PROCNAME "ExposeModule"
 
-#endif // IBASEMODULE_H
+#endif

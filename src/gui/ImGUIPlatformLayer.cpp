@@ -51,7 +51,7 @@ public:
 	Vector2D get_screen_size();
 
 private:
-	// there can be only one per module.
+
 	ImGUIBaseLayer* m_platform_layer = nullptr;
 
 	EGUICursor m_current_cursor = GUICURSOR_Arrow;
@@ -75,11 +75,6 @@ private:
 CImGUIPlatformLayer g_imgui_platform_layer_mgr;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CImGUIPlatformLayer, IImGUIPlatformLayer, IIMGUIPLATFORMLAYER_INTERFACEID, g_imgui_platform_layer_mgr);
 
-//-------------------------------------------------------------------------------
-//
-// CImGUIPlatformLayer implementation
-// 
-//-------------------------------------------------------------------------------
 
 CImGUIPlatformLayer::CImGUIPlatformLayer()
 {
@@ -135,12 +130,10 @@ void CImGUIPlatformLayer::render()
 	m_current_cursor = GUICURSOR_Arrow;
 
 	m_platform_layer->on_render(
-		// post-render callback
+
 		[&]()
 		{
-			//
-			// mouse cursors
-			//
+
 
 			ImGui::GetIO().MouseDrawCursor = m_should_render_cursor;
 			

@@ -26,15 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// DeveloperConsole.cpp -- Implementation of the IDeveloperConsole interface.
-// 
-//	Note that this is just implemenation of the interface. Each module then idependently
-//	includes a cpp file that communicates with this class. This is needed in order
-//	for the console code to distinguish between each module (i.e. who's printing which msg)
-// 
-//	THIS INTERFACE SHOULDN'T BE USED DIRECTLY, RATHER USE CONSOLE.CPP SHARED FILE.
-//
 
 #include "interface/IDeveloperConsole.h"
 #include "interface/gui/IGUIWidgets.h"
@@ -76,7 +67,7 @@ public:
 	void unregister_module(EOutputModule which);
 
 	std::filesystem::path get_logfile_path();
-	std::filesystem::path get_logfile_path_fancy(); // with %appdata% instead of the actual directory
+	std::filesystem::path get_logfile_path_fancy();
 
 	void enable_tooltip(bool enable)
 	{
@@ -97,7 +88,7 @@ private:
 	int text_edit_callback(ImGuiInputTextCallbackData* data);
 
 private:
-	// used only within this file as a convenience
+
 	inline void print_locally(EOutputCategory category, const std::string& what)
 	{
 		print(EOutputModule::GUI, category, what);
@@ -122,14 +113,14 @@ private:
 	std::vector<output_line_t> m_contents;
 	std::mutex m_output_lock;
 
-	// List of modules that are registered to this class
+
 	std::unordered_set<EOutputModule> m_module_list;
 
 	bool m_need_to_scroll_to_the_bottom = false;
 
 	std::ofstream m_logfile_output_stream;
 
-	// the module that runs this code
+
 	std::string m_module_name;
 
 	std::string m_logfile_path_current;
@@ -137,11 +128,11 @@ private:
 	bool m_reclaim_focus = false;
 	char m_input_buffer[256];
 
-	// command history
+
 	std::deque<std::string> m_entered_commands;
 	int m_history_pos = 0;
 
-	// via up and down arrows
+
 	int m_selected_candidate = -1;
 	std::vector<std::string> m_tooltip_candidates;
 	void rebuild_tooltip_canditate_list(const char* input_buffer, int length);
@@ -149,7 +140,7 @@ private:
 
 	bool m_tooltip_enabled = false;
 
-	inline static constexpr int k_max_tooltip_candidates = 999; // "unlimited", since we have a scrollbar
+	inline static constexpr int k_max_tooltip_candidates = 999;
 };
 
 BaseCommand clear(
@@ -177,17 +168,12 @@ BaseCommand print(
 CDeveloperConsole g_dev_console;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CDeveloperConsole, IDeveloperConsole, IDEVELOPERCONSOLE_INTERFACEID, g_dev_console);
 
-//-------------------------------------------------------------------------------
-//
-// CDeveloperConsole implementation
-// 
-//-------------------------------------------------------------------------------
 
 CDeveloperConsole::CDeveloperConsole()
 {
 	g_devconsole_i = this;
 
-	// FIXME: This check is kinda dumb -- we need a better way of checking for this, maybe fix this?
+
 #ifdef M_CHEATER
 	initialize(MODULE_CHEAT);
 #endif
@@ -206,7 +192,7 @@ static std::string remove_extension(const std::string& filename) {
 
 void CDeveloperConsole::initialize(const std::string& module_name)
 {
-	// assuming that 'module_name' has an extension
+
 	m_module_name = remove_extension(module_name);
 
 	prepare_log_directory();
@@ -231,7 +217,7 @@ void CDeveloperConsole::initialize(const std::string& module_name)
 		print_locally(EOutputCategory::INFO, std::format("Logging to {}", get_logfile_path()));
 	}
 
-	// push empty buffer because that's what we start with
+
 	m_entered_commands.push_back("");
 
 	print_locally(EOutputCategory::INFO, "Console Initialized");
@@ -262,7 +248,7 @@ void CDeveloperConsole::render()
 
 	auto info_font = g_gui_fontmgr_i->get_font(FID_ProggyClean, FSZ_13px, FDC_Regular);
 
-	// lines
+
 	auto label = std::format("{} lines", m_contents.size());
 	auto label_size = g_gui_fontmgr_i->calc_font_text_size(info_font, label.c_str());
 	g_gui_window_rendering_i->render_text(
@@ -272,7 +258,7 @@ void CDeveloperConsole::render()
 		g_gui_thememgr_i->get_current_theme()->get_color<GUICLR_TextBlack>(),
 		label);
 
-	// logging path
+
 	auto label1 = std::format("logging to \"{}\"", get_logfile_path_fancy());
 	auto label1_size = g_gui_fontmgr_i->calc_font_text_size(info_font, label1.c_str());
 	g_gui_window_rendering_i->render_text(
@@ -293,7 +279,7 @@ void CDeveloperConsole::render()
 				{
 					auto& line = m_contents.at(line_no);
 
-					// shrink a little..
+
 					g_gui_widgets_i->push_stylevar(ImGuiStyleVar_ItemSpacing, { 0.0f, 1.0f });
 					g_gui_widgets_i->push_stylevar(ImGuiStyleVar_IndentSpacing, 0.0f);
 					g_gui_widgets_i->push_font(g_gui_fontmgr_i->get_font(FID_ProggyClean, FSZ_13px, FDC_Regular));
@@ -307,7 +293,7 @@ void CDeveloperConsole::render()
 					g_gui_widgets_i->add_text("] ", TEXTPROP_ColorRegular);
 					g_gui_widgets_i->sameline();
 
-					// render preamble
+
 					const char* which[] = { "", "error: ", "warning: " };
 
 					if (line.category != EOutputCategory::INFO)
@@ -316,7 +302,6 @@ void CDeveloperConsole::render()
 						g_gui_widgets_i->sameline();
 					}
 
-					// render text
 
 					if (line.category != EOutputCategory::INFO)
 					{
@@ -332,7 +317,7 @@ void CDeveloperConsole::render()
 					g_gui_widgets_i->pop_stylevar(2);
 				});
 
-			// after new log is added, scroll to the bottom every time
+
 			if (m_need_to_scroll_to_the_bottom)
 			{
 				g_gui_widgets_i->set_scroll_here_y(1.0f);
@@ -340,7 +325,7 @@ void CDeveloperConsole::render()
 			}
 		});
 
-	g_gui_widgets_i->pop_stylevar(1); // WindowPadding
+	g_gui_widgets_i->pop_stylevar(1);
 
 	auto button_size = Vector2D(25, 25);
 	auto cursor_pos = g_gui_widgets_i->get_cursor_pos();
@@ -359,7 +344,7 @@ void CDeveloperConsole::render()
 	{
 		if (m_selected_candidate != -1)
 		{
-			// pressed enter while a tooltip candidate was selected by cursor
+
 			strcpy(m_input_buffer, m_tooltip_candidates[m_selected_candidate].c_str());
 			rebuild_tooltip_canditate_list(m_input_buffer, strlen(m_input_buffer));
 		}
@@ -367,7 +352,7 @@ void CDeveloperConsole::render()
 		{
 			if (m_input_buffer[0])
 			{
-				// feed the parser with new buffer
+
 				g_variablemgr_i->execute_command(m_input_buffer);
 
 				if (m_entered_commands.size() > 20)
@@ -375,13 +360,13 @@ void CDeveloperConsole::render()
 					m_entered_commands.pop_front();
 				}
 
-				// insert, but not duplicates
+
 				if (std::find(m_entered_commands.begin(), m_entered_commands.end(), m_input_buffer) == m_entered_commands.end())
 				{
 					m_entered_commands.push_back(m_input_buffer);
 				}
 
-//				print_console(EOutputCategory::INFO, "input");
+
 				m_history_pos = 0;
 
 				strcpy(m_input_buffer, "");
@@ -395,17 +380,17 @@ void CDeveloperConsole::render()
 		m_reclaim_focus = true;
 	}
 
-	// Auto-focus on window apparition
+
 	g_gui_widgets_i->set_item_default_focus();
 	if (m_reclaim_focus)
 	{
-		g_gui_widgets_i->set_keyboard_focus_here(-1); // Auto focus previous widget
+		g_gui_widgets_i->set_keyboard_focus_here(-1);
 		m_reclaim_focus = false;
 	}
 
 	render_candidate_tooltip();
 
-	g_gui_widgets_i->pop_stylevar(1); // WindowPadding
+	g_gui_widgets_i->pop_stylevar(1);
 }
 
 void CDeveloperConsole::print(EOutputModule module, EOutputCategory category, const std::string& what, bool printed_already, std::chrono::system_clock::time_point time)
@@ -479,12 +464,10 @@ void CDeveloperConsole::unregister_module(EOutputModule which)
 #include <shlobj_core.h>
 
 #ifdef small
-#undef small // TODO: move this to a shared place
+#undef small
 #endif
 
-// just a little hack over the fact that this code already exists inside the FileSystem code.. since we
-// want to have the console ready right as soon as the application starts, we cannot just use the appdata manager
-// or the filesystem, so yeah.. this kinda sucks but whatever, its worth it so that we can log as soon as we start..
+
 static std::filesystem::path get_appdata_dir()
 {
 	PWSTR pwstr_appdata_directory;
@@ -514,7 +497,7 @@ std::string CDeveloperConsole::generate_logfilename()
 	static std::string generated_filename = "";
 	if (!generated_filename.empty())
 	{
-		// generate only once
+
 		return generated_filename;
 	}
 
@@ -538,7 +521,7 @@ void CDeveloperConsole::prepare_log_directory()
 
 	std::error_code code;
 
-	// create the oxware/ directory
+
 	if (!std::filesystem::exists(base_directory, code))
 	{
 		if (!std::filesystem::create_directory(base_directory, code))
@@ -549,7 +532,7 @@ void CDeveloperConsole::prepare_log_directory()
 		}
 	}
 
-	// log/
+
 	if (!std::filesystem::exists(logdir, code))
 	{
 		if (!std::filesystem::create_directory(logdir, code))
@@ -560,7 +543,7 @@ void CDeveloperConsole::prepare_log_directory()
 		}
 	}
 
-	// log/current/
+
 	if (!std::filesystem::exists(current_logdir, code))
 	{
 		if (!std::filesystem::create_directory(current_logdir, code))
@@ -571,7 +554,7 @@ void CDeveloperConsole::prepare_log_directory()
 		}
 	}
 
-	// move stuff that is there already to the log\\ directory.
+
 	for (const auto& iter : std::filesystem::directory_iterator(current_logdir, code))
 	{
 		std::filesystem::rename(iter.path(), logdir / iter.path().filename(), code);
@@ -581,8 +564,7 @@ void CDeveloperConsole::prepare_log_directory()
 
 	print_locally(EOutputCategory::INFO, std::format("Maximum amount of logfiles that will be kept: {}", num_logfiles_to_keep.get_value()));
 
-	// remove oldest logs
-	// but first, get all the files that need to be removed.
+
 	std::multimap<std::filesystem::file_time_type, std::filesystem::path> files_to_remove;
 	int n = 0;
 	for (const auto& iter : std::filesystem::directory_iterator(logdir, code))
@@ -596,7 +578,7 @@ void CDeveloperConsole::prepare_log_directory()
 		n++;
 	}
 
-	// now remove the files
+
 	for (const auto& [time, log_file] : files_to_remove)
 	{
 		if (!std::filesystem::remove(log_file, code))
@@ -621,15 +603,15 @@ int CDeveloperConsole::text_edit_callback(ImGuiInputTextCallbackData* data)
 	{
 		case ImGuiInputTextFlags_CallbackCompletion:
 		{
-			// pressing tab on empty buffer is as if you'd press down arrow key
+
 			if (m_tooltip_candidates.empty())
 			{
 				int max_size = (int)(m_entered_commands.size() - 1);
 				if (++m_history_pos > max_size)
 				{
-					m_history_pos = 0; // roll back with tab
+					m_history_pos = 0;
 				}
-//				print_console(EOutputCategory::INFO, std::format("history_pos: {}", m_history_pos));
+
 				history = true;
 			}
 			else
@@ -637,9 +619,9 @@ int CDeveloperConsole::text_edit_callback(ImGuiInputTextCallbackData* data)
 				int max_size = (int)(m_tooltip_candidates.size() - 1);
 				if (++m_selected_candidate > max_size)
 				{
-					m_selected_candidate = 0; // roll back with tab
+					m_selected_candidate = 0;
 				}
-//				print_console(EOutputCategory::INFO, std::format("m_selected_candidate: {}", m_selected_candidate));
+
 			}
 			break;
 		}
@@ -655,7 +637,7 @@ int CDeveloperConsole::text_edit_callback(ImGuiInputTextCallbackData* data)
 						{
 							m_history_pos = 0;
 						}
-//						print_console(EOutputCategory::INFO, std::format("history_pos: {}", m_history_pos));
+
 						history = true;
 					}
 					else
@@ -665,7 +647,7 @@ int CDeveloperConsole::text_edit_callback(ImGuiInputTextCallbackData* data)
 						{
 							m_selected_candidate = m_tooltip_candidates.empty() ? 0 : max_size;
 						}
-//						print_console(EOutputCategory::INFO, std::format("m_selected_candidate: {}", m_selected_candidate));
+
 					}
 					break;
 				}
@@ -678,7 +660,7 @@ int CDeveloperConsole::text_edit_callback(ImGuiInputTextCallbackData* data)
 						{
 							m_history_pos = m_entered_commands.empty() ? 0 : max_size;
 						}
-//						print_console(EOutputCategory::INFO, std::format("history_pos: {}", m_history_pos));
+
 						history = true;
 					}
 					else
@@ -687,7 +669,7 @@ int CDeveloperConsole::text_edit_callback(ImGuiInputTextCallbackData* data)
 						{
 							m_selected_candidate = 0;
 						}
-//						print_console(EOutputCategory::INFO, std::format("m_selected_candidate: {}", m_selected_candidate));
+
 					}
 					break;
 				}
@@ -700,13 +682,13 @@ int CDeveloperConsole::text_edit_callback(ImGuiInputTextCallbackData* data)
 			rebuild_tooltip_canditate_list(data->Buf, data->BufTextLen);
 
 			m_history_pos = 0;
-//			print_console(EOutputCategory::INFO,std::format("data->EventChar: {}", data->EventChar));
-//			print_console(EOutputCategory::INFO,std::format("data->EventKey: {}", (int)data->EventKey));
+
+
 			break;
 		}
 	}
 
-	// changed history
+
 	if (history && !m_entered_commands.empty())
 	{
 		auto& item = m_entered_commands.at(m_history_pos);
@@ -801,8 +783,8 @@ void CDeveloperConsole::render_candidate_tooltip()
 		if (!m_tooltip_candidates.empty())
 		{
 			m_tooltip_candidates.clear();
-			// prevent softlock situation where the input buffer is empty and tooltip isn't 
-			// m_tooltip_candidatesrendering however, the container still holds elements.
+
+
 		}
 
 		m_selected_candidate = -1;
@@ -811,7 +793,7 @@ void CDeveloperConsole::render_candidate_tooltip()
 
 	if (m_tooltip_candidates.size() == 1 && m_tooltip_candidates[0] == m_input_buffer)
 	{
-		// don't display only one item if already in input box
+
 		m_tooltip_candidates.clear();
 	}
 
@@ -836,9 +818,9 @@ void CDeveloperConsole::render_candidate_tooltip()
 				{
 					strcpy(m_input_buffer, c.c_str());
 
-					// reset stuff
+
 					m_selected_candidate = -1;
-					m_reclaim_focus = true; // TODO: needed?
+					m_reclaim_focus = true;
 					rebuild_tooltip_canditate_list(m_input_buffer, strlen(m_input_buffer));
 				}
 

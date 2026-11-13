@@ -30,70 +30,65 @@
 #define GUICOLORS_H
 #pragma once
 
-//
-// NOTE:
-// 
-//	Don't forget your new color to the translation table below.
-//
 
 enum EGUIColorId
 {
-	GUICLR_Invalid, // just a place holder for like invalid state, etc
+	GUICLR_Invalid,
 
-	// text
+
 	GUICLR_TextLight,
 	GUICLR_TextRegular,
 	GUICLR_TextDark,
 	GUICLR_TextBlack,
 	GUICLR_TextWhite,
 
-	// frame
+
 	GUICLR_FrameBg,
 	GUICLR_FrameBgHovered,
 	GUICLR_FrameBgActive,
 	GUICLR_FrameBgSelected,
 	GUICLR_FrameActive,
 
-	// windows
+
 	GUICLR_WindowBackground,
 	GUICLR_ChildBackground,
 
-	// buttons
+
 	GUICLR_Button,
 
-	// url
+
 	GUICLR_URLHovered,
 
-	// scrollbar
+
 	GUICLR_ScrollbarGrab,
 
-	// checkbox
+
 	GUICLR_CheckBoxBackground,
 	GUICLR_CheckBoxCheckMark,
 
-	// slider
+
 	GUICLR_SliderHovered,
 
-	// input text
+
 	GUICLR_InputTextBg,
 
-	// separator
+
 	GUICLR_Separator,
 
-	// tabs
+
 	GUICLR_Tab,
 	GUICLR_TabHovered,
 	GUICLR_TabActive,
 
-	// resize grip
+
 	GUICLR_ResizeGrip,
 	GUICLR_ResizeGripHovered,
 	GUICLR_ResizeGripActive,
 
-	// tables
+
 	GUICLR_TableHeaderBg,
 
-	// listbox
+
 	GUICLR_ListBoxBackground,
 	GUICLR_ListBoxBorder,
 	GUICLR_ListBoxArrowBackground,
@@ -101,4 +96,4 @@ enum EGUIColorId
 	GUICLR_MAX
 };
 
-#endif // GUICOLORS_H
+#endif

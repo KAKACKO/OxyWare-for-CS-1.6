@@ -30,7 +30,7 @@
 #define IRENDERERCONTEXT_H
 #pragma once
 
-// Every class that wants to render imgui must derive from this base class and implement the "on_render" method.
+
 class IRenderingContext
 {
 public:
@@ -45,7 +45,7 @@ public:
 	explicit IRenderingContext(const std::string& id) :
 		m_identifier(id)
 	{
-		// it is true by default, and it can be turned off explicitly.
+
 		m_is_interactible = true;
 		m_interaction_is_locked = false;
 	}
@@ -70,13 +70,13 @@ public:
 protected:
 	std::string m_identifier = "uninitialized";
 
-	// if is, it affects ingame mouse events when closed/opened
+
 	bool m_is_interactible = false;
 
 	bool m_interaction_is_locked = true;
 };
 
-// rendering context activated from elsewhere
+
 class IRenderingContext_Generic : public IRenderingContext
 {
 public:
@@ -104,7 +104,7 @@ private:
 	bool m_should_render = false;
 };
 
-// rendering context that is activated only if the context that it relies on is activated.
+
 class IRenderingContext_GenericReliantOther : public IRenderingContext
 {
 public:
@@ -127,7 +127,7 @@ public:
 
 		if (m_reliant_ctx)
 		{
-			// only if the reliant context is rendering, e.g. we cannot show up the console if the menu isn't up.
+
 			if (m_reliant_ctx->should_render())
 			{
 				m_should_render ^= 1;
@@ -135,7 +135,7 @@ public:
 		}
 		else
 		{
-			m_should_render ^= 1; // no reliant context, just switch normally
+			m_should_render ^= 1;
 		}
 	}
 
@@ -145,7 +145,7 @@ private:
 	IRenderingContext* m_reliant_ctx = nullptr;
 };
 
-// rendering context activated together with its parent context.
+
 class IRenderingContext_ParentActivate : public IRenderingContext
 {
 public:
@@ -161,14 +161,14 @@ public:
 
 	void toggle_rendering()
 	{
-		// not supported
+
 	}
 
 private:
 	IRenderingContext* m_parent_ctx = nullptr;
 };
 
-// Same as ParentActivate however, this one get's deactivated only after some threshold.
+
 class IRenderingContext_ParentActivateThreshold : public IRenderingContext
 {
 public:
@@ -217,7 +217,7 @@ public:
 
 	void toggle_rendering()
 	{
-		// not supported
+
 	}
 
 protected:
@@ -242,7 +242,7 @@ protected:
 	bool m_is_rendering_timeless = false;
 };
 
-// rendering context activated through external code, only when it gets requested to be updated.
+
 class IRenderingContext_IndependentlyActivate : public IRenderingContext
 {
 public:
@@ -253,7 +253,7 @@ public:
 
 	bool should_render()
 	{
-		// only one has to be active in order to fully force the render.
+
 		for (const auto& c : m_render_constain_callbacks)
 		{
 			if (c())
@@ -265,7 +265,7 @@ public:
 
 	void toggle_rendering()
 	{
-		// not supported
+
 	}
 
 	void add_render_constain(const std::function<bool()>& callback)
@@ -279,11 +279,11 @@ public:
 	}
 
 protected:
-	// set of constrains that enable to execute the rendering code
+
 	std::vector<std::function<bool()>> m_render_constain_callbacks;
 
-	// rendering code that will be executed when any of these constrains are met
+
 	std::vector<std::function<void()>> m_render_code_callbacks;
 };
 
-#endif // IRENDERERCONTEXT_H
+#endif

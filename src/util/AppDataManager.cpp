@@ -45,18 +45,13 @@ private:
 	inline std::filesystem::path get_full(const std::filesystem::path& relative_dir = "") const { return g_filesystem_i->get_appdata_path(relative_dir); }
 
 public:
-	// Holds relative directories as keys, absolute directories as values.
+
 	std::map<std::string, std::filesystem::path> m_directories;
 };
 
 CAppDataManager g_appdata_mgr;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CAppDataManager, IAppDataManager, IAPPDATAMANAGER_INTERFACEID, g_appdata_mgr);
 
-//-------------------------------------------------------------------------------
-//
-// CAppDataManager implementation
-//
-//-------------------------------------------------------------------------------
 
 CAppDataManager::CAppDataManager()
 {
@@ -70,7 +65,7 @@ CAppDataManager::~CAppDataManager()
 
 bool CAppDataManager::initialize_directory_hirearchy()
 {
-	// create base
+
 	if (!g_filesystem_i->create_directory(g_filesystem_i->get_appdata_path()))
 	{
 		CConsole::the().error("Couldn't create base directory for the cheat. ('{}')",
@@ -81,7 +76,7 @@ bool CAppDataManager::initialize_directory_hirearchy()
 	register_and_create_directory("config\\");		/* oxware\\config\\			*/
 	register_and_create_directory("config\\theme");	/* oxware\\config\\theme\\	*/
 	register_and_create_directory("log\\");			/* oxware\\log\\			*/
-	// add more here if you wish to...
+
 
 	CConsole::the().info("Created directory hirearchy.");
 	return true;

@@ -32,7 +32,7 @@
 
 #include "code_performace_profile.h"
 
-// data about the snapshot that we then display, sorted by number of samples.
+
 struct ProfSnapshotEntry
 {
 	ProfSnapshotEntry() = default;
@@ -41,7 +41,7 @@ struct ProfSnapshotEntry
 
 	ProfSnapshotEntry& operator=(const ProfSnapshotEntry&) = default;
 
-	// sorting function
+
 	struct less
 	{
 		bool operator()(const ProfSnapshotEntry& lhs, const ProfSnapshotEntry& rhs) const
@@ -89,4 +89,4 @@ extern ICodePerfProfiler* g_code_perf_profiler_i;
 
 #define ICODEPERFPROFILER_INTERFACEID "ICodePerfProfiler"
 
-#endif // ICODEPERFORMANCEPROFILER_H
+#endif

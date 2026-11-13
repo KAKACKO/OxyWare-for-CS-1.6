@@ -73,7 +73,7 @@ public:
 
 	bool is_valid() const { return !m_screen_dimensions.IsZero() && !m_screen_pos.IsZero() && m_atlas_accruing; }
 
-	// Rendering stuff
+
 	void render_additive(const Vector2D& position, const CColor& color, bool dim, const uint32_t frame = 0) const;
 
 	std::string m_name;
@@ -105,7 +105,7 @@ public:
 
 	std::filesystem::path m_sprite_atlas_model_path;
 
-	//	Data gathered from engine
+
 	hl::model_t* m_precached_model = nullptr;
 	hl::msprite_t* m_cached_sprite_data = nullptr;
 	hl::HSPRITE_t m_sprite_atlas_id = NULL_SPRITE;
@@ -124,7 +124,7 @@ public:
 
 	void handle_color_change(hl::HSPRITE_t spriteId, int& r, int& g, int& b);
 
-	// expects 0-255 range
+
 	static void scale_hud_colors(CColor& color, bool dim);
 
 private:
@@ -132,9 +132,6 @@ private:
 
 	bool initialize_engine_sprite_data();
 
-	//
-	// rendering
-	//
 
 	void render_current_weapon_sprite() const;
 	void render_velocity() const;
@@ -153,4 +150,4 @@ private:
 	Vector2D m_cstrike_sprite_font_size;
 };
 
-#endif // SPRITEMANAGER_H
+#endif

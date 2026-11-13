@@ -31,7 +31,7 @@
 bool CSVCFuncDetourMgr::install_hooks()
 {
 	if (!svc_sound_fn().install_svc(svc_sound_f, "svc_sound", svc_sound)) return false;
-	//if (!svc_time_fn().install_svc(svc_time_f, "svc_time", svc_time)) return false;
+
 	if (!svc_sendcvarvalue_fn().install_svc(svc_sendcvarvalue_f, "svc_sendcvarvalue", svc_sendcvarvalue)) return false;
 	if (COxWare::the().get_build_number() >= 4554)
 	{
@@ -45,7 +45,7 @@ bool CSVCFuncDetourMgr::install_hooks()
 void CSVCFuncDetourMgr::uninstall_hooks()
 {
 	svc_sound_fn().uninstall();
-	//svc_time_fn().uninstall();
+
 	svc_sendcvarvalue_fn().uninstall();
 	if (COxWare::the().get_build_number() >= 4554)
 	{
@@ -54,20 +54,11 @@ void CSVCFuncDetourMgr::uninstall_hooks()
 	svc_stufftext_fn().uninstall();
 }
 
-//----------------------------------------------------------------------------------------------
 
 void CSVCFuncDetourMgr::svc_sound_f()
 {
-	//if (CHLNetMessageIO::the().is_ready())
-	//{
-	//	CHLNetMessageIO::the().begin_silent_bit_reading();
-	//
-	//	int flags = CHLNetMessageIO::the().read_bits(9);
-	//
-	//	CConsole::the().info("svc_sound: flags {}", flags);
-	//
-	//	CHLNetMessageIO::the().end_silent_bit_reading();
-	//}
+
+
 	
 	CSVCFuncDetourMgr::the().svc_sound_fn().call();
 }
@@ -90,10 +81,7 @@ void CSVCFuncDetourMgr::svc_sendcvarvalue_f()
 {
 	if (CHLNetMessageIO::the().is_ready())
 	{
-		// we don't actually perform a silent read begin&end operation, because we'll basically reimplement
-		// the function completely. "Replace it"
 
-		// servers call this in order to request cvar value from the client.
 
 		char* requested_cvar = CHLNetMessageIO::the().read_string();
 
@@ -110,7 +98,7 @@ void CSVCFuncDetourMgr::svc_sendcvarvalue_f()
 			return;
 		}
 
-		// Send back the cvar type to server
+
 		auto cvar = CMemoryHookMgr::the().cl_enginefuncs()->pfnGetCvarPointer(requested_cvar);
 		if (cvar == NULL)
 		{
@@ -163,10 +151,7 @@ void CSVCFuncDetourMgr::svc_sendcvarvalue2_f()
 {
 	if (CHLNetMessageIO::the().is_ready())
 	{
-		// we don't actually perform a silent read begin&end operation, because we'll basically reimplement
-		// the function completely. "Replace it"
 
-		// servers call this in order to request cvar value from the client.
 
 		int request_id = CHLNetMessageIO::the().read_int32();
 		char* requested_cvar = CHLNetMessageIO::the().read_string();
@@ -186,7 +171,7 @@ void CSVCFuncDetourMgr::svc_sendcvarvalue2_f()
 			return;
 		}
 
-		// Send back the cvar type to server
+
 		auto cvar = CMemoryHookMgr::the().cl_enginefuncs()->pfnGetCvarPointer(requested_cvar);
 		if (cvar == NULL)
 		{

@@ -81,13 +81,13 @@ void CBulletTrace::on_render()
 Vector CBulletTrace::calc_bullet_shoot_dir_vector(
 	const Vector& original_shootdir, const Vector& spread, const Vector& right, const Vector& up)
 {
-	// apply spread to the final direction
+
 	return original_shootdir + (spread.x * right + spread.y * up);
 }
 
 Vector CBulletTrace::calc_bullet_endpos(const Vector& source, const Vector& shootdir_with_spread, float penetration_dist)
 {
-	// calculate bullet impact position
+
 	return source + shootdir_with_spread * penetration_dist;
 }
 

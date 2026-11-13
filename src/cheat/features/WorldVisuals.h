@@ -51,4 +51,4 @@ public:
 	void render_fog();
 };
 
-#endif // ANTIDEMORECORDER_H
+#endif

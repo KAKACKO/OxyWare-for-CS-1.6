@@ -43,7 +43,7 @@ public:
 
 	inline bool hide_visuals() const { return m_disable_visual_features; }
 
-	// used only inside glreadpixels
+
 	inline bool glreadpixels_called_by_antiscreen() { return m_antiscreen_reading_pixels; }
 
 	void detour_pixels(uint8_t* pixels);
@@ -62,13 +62,13 @@ private:
 	bool m_disable_visual_features = false;
 	bool m_forced_disable_visuals = false;
 
-	// true when we call glReadPixels from AntiScreen code. this way we can distinguish the caller.
+
 	bool m_antiscreen_reading_pixels;
 
 	int m_nth_frame = 0;
 	uint32_t m_time_last_took = 0;
 
-	std::vector<uint8_t> m_clean_screen_pixel_buffer; // a clean screen pixel buffer.
+	std::vector<uint8_t> m_clean_screen_pixel_buffer;
 };
 
-#endif // ANTISCREEN_H
+#endif

@@ -53,12 +53,12 @@ void CThirdPerson::update(hl::ref_params_t* pparams)
 		return;
 	}
 
-	// Start from clients view pos.
+
 	Vector start_eye = local->get_eye_pos();
 	
 	auto event_api = CMemoryHookMgr::the().cl_enginefuncs()->pEventAPI;
 	
-	// Trace for solid wall.
+
 	hl::pmtrace_t tr;
 	event_api->EV_SetTraceHull(2);
 	event_api->EV_PlayerTrace(
@@ -68,11 +68,11 @@ void CThirdPerson::update(hl::ref_params_t* pparams)
 		-1, 
 		&tr);
 	
-	// Multiply the forward vector by the distance amount.
+
 	Vector offset, dir;
 	dir = pparams->forward * -dist;
 
-	// Check for wall collision.
+
 	if (dist > start_eye.Distance(tr.endpos) && thirdperson_block_wall.get_value())
 	{
 		offset += tr.endpos - start_eye + pparams->forward * 2.0f;
@@ -82,9 +82,9 @@ void CThirdPerson::update(hl::ref_params_t* pparams)
 		offset += dir;
 	}
 
-	// Update the distance depending on the wall collision distance.
+
 	pparams->vieworg += offset;
 
-	// if CL_IsThirdPerson() returns true, game fucks up our view angles. Restore.
+
 	pparams->viewangles = CMemoryHookMgr::the().cl().get()->viewangles;
 }

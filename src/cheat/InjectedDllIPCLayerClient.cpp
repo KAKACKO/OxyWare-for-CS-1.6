@@ -39,13 +39,13 @@ IPCLayerStatus CInjectedDllIPCLayerClient::dispatch()
 {	
 	assert(m_ipc);
 
-	// injector stopped communication with us, it probably suddenly crashed or exited.
+
 	if (!heart_beating())
 	{
 		return k_IPCLayerStatus_InjectorStopBeat;
 	}
 
-	// reading injector codes...
+
 	switch (read_code())
 	{
 		case I2C_None:
@@ -54,7 +54,7 @@ IPCLayerStatus CInjectedDllIPCLayerClient::dispatch()
 		}
 		case I2C_RequestUnload:
 		{
-			// stuff
+
 			CConsole::the().info("Injector requested unload... destroying cheat...");
 			return k_IPCLayerStatus_Unloading;
 		}
@@ -62,7 +62,7 @@ IPCLayerStatus CInjectedDllIPCLayerClient::dispatch()
 		{
 			assert(0);
 			break;
-			// shouldn't happen
+
 		}
 	}
 
@@ -98,7 +98,7 @@ bool CInjectedDllIPCLayerClient::heart_beating()
 	}
 	else
 	{
-		// injector sent new one
+
 		last_sequence = m_ipc->m_heartbeat_sequence;
 		last_heartbeat = GetTickCount();
 	}

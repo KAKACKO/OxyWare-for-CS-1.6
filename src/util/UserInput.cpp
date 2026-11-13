@@ -128,11 +128,6 @@ private:
 CUserInput g_user_input;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CUserInput, IUserInput, IUSERINPUT_INTERFACEID, g_user_input);
 
-//-------------------------------------------------------------------------------
-//
-// CUserInput implementation
-//
-//-------------------------------------------------------------------------------
 
 CUserInput::CUserInput()
 {
@@ -148,14 +143,14 @@ CUserInput::~CUserInput()
 
 bool CUserInput::initialize()
 {
-	// add user input handler to the window proc
+
 	g_window_msg_handler_i->add_msg_callback(
 		[this](UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			if (wParam < k_key_range || 
-				// mouse scroll
+
 				uMsg & WM_MOUSEWHEEL || 
-				// mouse buttons
+
 				uMsg & WM_LBUTTONDOWN || uMsg & WM_MBUTTONDOWN || uMsg & WM_RBUTTONDOWN || uMsg & WM_XBUTTONDOWN ||
 				uMsg & WM_LBUTTONUP || uMsg & WM_MBUTTONUP || uMsg & WM_RBUTTONUP || uMsg & WM_XBUTTONUP
 				)
@@ -182,7 +177,7 @@ void CUserInput::destroy()
 {
 	CConsole::the().info("Destroying User Input...");
 
-	// TODO: Stuff
+
 }
 
 bool CUserInput::is_valid_key(int virtual_key)
@@ -207,8 +202,7 @@ UserKey_t& CUserInput::get_key(int virtual_key, bool* valid_key)
 		}
 	}
 
-	// this gets returned if it gets called before initialization. This is fine, since we have to initialize this after
-	// we have the window handle..
+
 	static UserKey_t dummy;
 	return dummy;
 }
@@ -320,7 +314,7 @@ void CUserInput::update_keys(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (uMsg == WM_MOUSEWHEEL)
 	{
-		// mouse wheel event
+
 
 		int delta = GET_WHEEL_DELTA_WPARAM(wParam);
 		int vk = delta < 0 ? VK_MWHEELDOWN : VK_MWHEELUP;
@@ -336,14 +330,14 @@ void CUserInput::update_keys(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	}
 	else
 	{
-		// keyboard & mouse key event
+
 
 		bool is_down = false;
 
 		int vk = NULL;
 		switch (uMsg)
 		{
-			// regular keys
+
 			case WM_SYSKEYDOWN:
 			case WM_KEYDOWN:
 			{
@@ -358,7 +352,7 @@ void CUserInput::update_keys(UINT uMsg, WPARAM wParam, LPARAM lParam)
 				is_down = false;
 				break;
 			}
-			// mouse buttons
+
 			case WM_LBUTTONDOWN:
 			case WM_LBUTTONUP:
 			{
@@ -419,14 +413,12 @@ void CUserInput::update_keys(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 void CUserInput::initialize_key_translation_tables()
 {
-	// reserve, for speedup
+
 	m_translation_table_string_to_vk.reserve(k_key_range);
 	m_translation_table_vk_to_string.reserve(k_key_range);
 	m_translation_table_engine_key_to_vk.reserve(k_key_range);
 
-	//
-	// string -> vk
-	//
+
 	for (auto& [name, vk, ek] : g_virtual_key_translation)
 	{
 		if (!name.empty() && vk)
@@ -435,9 +427,7 @@ void CUserInput::initialize_key_translation_tables()
 		}
 	}
 
-	//
-	// vk -> string
-	//
+
 	for (auto& [name, vk, ek] : g_virtual_key_translation)
 	{
 		if (!name.empty() && vk)
@@ -446,11 +436,9 @@ void CUserInput::initialize_key_translation_tables()
 		}
 	}
 
-	//
-	// ek -> vk
-	//
+
 	for (int i = 0; i < k_key_range; i++)
-		m_translation_table_engine_key_to_vk[i] = i; // init first full list
+		m_translation_table_engine_key_to_vk[i] = i;
 	for (auto& [name, vk, ek] : g_virtual_key_translation)
 	{
 		if (vk && ek)
@@ -459,4 +447,3 @@ void CUserInput::initialize_key_translation_tables()
 		}
 	}
 }
-

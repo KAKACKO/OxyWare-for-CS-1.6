@@ -30,14 +30,14 @@
 #define UIKEYBINDING_H
 #pragma once
 
-// buffers for every key we have
+
 static constexpr int buffer_len = 4096;
 struct bound_key_t
 {
 	std::array<char, buffer_len> cmd_0, cmd_1;
 	int state;
 
-	// flags
+
 	bool f_execute_over_ui, f_execute_over_game_ui, f_silent, f_disable_ingame_key;
 	bool has_two_cmds;
 };
@@ -55,7 +55,7 @@ private:
 	void render_list();
 	void render_decoration(const Vector2D& last_cursor_pos);
 
-	// command text input box
+
 	void render_command_textinput(bound_key_t* bound_key, int vk, const std::string& key_name);
 	static int command_texinput_callback(ImGuiInputTextCallbackData* data);
 
@@ -89,4 +89,4 @@ private:
 	fnOnKeyBoundCallback m_on_key_bound_callback;
 };
 
-#endif // UIKEYBINDING_H
+#endif

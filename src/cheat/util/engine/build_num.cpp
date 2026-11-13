@@ -28,7 +28,7 @@
 
 #include "precompiled.h"
 
-#define RELEASE_DAY 34995 // Possibly Thursday, October 24, 1996
+#define RELEASE_DAY 34995
 
 const char *mon[12] =
 { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
@@ -63,7 +63,7 @@ int build_number(const char* date)
 		b += 1;
 	}
 
-	b -= RELEASE_DAY; // Oct 24 1996
+	b -= RELEASE_DAY;
 
 	return b;
 }

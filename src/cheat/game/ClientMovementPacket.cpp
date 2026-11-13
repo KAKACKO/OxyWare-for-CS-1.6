@@ -26,9 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// ClientMovementPacket.cpp -- Class that modifies movement packets sent to the server.
-//
 
 #include "precompiled.h"
 
@@ -46,13 +43,13 @@ static std::map<unsigned short, in_button_t> s_in_commands =
 	{ IN_FORWARD,	{ "+forward",	"-forward" } },
 	{ IN_BACK,		{ "+back",		"-back" } },
 	{ IN_USE,		{ "+use",		"-use" } },
-//	{ IN_CANCEL,	{ "",			"" } },
+
 	{ IN_LEFT,		{ "+left",		"-left" } },
 	{ IN_RIGHT,		{ "+right",		"-right" } },
 	{ IN_MOVELEFT,	{ "+moveleft",	"-moveleft" } },
 	{ IN_MOVERIGHT, { "+moveright",	"-moveright" } },
 	{ IN_ATTACK2,	{ "+attack2",	"+attack2" } },
-//	{ IN_RUN,		{ "",			"" } },
+
 	{ IN_RELOAD,	{ "+reload",	"-reload" } },
 	{ IN_ALT1,		{ "+alt1",		"-alt1" } },
 	{ IN_SCORE,		{ "+score",		"-score" } },
@@ -61,7 +58,7 @@ static std::map<unsigned short, in_button_t> s_in_commands =
 
 void CClientMovementPacket::update_msg_writeusercmd(hl::usercmd_t* to)
 {
-	// FrameTime scheduled to be modified from somewhere else
+
 	if (m_ft_modified && m_new_ft != -1)
 	{
 		to->msec = m_new_ft;
@@ -75,7 +72,6 @@ void CClientMovementPacket::update_clientmove(hl::usercmd_t* cmd)
 	set_current_cmd_for_manipulation(cmd);
 }
 
-//-----------------------------------------------------------------
 
 bool CClientMovementPacket::set_button_bit_atomic(unsigned short button)
 {
@@ -88,7 +84,7 @@ bool CClientMovementPacket::set_button_bit_atomic(unsigned short button)
 	}
 	else
 	{
-		// previously was in action but didn't release it.
+
 		set_button_bit(button, false);
 	}
 
@@ -120,11 +116,11 @@ void CClientMovementPacket::svside_movement_speed_factor(uint8_t msec, bool over
 {
 	if (m_ft_modified && !override_previous)
 	{
-		// already set before, don't override unless told to do so.
+
 		return;
 	}
 
-	// we need to modify the msec afterwards (it only takes effect if we do that from MSG_WriteUserCmd)
+
 	m_new_ft = msec;
 	m_ft_modified = true;
 }
@@ -135,7 +131,6 @@ void CClientMovementPacket::reset_ft_state()
 	m_ft_modified = false;
 }
 
-//-----------------------------------------------------------------------------------------------------
 
 VarBoolean movement_plot("movement_plot", "Enables visualization plot for movement", false);
 VarInteger movement_plot_row_height("movement_plot_row_height", "Height of each row", 30, 10, 100);
@@ -184,18 +179,18 @@ void CClientMovementPacketPlot::on_render()
 	auto white = CColor(230, 230, 230, 230);
 	auto white_dim = CColor(230, 230, 230, 100);
 
-	// render background
+
 	g_gui_window_rendering_i->render_box(
 		g_gui_window_rendering_i->get_current_drawlist(),
 		m_plot_base - Vector2D(0, y_offset), Vector2D(m_plot_base.x + screen_size.x, m_plot_base.y),
 		CColor(0, 0, 0, 120));
 
-	// reset for new frame
+
 	y_offset = 0.0f;
 
 	auto text_font = g_gui_fontmgr_i->get_font(FID_SegoeUI, FSZ_16px, FDC_Bold);
 	
-	// render each data
+
 	int n = 1;
 	for (auto& [name, data_container] : m_data)
 	{
@@ -204,14 +199,14 @@ void CClientMovementPacketPlot::on_render()
 		Vector2D current_header_base = m_plot_base + Vector2D(1, -y_offset);
 		Vector2D current_data_base = current_header_base + Vector2D(data_entry_width_total, 0);
 
-		// render header
+
 		g_gui_window_rendering_i->render_text_with_background(
 			g_gui_window_rendering_i->get_current_drawlist(),
 			text_font,
 			current_header_base - Vector2D(0, data_entry_height_total / 2 + g_gui_fontmgr_i->calc_font_text_size(text_font, name.c_str()).y / 2),
 			white, name);
 
-		// top line
+
 		g_gui_window_rendering_i->render_line(
 			g_gui_window_rendering_i->get_current_drawlist(),
 			current_header_base, current_header_base + Vector2D(screen_size.x, 0),
@@ -220,7 +215,7 @@ void CClientMovementPacketPlot::on_render()
 		float x_pos = current_data_base.x;
 		for (auto& [val, max, is_bool] : data)
 		{
-			// determine pixel y position based on the value
+
 			float y_pos = current_data_base.y;
 			if (is_bool)
 			{
@@ -262,13 +257,7 @@ void CClientMovementPacketPlot::on_render()
 		n++ ;
 	}
 
-	// render base
-	//g_gui_window_rendering_i->render_line(
-	//	g_gui_window_rendering_i->get_current_drawlist(),
-	//	m_plot_base, m_plot_base + Vector2D(screen_size.x, 0),
-	//	white_dim);
 
-	// render data header separator on the right
 	g_gui_window_rendering_i->render_line(
 		g_gui_window_rendering_i->get_current_drawlist(),
 		m_plot_base + Vector2D(data_entry_width_total, 0), m_plot_base + Vector2D(data_entry_width_total, -y_offset),

@@ -56,10 +56,10 @@ private:
 	void render_rain();
 
 private:
-	inline static constexpr float k_max_fade_density = 0.6f; // [0, 1] scale
+	inline static constexpr float k_max_fade_density = 0.6f;
 	float m_fade_density;
 
 	std::deque<raindrop_t> m_rain;
 };
 
-#endif // UIMENUBACKGROUND_H
+#endif

@@ -45,4 +45,4 @@ public:
 	void update(float frametime);
 };
 
-#endif // JUMPBUG_H
+#endif

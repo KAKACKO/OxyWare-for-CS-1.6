@@ -30,8 +30,7 @@
 
 #include "interface/ILibraryLoader.h"
 
-// This gets called whenever client module exposes an interface through the macro. Also, this is
-// called when constructors are invoked, i.e. soon as the module is loaded.
+
 CInterfaceRegistrator::CInterfaceRegistrator(InstantiateInterfaceFn fn, const char *identifier) :
 	m_interface_id(identifier)
 {
@@ -53,7 +52,7 @@ IBaseInterface* GetInterfaceInstance(const char *identifier)
 	return NULL;
 }
 
-// Modules export the 'GetInterfaceInstance' in order for other modules to use it.
+
 GetInterfaceInstanceFn LocateExportedInterfaceGetterFn(const wchar_t* module_name)
 {
 	return (GetInterfaceInstanceFn)g_libloader_i->find_proc_in_target_library(module_name, INTERFACEINSTANCEGETTER_PROCNAME);
@@ -72,4 +71,4 @@ CreateInterfaceFn Sys_GetFactory(HMODULE hModule)
 	return (CreateInterfaceFn)g_libloader_i->find_proc_in_target_library((uintptr_t)hModule, "CreateInterface");
 }
 
-} // namespace hl
+}

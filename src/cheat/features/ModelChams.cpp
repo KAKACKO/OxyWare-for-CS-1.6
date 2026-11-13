@@ -30,34 +30,34 @@
 
 VarBoolean mdlchams_enable("mdlchams_enable", "Enables model chams", false);
 
-// properties
+
 VarBoolean mdlchams_flatshaded("mdlchams_flatshaded", "Enables flat-shaded chams", false);
 VarBoolean mdlchams_blend("mdlchams_blend", "Enables chams blend", false);
 VarBoolean mdlchams_rainbow("mdlchams_rainbow", "Enables rainbow chams colors", false);
 VarInteger mdlchams_rainbow_speed("mdlchams_rainbow_speed", "Speed of the rainbow color changer", 1, 1, 5);
 
-// viewmodel
+
 VarBoolean mdlchams_viewmodel_enable("mdlchams_viewmodel_enable", "Enables viewmodel chams", false);
 VarColor mdlchams_viewmodel_color("mdlchams_viewmodel_color", "Viewmodel chams color", CColor(230, 0, 170, 255));
 VarInteger mdlchams_viewmodel_type("mdlchams_viewmodel_type", "Viewmodel chams type", CHAMS_Flat, CHAMS_Flat, CHAMS_Wireframe);
 VarInteger mdlchams_viewmodel_shadelight("mdlchams_viewmodel_shadelight", "Controls shadelight on viewmodel", 177, 0, 255);
 VarInteger mdlchams_viewmodel_ambientlight("mdlchams_viewmodel_ambientlight", "Controls ambientlight on viewmodel", 20, 0, 255);
 
-// t
+
 VarBoolean mdlchams_players_t_enable("mdlchams_players_t_enable", "Enables players T chams", false);
 VarColor mdlchams_players_t_color("mdlchams_players_t_color", "Players chams T color", CColor(230, 50, 50, 255));
 VarInteger mdlchams_players_t_type("mdlchams_players_t_type", "Players chams T type", CHAMS_Flat, CHAMS_Flat, CHAMS_Wireframe);
 VarInteger mdlchams_players_t_shadelight("mdlchams_players_t_shadelight", "Controls shadelight on Ts", 177, 0, 255);
 VarInteger mdlchams_players_t_ambientlight("mdlchams_players_t_ambientlight", "Controls ambientlight on Ts", 20, 0, 255);
 
-// ct
+
 VarBoolean mdlchams_players_ct_enable("mdlchams_players_ct_enable", "Enables players CT chams", false);
 VarColor mdlchams_players_ct_color("mdlchams_players_ct_color", "Players chams CT color", CColor(50, 50, 230, 255));
 VarInteger mdlchams_players_ct_type("mdlchams_players_ct_type", "Players chams CT type", CHAMS_Flat, CHAMS_Flat, CHAMS_Wireframe);
 VarInteger mdlchams_players_ct_shadelight("mdlchams_players_ct_shadelight", "Controls shadelight on CTs", 177, 0, 255);
 VarInteger mdlchams_players_ct_ambientlight("mdlchams_players_ct_ambientlight", "Controls ambientlight on CTs", 20, 0, 255);
 
-// backtrack
+
 VarBoolean mdlchams_players_backtrack_enable("mdlchams_players_backtrack_enable", "Enables players backtrack chams", false);
 VarColor mdlchams_players_backtrack_color("mdlchams_players_backtrack_color", "Players chams backtrack color", CColor(210, 0, 250, 255));
 VarInteger mdlchams_players_backtrack_type("mdlchams_players_backtrack_type", "Players chams backtrack type", CHAMS_Flat, CHAMS_Flat, CHAMS_Wireframe);
@@ -76,7 +76,7 @@ VarBoolean mdlchams_force_default_viewmodel("mdlchams_force_default_viewmodel", 
 
 std::array<ChammedModel, CHAMS_COUNT> CModelChams::m_chammed_models =
 { {
-	// CHAMS_VIEWMODEL
+
 	ChammedModel(
 		&mdlchams_viewmodel_enable, &mdlchams_viewmodel_color, &mdlchams_viewmodel_type, &mdlchams_viewmodel_shadelight, &mdlchams_viewmodel_ambientlight,
 		[](hl::cl_entity_t* current_ent) 
@@ -84,7 +84,7 @@ std::array<ChammedModel, CHAMS_COUNT> CModelChams::m_chammed_models =
 			return current_ent == &CMemoryHookMgr::the().cl().get()->viewent;
 		}),
 
-	// CHAMS_PLAYERS_CT
+
 	ChammedModel(
 		&mdlchams_players_ct_enable, &mdlchams_players_ct_color, &mdlchams_players_ct_type, &mdlchams_players_ct_shadelight, &mdlchams_players_ct_ambientlight,
 		[](hl::cl_entity_t* current_ent) 
@@ -97,7 +97,7 @@ std::array<ChammedModel, CHAMS_COUNT> CModelChams::m_chammed_models =
 			return false;
 		}),
 
-	// CHAMS_PLAYERS_T
+
 	ChammedModel(
 		&mdlchams_players_t_enable, &mdlchams_players_t_color, &mdlchams_players_t_type, &mdlchams_players_t_shadelight, &mdlchams_players_t_ambientlight,
 		[](hl::cl_entity_t* current_ent) 
@@ -110,7 +110,7 @@ std::array<ChammedModel, CHAMS_COUNT> CModelChams::m_chammed_models =
 			return false;
 		}),
 
-	// CHAMS_BACKTRACK
+
 	ChammedModel(
 		&mdlchams_players_backtrack_enable, &mdlchams_players_backtrack_color, &mdlchams_players_backtrack_type, &mdlchams_players_backtrack_shadelight, &mdlchams_players_backtrack_ambientlight,
 		[](hl::cl_entity_t* current_ent) 
@@ -135,7 +135,7 @@ void CModelChams::update_studio_drawpoints_pre()
 			if (chams.is_enabled() && chams.should_render(current_ent))
 			{
 				chams.process_studio_drawpoints_pre();
-				break; // we're done here, this is called per model
+				break;
 			}
 		}
 	}
@@ -167,7 +167,7 @@ void CModelChams::update_studio_drawpoints_post()
 			if (chams.is_enabled() && chams.should_render(current_ent))
 			{
 				chams.process_studio_drawpoints_post();
-				break; // we're done here, this is called per model
+				break;
 			}
 		}
 	}
@@ -200,7 +200,7 @@ void CModelChams::update_studio_lighting(hl::alight_t* plighting)
 			if (chams.is_enabled() && chams.should_render(current_ent))
 			{
 				chams.process_studio_lighting(plighting);
-				break; // we're done here, this is called per model
+				break;
 			}
 		}
 	}
@@ -218,7 +218,7 @@ void CModelChams::update_studio_colors(GLfloat* r, GLfloat* g, GLfloat* b, GLflo
 	auto current_ent = CMemoryHookMgr::the().engine_studio_api().get()->GetCurrentEntity();
 	if (!current_ent)
 	{
-		// since this is called inside glColor4f, this can be nullptr.
+
 		return;
 	}
 
@@ -227,7 +227,7 @@ void CModelChams::update_studio_colors(GLfloat* r, GLfloat* g, GLfloat* b, GLflo
 		if (chams.is_enabled() && chams.should_render(current_ent))
 		{
 			chams.process_color(r, g, b, a);
-			break; // we're done here
+			break;
 		}
 	}
 }
@@ -236,7 +236,7 @@ bool CModelChams::studio_draw_skeleton()
 {
 	if (!mdlchams_player_skeleton.get_value())
 	{
-		return false; // render points instead.
+		return false;
 	}
 
 	auto engine_studio_api = CMemoryHookMgr::the().engine_studio_api().get();
@@ -250,19 +250,19 @@ bool CModelChams::studio_draw_skeleton()
 	auto pstudiohdr = get_currently_rendered_model_header();
 	if (!pstudiohdr)
 	{
-		// our hooks aren't initialized yet. Strange...
+
 		return false;
 	}
 
 	auto pbones = (hl::mstudiobone_t*)((byte*)pstudiohdr + pstudiohdr->boneindex);
 	auto pbboxes = (hl::mstudiobbox_t*)((byte*)pstudiohdr + pstudiohdr->hitboxindex);
 
-	// light or bone, doesn't matter.
+
 	float(*couple_of_pointers)[MAXSTUDIOBONES][3][4] = (float(*)[MAXSTUDIOBONES][3][4])engine_studio_api->StudioGetBoneTransform();
 
 	auto player = CEntityMgr::the().get_player_by_id(current_ent->index);
 
-	CColor color_based_on_team = CColor(170, 170, 170, 255); // gray by default
+	CColor color_based_on_team = CColor(170, 170, 170, 255);
 	if (player && (*player)->is_valid())
 	{
 		color_based_on_team = (*player)->get_color_based_on_team();
@@ -275,12 +275,10 @@ bool CModelChams::studio_draw_skeleton()
 
 	glDisable(GL_TEXTURE_2D);
 
-	//
-	// Loop through all parent bones and render concatenated lines.
-	//
+
 	for (int i = 0; i < pstudiohdr->numbones; i++)
 	{
-		if (pbones[i].parent == -1) // non-existent parent bone
+		if (pbones[i].parent == -1)
 			continue;
 
 		int k = pbones[i].parent;
@@ -313,12 +311,12 @@ bool CModelChams::studio_draw_skeleton()
 
 static int g_cubic_face_translation[6][4] =
 {
-	{ 0, 4, 6, 2 }, // +X
-	{ 0, 1, 5, 4 }, // +Y
-	{ 0, 2, 3, 1 }, // +Z
-	{ 7, 5, 1, 3 }, // -X
-	{ 7, 3, 2, 6 }, // -Y
-	{ 7, 6, 4, 5 }, // -Z
+	{ 0, 4, 6, 2 },
+	{ 0, 1, 5, 4 },
+	{ 0, 2, 3, 1 },
+	{ 7, 5, 1, 3 },
+	{ 7, 3, 2, 6 },
+	{ 7, 6, 4, 5 },
 };
 
 void CModelChams::render_playerhead_hitbox()
@@ -338,11 +336,11 @@ void CModelChams::render_playerhead_hitbox()
 	auto pstudiohdr = get_currently_rendered_model_header();
 	if (!pstudiohdr)
 	{
-		// our hooks aren't initialized yet. Strange...
+
 		return;
 	}
 
-	// light or bone, doesn't matter.
+
 	float(*couple_of_pointers)[MAXSTUDIOBONES][3][4] = (float(*)[MAXSTUDIOBONES][3][4])engine_studio_api->StudioGetBoneTransform();
 
 	auto bbox = (hl::mstudiobbox_t*)((byte*)pstudiohdr + pstudiohdr->hitboxindex);
@@ -353,24 +351,18 @@ void CModelChams::render_playerhead_hitbox()
 
 	if (m_rendering_real_playermodel)
 	{
-		clr = CColor(clr.g, clr.b, clr.r, clr.a); // to distinguish
+		clr = CColor(clr.g, clr.b, clr.r, clr.a);
 	}
 
 	glDisable(GL_TEXTURE_2D);
 
 	for (int i = 0; i < pstudiohdr->numhitboxes; i++)
 	{
-		// the infamous head hitbox
-		//
-		// This won't work for some models such as some huge crazyass zombie models etc. This is
-		// sort of a "standard" in the modelling sphere, where if you're a modeler and you're
-		// making a player model, you SHOULD make the hitgroup 1 the head, but not everyone does this.
-		// Therefor there isn't really a proper way to look for a head hitbox however, from what I've
-		// see and from my testing, this works for most regular models, and for the majority of zombie
-		// models, but that really depends..
+
+
 		if (bbox[i].group == hl::HITGROUP_HEAD)
 		{
-			// get all cube vertices
+
 			for (int j = 0; j < 8; j++)
 			{
 				bbox_transformator[0] = (j & 1) ? bbox[i].bbmin[0] : bbox[i].bbmax[0];
@@ -384,7 +376,7 @@ void CModelChams::render_playerhead_hitbox()
 			
 			glColor3f(clr.r, clr.g, clr.b);
 
-			// render all faces of a cube
+
 			for (int j = 0; j < 6; j++)
 			{
 				glVertex3fv(p[g_cubic_face_translation[j][0]]);
@@ -444,7 +436,6 @@ void CModelChams::force_default_models()
 	}
 }
 
-//---------------------------------------------------------------------------------
 
 void ChammedModel::process_studio_drawpoints_pre()
 {
@@ -532,7 +523,7 @@ void ChammedModel::process_color(GLfloat* r, GLfloat* g, GLfloat* b, GLfloat* a)
 		float speed = (float)mdlchams_rainbow_speed.get_value();
 		double tm = CMemoryHookMgr::the().cl().get()->time;
 
-		// all phase-shifted so that it's more cool
+
 		color.r = std::abs(std::sinf(tm * speed + 0));
 		color.g = std::abs(std::sinf(tm * speed + 90));
 		color.b = std::abs(std::sinf(tm * speed + 180));
@@ -584,7 +575,7 @@ void ChammedModel::process_studio_lighting(hl::alight_t* plighting)
 		plighting->ambientlight = ambient;
 	}
 
-	// some generic values that usually look good
+
 	plighting->plightvec[0] = 0.366f;
 	plighting->plightvec[1] = 0.341f;
 	plighting->plightvec[2] = -0.866f;

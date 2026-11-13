@@ -26,20 +26,17 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// dllmain.cpp -- Module interface for oxWARE GUI module.
-//
 
 #include "precompiled.h"
 
-// This
+
 IBaseModule* g_thismodule_i = nullptr;
 
-// Dependency loader
+
 ILibraryLoader* g_libloader_i = nullptr;
 IDeveloperConsole* g_devconsole_i = nullptr;
 
-// Util
+
 IVariableManager* g_variablemgr_i = nullptr;
 IConfigManager* g_config_mgr_i = nullptr;
 IRegistry* g_registry_i = nullptr;
@@ -67,7 +64,6 @@ private:
 
 COxUIModule g_oxui_module;
 
-//-------------------------------------------------------------------------------
 
 bool COxUIModule::initialize(ModuleInitializationContext* context)
 {
@@ -89,11 +85,11 @@ void COxUIModule::destroy()
 {
 	CConsole::the().destroy();
 
-	// Dependency loader
+
 	g_libloader_i = nullptr;
 	g_devconsole_i = nullptr;
 
-	// Util
+
 	g_variablemgr_i = nullptr;
 	g_config_mgr_i = nullptr;
 	g_registry_i = nullptr;
@@ -104,7 +100,7 @@ EUpdateStatus COxUIModule::update()
 	return m_update_status;
 }
 
-// Expose current module to the loader and initialize it
+
 C_DLLEXPORT bool ExposeModule(IBaseModule** module_interface, ModuleInitializationContext* context)
 {
 	*module_interface = &g_oxui_module;
@@ -118,7 +114,6 @@ C_DLLEXPORT bool ExposeModule(IBaseModule** module_interface, ModuleInitializati
 	return true;
 }
 
-//-------------------------------------------------------------------------------
 
 BOOL APIENTRY DllMain(HMODULE hModule,
 					  DWORD  ul_reason_for_call,

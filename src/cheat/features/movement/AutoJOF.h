@@ -44,4 +44,4 @@ public:
 	void update(float frametime);
 };
 
-#endif // AUTOJOF_H
+#endif

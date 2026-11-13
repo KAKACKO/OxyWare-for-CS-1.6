@@ -53,11 +53,11 @@ private:
 
 	std::vector<std::string> m_filtered_cmds_tokenized;
 
-	// command that caused the block
+
 	std::string m_block_victim;
 
-	// ui
+
 	static UIStatusWidget m_status_widget;
 };
 
-#endif // STUFFCMDFILTER_H
+#endif

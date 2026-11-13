@@ -202,22 +202,17 @@ private:
 	void register_bind_internal(int virtual_key, UserKey_t& key, const std::string& command_seq, 
 								const std::string& command_seq1, EBindType type, EBindFlags flags, bool silent);
 
-	// config I/O provider
+
 	void provide_cfg_load_export_callbacks();
 
 private:
-	// virtual key as key :) and command sequence as value
+
 	std::map<int, bind_t> m_registerd_binds;
 };
 
 CBindManager g_bindmgr;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CBindManager, IBindManager, IBINDMANAGER_INTERFACEID, g_bindmgr);
 
-//-------------------------------------------------------------------------------
-//
-// CBindManager implementation
-//
-//-------------------------------------------------------------------------------
 
 CBindManager::CBindManager()
 {
@@ -246,7 +241,7 @@ void CBindManager::create_binds_from_json(const nh::json& json)
 	}
 	catch (...)
 	{
-		// there aren't any binds
+
 		return;
 	}
 
@@ -284,25 +279,25 @@ void CBindManager::create_binds_from_json(const nh::json& json)
 				}
 			};
 
-			// commnad
+
 			if (!try_to_parse("command", cmd_str))
 			{
 				continue;
 			}
 
-			// type
+
 			if (!try_to_parse("type", type_str))
 			{
 				continue;
 			}
 
-			// flags
+
 			if (!try_to_parse("flags", flags_str, true))
 			{
-				// doesn't have to return, this is optional
+
 			}
 
-			// bind type
+
 			EBindType type;
 			if (type_str == bind_type_to_str[BIND_OnPush])
 			{
@@ -331,7 +326,7 @@ void CBindManager::create_binds_from_json(const nh::json& json)
 				continue;
 			}
 
-			// bind flags
+
 			EBindFlags flags = parse_flags_out_of_string(flags_str);
 
 			switch (type)
@@ -471,7 +466,7 @@ void CBindManager::remove_bind(int virtual_key, bool silent)
 		return;
 	}
 
-	// if already bound, the key must exist.. or does it..? :D
+
 	auto& key = g_user_input_i->get_key(virtual_key);
 
 	std::string key_name = g_user_input_i->virtual_key_to_string(virtual_key);
@@ -553,7 +548,7 @@ void CBindManager::remove_bind(const std::string& key_name, bool silent)
 
 void CBindManager::remove_all_binds()
 {
-	// we cannot do this at once, otherwise we would crash at the interation
+
 	std::vector<int> keys_to_be_removed;
 	for (auto& [vk, cmd] : m_registerd_binds)
 	{
@@ -619,9 +614,9 @@ EBindFlags CBindManager::parse_flags_out_of_string(const std::string& flags_str)
 				current_token.push_back(c);
 			}
 
-			// trim space
-			current_token.erase(current_token.find_last_not_of(' ') + 1); // suffixing spaces
-			current_token.erase(0, current_token.find_first_not_of(' ')); // prefixing spaces
+
+			current_token.erase(current_token.find_last_not_of(' ') + 1);
+			current_token.erase(0, current_token.find_first_not_of(' '));
 
 			if (current_token == bind_flags_to_str[BINDFLAG_ExecuteOverUI])
 			{
@@ -640,7 +635,7 @@ EBindFlags CBindManager::parse_flags_out_of_string(const std::string& flags_str)
 				flags |= BINDFLAG_DisableInGameKey;
 			}
 
-			current_token.clear(); // throw out after used
+			current_token.clear();
 
 		}
 		else
@@ -653,7 +648,7 @@ EBindFlags CBindManager::parse_flags_out_of_string(const std::string& flags_str)
 
 std::string CBindManager::create_string_out_of_flags(EBindFlags flags)
 {
-	// we have a custom formatter for flags, so use that
+
 	return std::format("{}", flags);
 }
 
@@ -688,7 +683,7 @@ bool CBindManager::should_block_engine_key(int vk)
 	{
 		if (_vk == vk)
 		{
-			// if the user said to not execute the engine key, we won't execute it, and instead will execute our bind.
+
 			return bind.flags & BINDFLAG_DisableInGameKey;
 		}
 	}
@@ -697,7 +692,7 @@ bool CBindManager::should_block_engine_key(int vk)
 
 void CBindManager::register_keypress_event_on_push(UserKey_t& key, int virtual_key, bind_t& new_bind)
 {
-	// on pressed, once
+
 	key.add_on_pressed_callback(
 		std::format("vk_{}", virtual_key),
 		[](const std::string& id, UserKey_t* key)
@@ -718,7 +713,7 @@ void CBindManager::register_keypress_event_on_push(UserKey_t& key, int virtual_k
 
 void CBindManager::register_keypress_event_on_push_and_release(UserKey_t& key, int virtual_key, bind_t& new_bind)
 {
-	// on pressed, once
+
 	key.add_on_pressed_callback(
 		std::format("vk_{}", virtual_key),
 		[](const std::string& id, UserKey_t* key)
@@ -746,7 +741,7 @@ void CBindManager::register_keypress_event_on_push_and_release(UserKey_t& key, i
 			}
 		});
 
-	// on released, once
+
 	key.add_on_unpressed_callback(
 		std::format("vk_{}", virtual_key),
 		[](const std::string& id, UserKey_t* key)
@@ -756,10 +751,8 @@ void CBindManager::register_keypress_event_on_push_and_release(UserKey_t& key, i
 
 			if (bind)
 			{
-				// always execute release callbacks, even we're on top of UI, but only if
-				// we pressed the key before the UI was up, i.e. we pressed the bound key, 
-				// and while pressed we also toggled the UI. If we pressed the key when already
-				// on top of UI, don't do anything, unless we've enabled it. Same applies for Game UI.
+
+
 				if (bind->internal_state & BINDSTATE_ExecutedWhenCheatUIWasOff && !(bind->flags & BINDFLAG_ExecuteOverUI))
 				{
 					return;
@@ -785,7 +778,7 @@ void CBindManager::register_bind_internal(int virtual_key, UserKey_t& key, const
 		auto [it, did_insert] = m_registerd_binds.insert({ virtual_key, bind });
 		if (!did_insert)
 		{
-			// re-bind
+
 			(*it).second = bind;
 		}
 
@@ -823,9 +816,6 @@ void CBindManager::provide_cfg_load_export_callbacks()
 		return;
 	}
 
-	//
-	// provide config load function.
-	//
 
 	auto load_fn = [](nh::json& json)
 	{
@@ -834,9 +824,6 @@ void CBindManager::provide_cfg_load_export_callbacks()
 
 	(*cheat_settings)->provide_load_fn(load_fn);
 
-	//
-	// provide config export function.
-	//
 
 	auto export_fn = [](nh::json& json)
 	{

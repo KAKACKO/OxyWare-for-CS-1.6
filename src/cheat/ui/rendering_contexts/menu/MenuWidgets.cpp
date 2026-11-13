@@ -97,7 +97,7 @@ void CUIMenuWidgets::add_ingame_cvar_toggleable_checkbox(const std::string& labe
 														 std::pair<bool, bool>& disable_pair, 
 														 float off_value, float on_value)
 {
-	// the first is the value under checkbox, and the second is the "do this shit only once" boolean... 😀
+
 
 	g_gui_widgets_i->add_checkbox(label, &disable_pair.first);
 
@@ -135,7 +135,7 @@ bool CUIMenuWidgets::add_color_edit(const std::string& label, VarColor* colors_v
 }
 
 #pragma warning(push)
-#pragma warning(disable : 4244) // warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+#pragma warning(disable : 4244)
 
 template bool CUIMenuWidgets::add_slider_t<VarFloat>(const std::string&, const char*, VarFloat*, bool, const char*, const char*, const char*);
 template bool CUIMenuWidgets::add_slider_t<VarInteger>(const std::string&, const char*, VarInteger*, bool, const char*, const char*, const char*);
@@ -145,7 +145,7 @@ bool CUIMenuWidgets::add_slider_t(const std::string& label, const char* format, 
 {
 	assert(var->has_bounds() && "Variable used in slider must have bounds.");
 
-	// get bounds
+
 	float min = (float)var->get_min(), max = (float)var->get_max();
 	float value = (float)var->get_value();
 
@@ -160,7 +160,7 @@ bool CUIMenuWidgets::add_slider_t(const std::string& label, const char* format, 
 
 	bool ret = g_gui_widgets_i->add_slider(label, &value, &min, &max, format, no_label);
 
-	// we have to distinguish in order to call appropriate function
+
 	var->set_value(value);
 
 	add_description_text(additional_desc);
@@ -219,7 +219,7 @@ void CUIMenuWidgets::add_pair_textinput(const std::string& label, VarKeyValue* v
 		if (reclaim_focus_value)
 		{
 			g_gui_widgets_i->set_item_default_focus();
-			g_gui_widgets_i->set_keyboard_focus_here(-1); // Auto focus previous widget
+			g_gui_widgets_i->set_keyboard_focus_here(-1);
 		}
 
 		g_gui_widgets_i->goto_next_column();
@@ -240,11 +240,11 @@ void CUIMenuWidgets::add_pair_textinput(const std::string& label, VarKeyValue* v
 			reclaim_focus_key = true;
 		};
 
-		// Auto-focus on window apparition
+
 		g_gui_widgets_i->set_item_default_focus();
 		if (reclaim_focus_key)
 		{
-			g_gui_widgets_i->set_keyboard_focus_here(-1); // Auto focus previous widget
+			g_gui_widgets_i->set_keyboard_focus_here(-1);
 		}
 
 		g_gui_widgets_i->end_columns();

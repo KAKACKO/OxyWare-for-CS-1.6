@@ -26,9 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// BaseInjector.cpp -- Defines base injector class
-//
 
 #include "precompiled.h"
 
@@ -109,15 +106,15 @@ HANDLE CInjectorUtils::open_process(const char* execuatable_name)
 
 size_t CInjectorUtils::calc_func_size(uintptr_t function_base)
 {
-	// walk the memory untill we hit \xCC like three times in a row. That determines the end of the function.
+
 	size_t shellcode_routine_size_bytes = 0;
 
 	uint8_t cmp[3] = { 0xCC, 0xCC, 0xCC };
 
 	uint8_t* b = (uint8_t*)(function_base);
-	while (true) // this should not deadlock
+	while (true)
 	{
-//		CConsole::the().info("0x{:02X}", *b);
+
 
 		if (!memcmp(b, cmp, sizeof(cmp)))
 		{
@@ -132,7 +129,6 @@ size_t CInjectorUtils::calc_func_size(uintptr_t function_base)
 
 }
 
-//-------------------------------------------------------------------------------------
 
 void IInjectableModuleObject::close_process_handle()
 {
@@ -143,7 +139,6 @@ void IInjectableModuleObject::close_process_handle()
 	m_target_process_handle = NULL;
 }
 
-//-------------------------------------------------------------------------------------
 
 void CBaseInjector::destroy()
 {
@@ -156,12 +151,12 @@ void CBaseInjector::destroy()
 
 		if (module->is_communicative_dll())
 		{
-			// tell the dll, first
+
 			module->unload(true);
 
 			CConsole::the().info("Waiting for communicative dll to acknowledge its unload...");
 		
-			// wait till the communicative module responds
+
 			auto wait_start = std::chrono::high_resolution_clock::now();
 			while (true) 
 			{
@@ -172,19 +167,19 @@ void CBaseInjector::destroy()
 				{
 					case MODWAIT_Hang:
 					{
-						break; // keep waiting
+						break;
 					}
 					case MODWAIT_CanUnload:
 					{
 						exit_loop = true;
 						module->unload(false);
-						break; // good, the dll has acknowledged the unload..
+						break;
 					}
 					case MODWAIT_Error:
 					{
 						exit_loop = true;
-						break; // can't do much here, really. In most cases, the dll will crash 
-							   // when we unload it without the dll actually considering it..
+						break;
+
 					}
 					default:
 					{
@@ -201,7 +196,7 @@ void CBaseInjector::destroy()
 		}
 		else
 		{
-			// for non-communicative modules just force the unload.
+
 			module->unload(false);
 		}
 	}
@@ -211,7 +206,7 @@ void CBaseInjector::destroy()
 
 void CBaseInjector::update()
 {
-	// update only each #
+
 	static uint32_t last_check_time = GetTickCount();
 	if (GetTickCount() - last_check_time < k_update_threshold_ms)
 	{
@@ -264,7 +259,7 @@ void CBaseInjector::update()
 
 		if (!current->second->is_communicative_dll())
 		{
-			// only communicative modules
+
 			continue;
 		}
 
@@ -301,9 +296,8 @@ void CBaseInjector::update()
 				{
 					break;
 				}
-				//
-				// initialization status codes
-				//
+
+
 				case C2I_Init_OK:
 				{
 					ev = INE_ModuleSuccessfulInitialization;
@@ -333,14 +327,13 @@ void CBaseInjector::update()
 
 					}
 
-					// unload the module itself
+
 					current->second->unload(false);
 					if (current->second->is_unloaded()) goto erase_current_entry;
 					continue;
 				}
-				//
-				// runtime status codes
-				//
+
+
 				case C2I_Unloading:
 				{
 					ev = INE_ModuleUnloading;
@@ -352,7 +345,7 @@ void CBaseInjector::update()
 				case C2I_Restarting:
 				{
 					ev = INE_ModuleRestarting;
-					execute_on_event_callbacks(ev, current->second); // execute now so that the external code can catch it before we reinject
+					execute_on_event_callbacks(ev, current->second);
 
 					prepare_for_reinjection(current->second->get_dll_exe_name().c_str(), current->second->get_dll_filepath());
 
@@ -364,7 +357,7 @@ void CBaseInjector::update()
 				{
 					assert(0);
 					break;
-					// shouldn't happen
+
 				}
 			}
 
@@ -372,7 +365,7 @@ void CBaseInjector::update()
 
 		continue;
 
-	erase_current_entry: // ik this is ugly as hell but whatever :----)
+	erase_current_entry:
 		execute_on_event_callbacks(ev, current->second);
 
 		m_injected_dlls.erase(current);
@@ -419,11 +412,10 @@ EModuleUnloadWaitResult CBaseInjector::hang_till_module_unloads(const std::files
 	if (std::chrono::duration<float, std::ratio<1, 1>>(std::chrono::high_resolution_clock::now() - wait_start).count()
 		> k_max_module_unload_wait_time_sec)
 	{
-		// we could unload the module at this point, really. But if the module is detouring some functions and we unload its
-		// memory, when the target process calls these functons, it will crash.. so yeah, there're aren't many options rather
-		// than just leave the dll injected...
+
+
 		CConsole::the().info("Module failed to acknowledge its unload in {} seconds. Oh well, the module will retain injected in the process...", k_max_module_unload_wait_time_sec);
-		return MODWAIT_Error; // TODO: Exit the target process? It will crash anyway
+		return MODWAIT_Error;
 	}
 
 	if (module->is_unloaded())
@@ -434,7 +426,7 @@ EModuleUnloadWaitResult CBaseInjector::hang_till_module_unloads(const std::files
 	EClient2Injector code;
 	if (!module->communicate_with_injected_dll(code))
 	{
-		// couldn't communicate with the injected dll, hard unload.
+
 		CConsole::the().warning("Couldn't reach module {} while trying to communicate with it. The module has been kept injected...", module_path.string());
 		return MODWAIT_Error;
 	}
@@ -442,7 +434,7 @@ EModuleUnloadWaitResult CBaseInjector::hang_till_module_unloads(const std::files
 	if (code == C2I_Unloading)
 	{
 		CConsole::the().info("Module acknowledged, we can uload it.");
-		// fine, module acknowledged.
+
 		return MODWAIT_CanUnload;
 	}
 

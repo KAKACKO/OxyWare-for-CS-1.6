@@ -30,7 +30,7 @@
 #define WEAPONDEFS_H
 #pragma once
 
-// the maximum amount of ammo each weapon's clip can hold
+
 #define WEAPON_NO_CLIP               -1
 
 enum WeaponIdType
@@ -419,12 +419,12 @@ enum MaxAmmoType
 	MAX_AMMO_357SIG = 52
 };
 
-// NOTE: Nonexistent in GS
+
 enum ArmorType
 {
-	ARMOR_NONE,     // No armor
-	ARMOR_KEVLAR,   // Body vest only
-	ARMOR_VESTHELM, // Vest and helmet
+	ARMOR_NONE,
+	ARMOR_KEVLAR,
+	ARMOR_VESTHELM,
 };
 
 struct RebuyStruct
@@ -487,10 +487,10 @@ struct AutoBuyInfoStruct
 #define WEAPON_SUIT						31
 #define MAX_WEAPONS						32
 
-#define MAX_WEAPON_SLOTS				5	// hud item selection slots
-#define MAX_ITEM_TYPES					6	// hud item selection slots
+#define MAX_WEAPON_SLOTS				5
+#define MAX_ITEM_TYPES					6
 
-#define MAX_ITEMS						5	// hard coded item types
+#define MAX_ITEMS						5
 
 #define MAX_NORMAL_BATTERY				100
 
@@ -557,14 +557,14 @@ struct AutoBuyInfoStruct
 #define ITEM_FLAG_NOAUTORELOAD			0x00002
 #define ITEM_FLAG_NOAUTOSWITCHEMPTY		0x00004
 #define ITEM_FLAG_LIMITINWORLD			0x00008
-#define ITEM_FLAG_EXHAUSTIBLE			0x00010 // A player can totally exhaust their ammo supply and lose this weapon
+#define ITEM_FLAG_EXHAUSTIBLE			0x00010
 #define ITEM_FLAG_NOFIREUNDERWATER  	0x00020
 
-#define WPNSLOT_PRIMARY					1 // rifles, snipers, etc
-#define WPNSLOT_SECONDARY				2 // pistols
-#define WPNSLOT_KNIFE					3 // melee
-#define WPNSLOT_GRENADE					4 // throwables
-#define WPNSLOT_C4						5 // bomb
+#define WPNSLOT_PRIMARY					1
+#define WPNSLOT_SECONDARY				2
+#define WPNSLOT_KNIFE					3
+#define WPNSLOT_GRENADE					4
+#define WPNSLOT_C4						5
 
 #define WEAPON_IS_ONTARGET				0x40
 
@@ -605,27 +605,27 @@ AmmoInfo;
 
 #define WEAPON_ACTIVITY_VOLUME			64
 
-// player data iuser3
+
 #define PLAYER_CAN_SHOOT					(1<<0)
 #define PLAYER_FREEZE_TIME_OVER				(1<<1)
 #define PLAYER_IN_BOMB_ZONE					(1<<2)
 #define PLAYER_HOLDING_SHIELD				(1<<3)
 #define PLAYER_PREVENT_DUCK					(1<<4)
-#define PLAYER_PREVENT_CLIMB				(1<<5) // The player can't climb ladder
+#define PLAYER_PREVENT_CLIMB				(1<<5)
 
-// accuracy flags
+
 enum EWeaponAccuracyFlags
 {
 	WPNACCFLAG_NONE = 0,
 
-	WPNACCFLAG_AIR = BIT(0), // accuracy depends on FL_ONGROUND
+	WPNACCFLAG_AIR = BIT(0),
 	WPNACCFLAG_SPEED = BIT(1),
-	WPNACCFLAG_DUCK = BIT(2), // more accurate when ducking
-	WPNACCFLAG_MULTIPLY_BY_14 = BIT(3), // accuracy multiply to 1.4
+	WPNACCFLAG_DUCK = BIT(2),
+	WPNACCFLAG_MULTIPLY_BY_14 = BIT(3),
 	WPNACCFLAG_MULTIPLY_BY_14_2 = BIT(4)
 };
 
-// weapon state flags
+
 enum EWeaponState
 {
 	WPNSTATE_NONE = 0,
@@ -638,4 +638,4 @@ enum EWeaponState
 	WPNSTATE_SHIELD_DRAWN = BIT(5),
 };
 
-#endif // WEAPONDEFS_H
+#endif

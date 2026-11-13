@@ -39,19 +39,17 @@
 enum class ECopyOptions
 {
 	none = 0, 
-	skip_existing = BIT(0),			// keep the existing file
-	overwrite_existing = BIT(1),	// replace the existing file
-	recursive = BIT(2),				// recursive directory search
-	only_directories = BIT(3),		// only copy folders, not files
+	skip_existing = BIT(0),
+	overwrite_existing = BIT(1),
+	recursive = BIT(2),
+	only_directories = BIT(3),
 };
 DEFINE_ENUM_BITWISE_OPERATORS(ECopyOptions);
 
 class IFileSystem : public IBaseInterface
 {
 public:
-	//
-	// File system operations
-	//
+
 
 	virtual bool is_directory(const std::filesystem::path& path) = 0;
 	virtual bool is_file(const std::filesystem::path& path) = 0;
@@ -85,4 +83,4 @@ extern IFileSystem* g_filesystem_i;
 
 #define IFILESYSTEM_INTERFACEID "IFileSystem"
 
-#endif // IFILESYSTEM_H
+#endif

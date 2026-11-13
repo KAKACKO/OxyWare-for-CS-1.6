@@ -68,14 +68,11 @@ public:
 		}
 	}
 
-	//-----------------------------------------------
 
-	// time in seconds
 	inline uint32_t time_down() const { return (GetTickCount() - m_pressed_timestamp_ms) * 1000; }
 	inline bool is_down() const { return m_is_down; }
 	inline const std::string& get_name() const { return m_name; }
 
-	//-----------------------------------------------
 
 	bool on_pressed_callback_exists(const std::string& id)
 	{
@@ -87,7 +84,6 @@ public:
 		return m_on_unpressed_callbacks.contains(id);
 	}
 
-	//-----------------------------------------------
 
 	void add_on_pressed_callback(const std::string& id, const UserKeyPressCallbackFn& c)
 	{
@@ -99,7 +95,7 @@ public:
 		m_on_unpressed_callbacks.insert({ id, c });
 	}
 
-	//-----------------------------------------------
+
 	
 	void remove_on_pressed_callback(const std::string& id)
 	{
@@ -125,7 +121,6 @@ public:
 		}
 	}
 
-	//-----------------------------------------------
 
 private:
 	void execute_on_pressed_callbacks()
@@ -152,7 +147,7 @@ private:
 	bool m_toggle_state = false, m_press_lock = false;
 	uint32_t m_pressed_timestamp_ms;
 
-	// every callback has an id
+
 	std::unordered_map<std::string, UserKeyPressCallbackFn> m_on_pressed_callbacks;
 	std::unordered_map<std::string, UserKeyPressCallbackFn> m_on_unpressed_callbacks;
 };
@@ -165,7 +160,7 @@ public:
 
 	virtual bool is_valid_key(int virtual_key) = 0;
 
-	// cannot return nullptr however, if not found, valid_key is set to false.
+
 	virtual UserKey_t& get_key(int virtual_key, bool* valid_key = NULL) = 0;
 
 	virtual std::string virtual_key_to_string(int virtual_key) = 0;
@@ -190,4 +185,4 @@ extern IUserInput* g_user_input_i;
 
 #define IUSERINPUT_INTERFACEID "IUserInput"
 
-#endif // IUSERINPUT_H
+#endif

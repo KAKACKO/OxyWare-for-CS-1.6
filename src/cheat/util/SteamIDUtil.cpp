@@ -26,29 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// SteamIDUtil.cpp -- various steam id utilities.
-// 
-//------------------------------------------------------------------------------
-// STEAM 3 ID #1:
-// 
-//	STEAM_X:Y:Z where:
-// 
-//	-	X represents the "Universe" the steam account belongs to.
-//	-	Y is part of the ID number for the account. Y is either 0 or 1.
-//	-	Z is the "account number".
-// 
-//------------------------------------------------------------------------------
-// STEAM 3 ID #2:
-// 
-//	[letter:X:Y] where:
-//
-//	-	letter represents letter for account type (e.g. for k_EAccountTypePending will be 'P', etc.)
-//	-	X is the universe ID.
-//	-	Y account id
-// 
-// NOTE: that there can be more forms of this sid. See code below for various forms.
-//
 
 #include "precompiled.h"
 
@@ -108,7 +85,7 @@ std::string CSteamIDUtil::render_steam2_id_variant_2(Steam3ID_t steam3_id)
 
 	steam2 = std::format("{}_{:01}:{:01}:{:010}",
 						 (is_steam ? "STEAM" : "VALVE"),
-						 (uint16_t)steam2_id.m_SteamInstanceID, // should be always 0 tho
+						 (uint16_t)steam2_id.m_SteamInstanceID,
 						 (uint32_t)steam2_id.m_SteamLocalUserID.Split.High32bits,
 						 (uint32_t)steam2_id.m_SteamLocalUserID.Split.Low32bits);
 
@@ -191,7 +168,7 @@ Steam3ID_t CSteamIDUtil::get_steam_id_account_identifier(Steam3ID_t steam3_id)
 
 Steam3ID_t CSteamIDUtil::convert_to_steam_community_id(Steam3ID_t steam3_id)
 {
-	// https://developer.valvesoftware.com/wiki/SteamID#Steam_ID_as_a_Steam_Community_ID
+
 
 	Steam3ID_t result;
 	Steam2ID_t sid2 = to_steam2(steam3_id);
@@ -204,7 +181,7 @@ Steam3ID_t CSteamIDUtil::convert_to_steam_community_id(Steam3ID_t steam3_id)
 
 Steam2ID_t CSteamIDUtil::to_steam2(Steam3ID_t steam3_id)
 {
-	// see CSteamID::ConvertToSteam2
+
 
 	Steam2ID_t sid2;
 
@@ -217,11 +194,8 @@ Steam2ID_t CSteamIDUtil::to_steam2(Steam3ID_t steam3_id)
 
 bool CSteamIDUtil::is_steam_user(Steam3ID_t steam3_id)
 {
-	// This is kind of weird way to check, but if the player
-	// is a steam player, the first 7 digits will be always
-	// the same for every player.
-	// 
-	// return sid64 / 10000000000 == 7656119;
+
+
 	return
 		steam3_id.m_EAccountType == hl::k_EAccountTypeIndividual &&
 		steam3_id.m_EUniverse == hl::k_EUniversePublic &&
@@ -241,7 +215,7 @@ bool CSteamIDUtil::is_valid(Steam3ID_t steam3_id)
 
 bool CSteamIDUtil::is_using_sid_changer(Steam3ID_t steam3_id)
 {
-	// TODO: Note sure about that meh, on some servers they can just disable scoreboard avatars by the new cvar.
+
 
 	auto steam_friends = CHLInterfaceHook::the().ISteamFriends();
 	if (!is_steam_user(steam3_id) || !steam_friends)
@@ -249,7 +223,7 @@ bool CSteamIDUtil::is_using_sid_changer(Steam3ID_t steam3_id)
 		return false;
 	}
 
-	// if this fails and the user is steam user, he is using steamid changer
+
 	int image_id = steam_friends->GetMediumFriendAvatar(steam3_id.m_unAll64Bits);
 
 	return image_id == 0;

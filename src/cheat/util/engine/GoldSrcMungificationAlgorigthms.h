@@ -40,7 +40,7 @@ public:
 	void enmungify2(unsigned char* data, int length, int seq);
 	void enmungify3(unsigned char* data, int length, int seq);
 
-	// does the opposite of munge
+
 	void demungify(unsigned char* data, int length, int seq);
 	void demungify2(unsigned char* data, int length, int seq);
 	void demungify3(unsigned char* data, int length, int seq);
@@ -50,4 +50,4 @@ private:
 	void demungify_internal(const unsigned char* table, unsigned char* data, int length, int seq);
 };
 
-#endif // GOLDSRCMUNGIFICATIONALGORITHMS_H
+#endif

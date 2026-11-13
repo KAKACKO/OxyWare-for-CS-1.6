@@ -42,14 +42,14 @@ public:
 public:
 	void update_clientmove(float frametime, hl::usercmd_t *cmd);
 
-	static InCommand bunnyhop;			// CMovementBunnyHop
-	static InCommand airstuck;			// CMovementAirStuck
-	static InCommand gs;				// CMovementGroundStrafe
-	static InCommand eb;				// CMovementEdgeBug
-	static InCommand strafe;			// CMovementStrafeHack
-	static InCommand strafe_helper;		// CMovementStrafeHelper
-	static InCommand fastrun;			// CMovementFastRun
-	static InCommand auto_jof;			// CMovementAutoJOF
+	static InCommand bunnyhop;
+	static InCommand airstuck;
+	static InCommand gs;
+	static InCommand eb;
+	static InCommand strafe;
+	static InCommand strafe_helper;
+	static InCommand fastrun;
+	static InCommand auto_jof;
 
 private:
 
@@ -59,4 +59,4 @@ private:
 	void feed_plot(float frametime, hl::usercmd_t *cmd);
 };
 
-#endif // MOVEMENT_H
+#endif

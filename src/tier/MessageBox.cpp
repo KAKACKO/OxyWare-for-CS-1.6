@@ -26,9 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// MessageBox.cpp -- Simple wrapper around Windows MessageBox API.
-//
 
 #include "precompiled.h"
 

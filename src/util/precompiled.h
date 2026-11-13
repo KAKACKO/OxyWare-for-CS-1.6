@@ -30,11 +30,7 @@
 #define PRECOMPILED_H
 #pragma once
 
-//-------------------------------------------------------------------
-//
-// Public headers
-// 
-//-------------------------------------------------------------------
+
 #include <platform.h>
 #include <commondefs.h>
 
@@ -58,19 +54,11 @@
 #include <tier/StringTools.h>
 #include <tier/MessageBox.h>
 
-//-------------------------------------------------------------------
-//
-// Shared
-// 
-//-------------------------------------------------------------------
+
 #include "Console.h"
 #include "BaseVariable.h"
 
-//-------------------------------------------------------------------
-//
-// C++ standard
-// 
-//-------------------------------------------------------------------
+
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
@@ -81,11 +69,7 @@
 #include <cassert>
 #include <shlobj_core.h>
 
-//-------------------------------------------------------------------
-//
-// Current project
-// 
-//-------------------------------------------------------------------
+
 #include "key_translation.h"
 
-#endif // PRECOMPILED_H
+#endif

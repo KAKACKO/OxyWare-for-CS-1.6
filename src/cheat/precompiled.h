@@ -30,11 +30,7 @@
 #define PRECOMPILED_H
 #pragma once
 
-//-------------------------------------------------------------------
-//
-// Public headers
-// 
-//-------------------------------------------------------------------
+
 #include "platform.h"
 
 #include <interface/IBaseModule.h>
@@ -77,33 +73,17 @@
 
 #include <multiemulator/multiemulator.h>
 
-//-------------------------------------------------------------------
-//
-// Shared
-// 
-//-------------------------------------------------------------------
+
 #include "Console.h"
 #include "BaseVariable.h"
 
-//-------------------------------------------------------------------
-//
-// detours
-// 
-//-------------------------------------------------------------------
+
 #include <detours/detours.h>
 
-//-------------------------------------------------------------------
-//
-// SOIL
-// 
-//-------------------------------------------------------------------
+
 #include <soil/soil.h>
 
-//-------------------------------------------------------------------
-//
-// C++ Standard
-// 
-//-------------------------------------------------------------------
+
 #include <functional>
 #include <unordered_map>
 #include <deque>
@@ -112,38 +92,26 @@
 #include <set>
 #include <future>
 
-//-------------------------------------------------------------------
-//
-// GLFW
-// 
-//-------------------------------------------------------------------
+
 #include <GLFW/glfw3.h>
 
-//-------------------------------------------------------------------
-//
-// OpenGL
-// 
-//-------------------------------------------------------------------
+
 #include <gl/GL.h>
 
-//-------------------------------------------------------------------
-//
-// HLSDK
-// 
-//-------------------------------------------------------------------
+
 namespace hl
 {
-// utils
+
 #include <hlsdk/tier0/basetypes.h>
 
-// common
+
 #include <hlsdk/common/goldsrclimits.h>
 #include <hlsdk/common/protocol.h>
 #include <hlsdk/common/VGuiVertex.h>
 #include <hlsdk/common/filesystemdefs.h>
 #include <hlsdk/common/Color.h>
 
-// engine
+
 #include <hlsdk/engine/keydefs.h>
 #include <hlsdk/engine/engine_math.h>
 #include <hlsdk/engine/wrect.h>
@@ -182,27 +150,27 @@ namespace hl
 #include <hlsdk/engine/sys_engine.h>
 #include <hlsdk/engine/pmtrace.h>
 
-// particleman
+
 #include <hlsdk/interface/ParticleMan/IParticleMan.h>
 #include <hlsdk/particleman/pman_frustum.h>
 #include <hlsdk/particleman/pman_main.h>
 #include <hlsdk/particleman/pman_particlemem.h>
 #include <hlsdk/particleman/pman_triangleffect.h>
 
-// misc
+
 #include <hlsdk/cstrike_tri.h>
 
-// vgui2
+
 #include <hlsdk/vgui2/VGUI2.h>
 #include <hlsdk/vgui2/KeyCode.h>
 #include <hlsdk/vgui2/MouseCode.h>
 #include <hlsdk/vgui2/Cursor.h>
 
-// playermove
+
 #include <hlsdk/playermove/pm_movevars.h>
 #include <hlsdk/playermove/pm_defs.h>
 
-// interfaces
+
 #include <hlsdk/interface/vgui2/IHTML.h>
 #include <hlsdk/interface/vgui2/IPanel.h>
 #include <hlsdk/interface/vgui2/IScheme.h>
@@ -215,22 +183,22 @@ namespace hl
 #include <hlsdk/interface/IFileSystem.h>
 #include <hlsdk/interface/IVideoMode.h>
 
-// steam
+
 #include <hlsdk/steam/isteamfriends.h>
 #include <hlsdk/steam/isteamutils.h>
 #include <hlsdk/steam/isteamuser.h>
 
-// game_shared
+
 #include <hlsdk/game_shared/shareddefs.h>
 #include <hlsdk/game_shared/cstrike/cs_shareddefs.h>
 
-// cstrike
+
 #include <hlsdk/dlls/enginecallback.h>
 #include <hlsdk/dlls/cstrike/cbase.h>
 #include <hlsdk/dlls/cstrike/weapons.h>
-} // namespace hl
+}
 
-// include after hlsdk.
+
 #include "custom_format_cheat.h"
 
 enum EPlayerHull
@@ -240,15 +208,11 @@ enum EPlayerHull
 	HULL_POINT,
 };
 
-//-------------------------------------------------------------------
-//
-// Current project
-// 
-//-------------------------------------------------------------------
+
 #include "oxware.h"
 #include "compat/NitroCompat.h"
 
-// hooks
+
 #include "hook/tests/HookTests.h"
 #include "hook/MemoryHook.h"
 #include "hook/function_hooks/MemoryFnHook.h"
@@ -260,7 +224,7 @@ enum EPlayerHull
 #include "hook/SecurityModuleHook.h"
 #include "hook/client_dll/MemoryHookCBaseStuff.h"
 
-// util
+
 #include "util/GameUtil.h"
 #include "util/MathUtil.h"
 #include "util/SteamIDUtil.h"
@@ -275,7 +239,7 @@ enum EPlayerHull
 #include "util/engine/EngineSpeedControl.h"
 #include "util/engine/FakePlayerRenderer.h"
 
-// game
+
 #include "game/model/StudioModelData.h"
 #include "game/model/SpriteModelData.h"
 #include "game/weapons/weapondefs.h"
@@ -292,7 +256,7 @@ enum EPlayerHull
 #include "game/GameEvents.h"
 #include "game/NetchanSequenceHistory.h"
 
-// features
+
 #include "features/FeatureManager.h"
 #include "features/FieldOfViewChanger.h"
 #include "features/BypassGameConstrains.h"
@@ -332,7 +296,7 @@ enum EPlayerHull
 #include "features/movement/MovementVisualInfo.h"
 #include "features/movement/Movement.h"
 
-// ui
+
 #include "ui/UIWindowPopups.h"
 #include "ui/rendering_contexts/IRendererContext.h"
 #include "ui/rendering_contexts/menu/MenuWidgets.h"
@@ -350,4 +314,4 @@ enum EPlayerHull
 #include "ui/PlayerList.h"
 #include "ui/OxWareUI.h"
 
-#endif // PRECOMPILED_H
+#endif

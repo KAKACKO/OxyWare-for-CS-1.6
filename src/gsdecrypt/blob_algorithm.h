@@ -39,19 +39,19 @@ public:
 public:
 	bool decrypt_file_buffer(uint8_t* filebuffer, uint32_t length, reconstructed_blob_module_info_t& info);
 
-	// Write raw data for each section into the file
+
 	void write_section_data(uint8_t* filebuffer, uint32_t file_alignment, std::ostringstream& ofs);
 
 	void decrypt_header(blob_hdr_t* header);
 
-	// Xor the entire file using 'W'
+
 	void xor_buffer(uint8_t* filebuffer, uint32_t length);
 
 private:
-	// Checks for magic number
+
 	bool valid_info_header();
 
-	// Checks for blob header data
+
 	bool valid_blob_data_header();
 
 private:

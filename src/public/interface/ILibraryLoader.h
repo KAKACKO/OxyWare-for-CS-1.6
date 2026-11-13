@@ -74,4 +74,4 @@ extern ILibraryLoader* g_libloader_i;
 
 #define ILIBRARYLOADER_INTERFACEID "ILibraryLoader"
 
-#endif // ILIBRARYLOADER_H
+#endif

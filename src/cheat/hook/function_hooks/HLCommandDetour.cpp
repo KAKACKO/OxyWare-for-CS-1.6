@@ -32,7 +32,7 @@ bool HLCmd_FnDetour_t::install()
 {
 	CConsole::the().info("Searching for HL command: '{}'", m_cmd_name);
 
-	// find the right entry
+
 	auto cmd = CGoldSrcCommandMgr::the().get_cmd(m_cmd_name);
 	if (cmd)
 	{
@@ -46,11 +46,10 @@ bool HLCmd_FnDetour_t::install()
 	return false;
 }
 
-//---------------------------------------------------------------------------------
 
 bool CHLCommandsDetourMgr::install_hooks()
 {
-	// let's install and detour individual hooks.
+
 	if (!in_speed_down_fn().install_svc(in_speed_down_f, "+speed", L"hw.dll")) return false;
 	if (!in_speed_up_fn().install_svc(in_speed_up_f, "-speed", L"hw.dll")) return false;
 	if (!screenshot_fn().install_svc(screenshot_f, "screenshot", L"hw.dll")) return false;
@@ -61,14 +60,13 @@ bool CHLCommandsDetourMgr::install_hooks()
 
 void CHLCommandsDetourMgr::uninstall_hooks()
 {
-	// now, uninstall the detour from each function.
+
 	in_speed_down_fn().uninstall();
 	in_speed_up_fn().uninstall();
 	screenshot_fn().uninstall();
 	snapshot_fn().uninstall();
 }
 
-//---------------------------------------------------------------------------------
 
 void CHLCommandsDetourMgr::in_speed_down_f()
 {
@@ -84,20 +82,14 @@ void CHLCommandsDetourMgr::in_speed_up_f()
 
 void CHLCommandsDetourMgr::screenshot_f()
 {
-	//if (CAntiScreen::the().someone_requested_screenshot(ANTISCREEN_Screenshot))
-	//{
-	//	return;
-	//}
+
 
 	CHLCommandsDetourMgr::the().screenshot_fn().call();
 }
 
 void CHLCommandsDetourMgr::snapshot_f()
 {
-	//if (CAntiScreen::the().someone_requested_screenshot(ANTISCREEN_Snapshot))
-	//{
-	//	return;
-	//}
+
 
 	CHLCommandsDetourMgr::the().snapshot_fn().call();
 }

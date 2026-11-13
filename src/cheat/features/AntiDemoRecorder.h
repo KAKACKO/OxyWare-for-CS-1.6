@@ -41,4 +41,4 @@ public:
 	bool allow_demo_to_be_recorded();
 };
 
-#endif // ANTIDEMORECORDER_H
+#endif

@@ -30,7 +30,7 @@
 
 void CGoldSrcCommandMgr::initialize()
 {
-	// cvars and commands in GS are registered one and never unregistered, so this is a one-way ticked here.
+
 
 	int cvars = 0;
 	for_each_cvar(
@@ -63,26 +63,21 @@ void CGoldSrcCommandMgr::initialize()
 
 	CConsole::the().info("Registered {} cvars and {} commands.", m_cvars.size(), m_commands.size());
 
-#if 0 // measurements (MEASURED IN DEBUG MODE, MAY BE MUCH FASTER IN RETAIL OR RELEASE)
+#if 0
 	auto t1 = std::chrono::high_resolution_clock::now();
-	auto _cvar = get_cvar("fps_max");//
+	auto _cvar = get_cvar("fps_max");
 	CConsole::the().info("Took {} seconds (ours)", std::chrono::duration<float, std::ratio<1, 1>>(std::chrono::high_resolution_clock::now() - t1).count());
 
 	t1 = std::chrono::high_resolution_clock::now();
 	_cvar = CMemoryHookMgr::the().cl_enginefuncs()->pfnGetCvarPointer((char*)"fps_max");
 	CConsole::the().info("Took {} seconds (vanilla)", std::chrono::duration<float, std::ratio<1, 1>>(std::chrono::high_resolution_clock::now() - t1).count());
 
-	//
-	// cvar query results:
-	// ours:	7.4e-06 seconds		-> 10x faster
-	// vanilla:	1.18e-05 seconds
-	//
 
 	t1 = std::chrono::high_resolution_clock::now();
 	for_each_cvar(
 		 [](hl::cvar_t* cvar)
 		{
-			// stuff
+
 		});
 	CConsole::the().info("Took {} seconds (ours iteration)", std::chrono::duration<float, std::ratio<1, 1>>(std::chrono::high_resolution_clock::now() - t1).count());
 
@@ -90,16 +85,12 @@ void CGoldSrcCommandMgr::initialize()
 	auto cvar = CMemoryHookMgr::the().cl_enginefuncs()->pfnGetFirstCvarPtr();
 	while (cvar)
 	{
-		// stuff
+
 		cvar = cvar->next;
 	}
 	CConsole::the().info("Took {} seconds (vanilla iteration)", std::chrono::duration<float, std::ratio<1, 1>>(std::chrono::high_resolution_clock::now() - t1).count());
 
-	//
-	// cvar iteration results:
-	// ours:	0.0001631 seconds (iterating through our map)		-> 10x slower than linked list
-	// vanilla:	1.17e-05 seconds (iterating through a linked list)	
-	//
+
 #endif
 
 	CConsole::the().info("GoldSrc Command Manager initialized.");
@@ -151,8 +142,8 @@ void CGoldSrcCommandMgr::register_cmd(const std::string& name, hl::cmd_function_
 
 void CGoldSrcCommandMgr::for_each_cvar(const std::function<void(hl::cvar_t*cvar)>& callback)
 {
-	// in terms of iteration, going through a linked list is faster than through our map 
-	// (I have measured it and its about 10x faster)
+
+
 	auto cvar = CMemoryHookMgr::the().cl_enginefuncs()->pfnGetFirstCvarPtr();
 	while (cvar)
 	{
@@ -163,8 +154,8 @@ void CGoldSrcCommandMgr::for_each_cvar(const std::function<void(hl::cvar_t*cvar)
 
 void CGoldSrcCommandMgr::for_each_cmd(const std::function<void(hl::cmd_function_t*cmd)>& callback)
 {
-	// in terms of iteration, going through a linked list is faster than through our map 
-	// (I have measured it and its about 10x faster)
+
+
 	auto cmd = CMemoryHookMgr::the().cl_enginefuncs()->pfnGetFirstCmdFunctionHandle();
 	while (cmd)
 	{
@@ -185,7 +176,7 @@ std::vector<std::string> CGoldSrcCommandMgr::find_invalid_tokens_in_tokenized_bu
 		}
 
 		bool found = false;
-		// try cvars
+
 		for_each_cvar(
 			[&](hl::cvar_t*cvar)
 			{
@@ -196,7 +187,7 @@ std::vector<std::string> CGoldSrcCommandMgr::find_invalid_tokens_in_tokenized_bu
 				}
 			});
 
-		// try commands
+
 		for_each_cmd(
 			[&](hl::cmd_function_t*cmd)
 			{
@@ -207,7 +198,7 @@ std::vector<std::string> CGoldSrcCommandMgr::find_invalid_tokens_in_tokenized_bu
 				}
 			});
 
-		// didn't find both in cvars&cmds, invalid token
+
 		if (!found)
 		{
 			invalid_tokens.push_back(token);

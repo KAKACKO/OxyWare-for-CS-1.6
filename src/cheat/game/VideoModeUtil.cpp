@@ -30,7 +30,7 @@
 
 void CVideoModeUtil::initialize()
 {
-	// following information gets changed only on game restart.
+
 
 	auto ivideomode = *CMemoryHookMgr::the().IVideoMode().get();
 
@@ -49,12 +49,11 @@ void CVideoModeUtil::update()
 	static uint32_t timer = GetTickCount();
 	if (GetTickCount() - timer > 1000)
 	{
-		// see for window resize
-		//static Vector2D last_screen_size = get_window_rect();
-		//if (last_screen_size != get_window_rect())
+
+
 		{
 			recompute();
-		//	last_screen_size = get_window_rect();
+
 		}
 
 		timer = GetTickCount();
@@ -63,28 +62,22 @@ void CVideoModeUtil::update()
 
 void CVideoModeUtil::recompute()
 {
-	// following information can be changed at runtime.
+
 
 	auto ivideomode = *CMemoryHookMgr::the().IVideoMode().get();
 
 	auto mode = ivideomode->GetCurrentMode();
 	assert(mode && "This shouldn't happen");
 
-	// get window size
+
 	m_full_screen_size = get_window_rect();
 
 	m_videomode_screen_size = { (float)mode->width, (float)mode->height };
 
-	// windowed  : size of the window
-	// fullscreen: blackbars on : size of the fullscreen window excluding blackbars
-	//			   blackbars off: size of the fullscreen window.
+
 	m_real_screen_size = m_full_screen_size;
 
-	//
-	// deal with blackbars
-	//
 
-	// You can ENABLE blackbars by NOT having these two in you launch options and when in fullscreen:
 	bool stretch_aspect = CGenericUtil::the().does_cmdline_parameter_exist("-stretchaspect");
 	bool no_fbo = CGenericUtil::the().does_cmdline_parameter_exist("-nofbo");
 	m_has_blackbars = (!stretch_aspect && !no_fbo) && m_is_fullscreen;
@@ -95,12 +88,9 @@ void CVideoModeUtil::recompute()
 		float stretched_width = m_videomode_screen_size.x * height_aspect;
 		float bar_width = (m_full_screen_size.x - stretched_width) / 2;
 
-		// 1280x960
-		// 1920x1080
+
 		
-		// 1080 / 960        = 1.125
-		// 1280*1.25         = 1440
-		// (1920 - 1440) / 2 = 240
+
 
 		m_real_screen_size.x -= bar_width * 2.0f;
 		

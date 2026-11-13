@@ -63,4 +63,4 @@ private:
 	std::deque<bullet_trace_t> m_bullets_fired;
 };
 
-#endif // BULLETTRACE_H
+#endif

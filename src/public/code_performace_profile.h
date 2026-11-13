@@ -31,7 +31,7 @@
 #pragma once
 
 #if !defined(_RETAIL)
-//#	define OX_ENABLE_CODE_PROFILE
+
 #endif
 
 #include "commondefs.h"
@@ -42,8 +42,7 @@
 #include <unordered_map>
 #include <utility>
 
-// container that starts the timer after constructed and stops it when destructed. Also, while being destructed, 
-// a new entry is added to the global list for this particular name.
+
 class AutomatedScopeProfile
 {
 public:
@@ -79,7 +78,7 @@ public:
 	SourceLocation m_sourceloc;
 };
 
-// data about scope measurement that had been done that is transfered over to the module profile report.
+
 struct ScopeProfileReport
 {
 	inline float get_seconds() const { return std::chrono::duration<float, std::ratio<1, 1>>(end - start).count(); }
@@ -92,11 +91,11 @@ struct ScopeProfileReport
 	std::chrono::high_resolution_clock::time_point start, end;
 };
 
-// we do rough 0-overhead collection here and then we sort all results and display them with fashion..
+
 class ModuleProfileReport
 {
 public:
-	// we have to have some limit, otherwise we would run out of memory.
+
 	inline static size_t k_max_code_reports = 1024 * 8;
 
 	ModuleProfileReport()
@@ -137,6 +136,6 @@ inline void AutomatedScopeProfile::add_to_list()
 
 #define OX_PROFILE_SCOPE(name) 
 
-#endif // OX_ENABLE_CODE_PROFILE
+#endif
 
-#endif // CODEPERFORMANCEPROFILE_H
+#endif

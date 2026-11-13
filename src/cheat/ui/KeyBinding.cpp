@@ -32,10 +32,10 @@ struct callback_data_t
 {
 	size_t	len;
 	int		vk;
-	int		n_buffer; // nth buffer
+	int		n_buffer;
 };
 
-// for the '...' button
+
 struct popup_state_t
 {
 	int vk;
@@ -56,7 +56,7 @@ void CUIKeyBinding::update()
 
 	keep_bound_keys_up_to_date();
 
-	// see if we are actually the ones who started the key binding mode.
+
 	bool did_start_key_binding_mode = m_current_key_bound != nullptr;
 
 	if (did_start_key_binding_mode)
@@ -64,7 +64,7 @@ void CUIKeyBinding::update()
 		int vk_pressed = g_user_input_i->get_bound_key();
 		if (vk_pressed != NULL)
 		{
-			// a key was just bound from the UserInput code
+
 
 			end_key_binding_mode(vk_pressed);
 		}
@@ -77,12 +77,12 @@ void CUIKeyBinding::render_interactible_bind_list()
 
 	auto last_cursor_pos = g_gui_widgets_i->get_cursor_pos();
 
-	// add a little bit of padding for the decoration (floating buttons)
+
 	g_gui_widgets_i->add_padding({ 0.0f, 15.0f });
 
 	g_gui_widgets_i->add_child(
 		"bind_list",
-		// add some padding to the right, because tables without borders are weird.
+
 		{ -1.0f - (MenuStyle::child_contents_padding.x + g_gui_widgets_i->get_imgui_style().ScrollbarSize), -1.0f },
 		false,
 		ImGuiWindowFlags_None,
@@ -108,7 +108,7 @@ void CUIKeyBinding::render_interactible_bind_list()
 					render_list();
 				});
 
-			g_gui_widgets_i->pop_stylevar(); // cell padding
+			g_gui_widgets_i->pop_stylevar();
 		});
 
 	render_decoration(last_cursor_pos);
@@ -133,7 +133,7 @@ void CUIKeyBinding::render_list()
 
 			g_gui_widgets_i->table_next_column();
 
-			// unique insertion
+
 			bound_key_t* bound_key = retreive_bound_key_or_insert_new(vk, bind);
 			
 			render_command_textinput(bound_key, vk, key_name);
@@ -156,7 +156,7 @@ void CUIKeyBinding::render_list()
 		{
 			if (g_gui_widgets_i->add_button("Remove", { -1.0f, 0.0f }, false))
 			{
-				bind_to_be_removed = s_popup_state.vk; // remove after the iteration. avoids random iterator crashes
+				bind_to_be_removed = s_popup_state.vk;
 				g_gui_widgets_i->close_current_popup();
 			}
 
@@ -242,7 +242,7 @@ void CUIKeyBinding::render_list()
 
 	g_gui_widgets_i->pop_stylevar();
 
-	// on close
+
 	if (was_popup_opened != popup_opened && !popup_opened)
 	{
 		s_popup_state = {};
@@ -279,7 +279,7 @@ void CUIKeyBinding::render_list()
 			{
 				switch_to_key_binding_mode(&m_key_scan_button_info["new_key"], [&](key_scan_button_info_t* info, int vk)
 					{
-						// create new fresh bind
+
 						if (!g_bindmgr_i->is_key_bound(vk))
 						{
 							g_bindmgr_i->add_bind(vk, "");
@@ -293,7 +293,7 @@ void CUIKeyBinding::render_list()
 			{
 				switch_to_key_binding_mode(&m_key_scan_button_info["new_key"], [&](key_scan_button_info_t* info, int vk)
 					{
-						// create new fresh bind
+
 						if (!g_bindmgr_i->is_key_bound(vk))
 						{
 							g_bindmgr_i->add_bind_on_push_and_release(vk, "", "");
@@ -304,7 +304,7 @@ void CUIKeyBinding::render_list()
 			}
 		});
 	
-	g_gui_widgets_i->pop_stylevar(); // window padding
+	g_gui_widgets_i->pop_stylevar();
 }
 
 void CUIKeyBinding::render_decoration(const Vector2D& last_cursor_pos)
@@ -423,7 +423,7 @@ int CUIKeyBinding::command_texinput_callback(ImGuiInputTextCallbackData * data)
 						{
 							bind->cmd_sequence_0 = data->Buf;
 						}
-						else // 1st buffer
+						else
 						{
 							bind->cmd_sequence_1 = data->Buf;
 						}
@@ -438,7 +438,7 @@ int CUIKeyBinding::command_texinput_callback(ImGuiInputTextCallbackData * data)
 
 void CUIKeyBinding::add_keyscan_button(const std::string& id, int vk, const Vector2D& size, bool* force_binding_mode)
 {
-	// unique insertion
+
 	key_scan_button_info_t* info;
 	try
 	{
@@ -463,7 +463,7 @@ void CUIKeyBinding::add_keyscan_button(const std::string& id, int vk, const Vect
 			info, 
 			[&](key_scan_button_info_t* info, int vk)
 			{
-				// rebind same command to different key
+
 				if (info->prev_vk != vk)
 				{
 					auto bind = g_bindmgr_i->get_bind(info->prev_vk);
@@ -471,7 +471,7 @@ void CUIKeyBinding::add_keyscan_button(const std::string& id, int vk, const Vect
 					{
 						if (!g_bindmgr_i->is_key_bound(vk))
 						{
-							// bind to a new key
+
 							if (bind->type == BIND_OnPushAndRelease)
 							{
 								g_bindmgr_i->add_bind_on_push_and_release(vk, bind->cmd_sequence_0, bind->cmd_sequence_1, bind->flags);
@@ -481,7 +481,7 @@ void CUIKeyBinding::add_keyscan_button(const std::string& id, int vk, const Vect
 								g_bindmgr_i->add_bind(vk, bind->cmd_sequence_0, bind->flags);
 							}
 
-							g_bindmgr_i->remove_bind(info->prev_vk); // remove old bind
+							g_bindmgr_i->remove_bind(info->prev_vk);
 							insert_new_key_scan_button_info(vk);
 						}
 					}
@@ -499,7 +499,7 @@ void CUIKeyBinding::add_keyscan_button(const std::string& id, int vk, const Vect
 
 void CUIKeyBinding::setup_interactible_bind_list()
 {
-	// before we start the rendering, setup the initial list
+
 
 	g_bindmgr_i->for_each_bind(
 		[&](int vk, const bind_t& bind)
@@ -543,14 +543,14 @@ void CUIKeyBinding::end_key_binding_mode(int vk_pressed)
 		}
 	}
 
-	// reset all states for the future
+
 	m_current_key_bound = nullptr;
 	g_user_input_i->reset_bound_key();
 }
 
 void CUIKeyBinding::keep_bound_keys_up_to_date()
 {
-	// refresh the list so that it keeps up to date with the actual list
+
 	static uint32_t t = GetTickCount();
 	if (GetTickCount() - t > 500)
 	{
@@ -583,7 +583,7 @@ bound_key_t* CUIKeyBinding::retreive_bound_key_or_insert_new(int vk, const bind_
 {
 	try
 	{
-		// this should be O(1), but hehe, whatever..
+
 		return &m_bound_keys.at(vk);
 	}
 	catch (...)

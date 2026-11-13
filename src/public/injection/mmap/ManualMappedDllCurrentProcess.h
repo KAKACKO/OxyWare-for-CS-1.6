@@ -26,9 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// ManualMappedDllCurrentProcess.h -- Dll that is injected to current process through manual mapping injection technique.
-//
 
 #ifndef MANUALMAPPEDDLLCURRENTPROCESS_H
 #define MANUALMAPPEDDLLCURRENTPROCESS_H
@@ -63,17 +60,17 @@ private:
 
 	bool read_execution_context_back(manualmap_shellcode_execution_context_t* sec);
 
-	// memory
+
 	bool allocate_memory();
 	void deallocate_all_memory();
 
-	uint8_t* m_allocation_block_ptr;	// locally allocated DLL image in our process's VM + the communication block.
+	uint8_t* m_allocation_block_ptr;
 
 private:
-	// operations on dll image
+
 	bool copy_dll_image_data();
 	bool relocate_dll_image_data();
-	bool execute_shellcode();			// we can execute shellcode locally, since we're not injecting into target process
+	bool execute_shellcode();
 
 	ExposeModuleFn m_pfnExposeModuleFn;
 	GetInterfaceInstanceFn m_pfnGetInterfaceInstanceFn;
@@ -97,8 +94,8 @@ private:
 		}
 	}
 
-	// Shellcode -- this can be here just fine, since we aren't executing this remotely
+
 	HINSTANCE shellcode_routine();
 };
 
-#endif // MANUALMAPPEDDLLCURRENTPROCESS_H
+#endif

@@ -144,15 +144,14 @@ public:
 	void update_studio_lighting(hl::alight_t* plighting);
 	void update_studio_colors(GLfloat* r, GLfloat* g, GLfloat* b, GLfloat* a);
 
-	// replacement for R_GLStudioDrawPoints()
+
 	bool studio_draw_skeleton();
 
 	void render_playerhead_hitbox();
 
 	void force_default_models();
 
-	// returns model that is currently being rendered inside studio code.
-	// this is set by the client dll using engine_studio_api_t::SetRenderModel().
+
 	hl::model_t* get_currently_rendered_model();
 	hl::studiohdr_t* get_currently_rendered_model_header();
 
@@ -169,8 +168,8 @@ private:
 
 	bool m_rendering_real_playermodel = false;
 
-	// set to true of we're execuging R_StudioDrawPoints code right now
+
 	bool m_studio_draw_points_lock = false;
 };
 
-#endif // MODELCHAMS_H
+#endif

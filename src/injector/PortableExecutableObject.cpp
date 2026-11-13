@@ -26,9 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// PortableExecutableObject.cpp -- Handles DLL parsing.
-//
 
 #include "precompiled.h"
 
@@ -74,17 +71,17 @@ bool CPortableExecutableObject::find_export(const char* name)
 {
 	assert(m_dos);
 
-	// Get the data directory for exports from optional header located inside NT header.
+
 	auto exports_data_directory = &m_opt_hdr->DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT];
 	if (!exports_data_directory->Size || !exports_data_directory->VirtualAddress)
 		return false;
 
-	// Individual export addresses we need are located in this data structure.
+
 	auto exports_directory = m_dll_contents.get_at<IMAGE_EXPORT_DIRECTORY>(offset_relative_to_a_section(exports_data_directory->VirtualAddress));
 	if (!exports_directory)
 		return false;
 
-	// NOTE: yes, these are DWORDs, even on x64
+
 	auto function_table_base = m_dll_contents.get_at<uint32_t>(offset_relative_to_a_section(exports_directory->AddressOfFunctions));
 	auto name_table_base = m_dll_contents.get_at<uint32_t>(offset_relative_to_a_section(exports_directory->AddressOfNames));
 	auto ordinal_table_base = m_dll_contents.get_at<uint16_t>(offset_relative_to_a_section(exports_directory->AddressOfNameOrdinals));
@@ -109,7 +106,7 @@ uintptr_t CPortableExecutableObject::offset_relative_to_a_section(uintptr_t rva)
 
 	for (size_t i = 0; i < m_file_hdr->NumberOfSections; i++)
 	{
-		// Check if we're in-bounds
+
 		if (rva >= section->VirtualAddress && rva <= (section->VirtualAddress + section->Misc.VirtualSize - 1))
 		{
 			return (rva - section->VirtualAddress) + section->PointerToRawData;

@@ -55,4 +55,4 @@ private:
 	uint8_t m_current_fade_alpha;
 };
 
-#endif // FLASHBANGFADEMODIFIER_H
+#endif

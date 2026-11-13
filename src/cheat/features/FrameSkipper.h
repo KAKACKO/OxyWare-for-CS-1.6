@@ -45,4 +45,4 @@ public:
 	static InCommand frame_skipper;
 };
 
-#endif // FRAMESKIPPER_H
+#endif

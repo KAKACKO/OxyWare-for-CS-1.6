@@ -68,8 +68,7 @@ public:
 		return x * x;
 	}
 
-	// turns a directional vector into a yaw value
-	// that points down that vector.
+
 	float vec2yaw(const Vector& dir);
 	float angle_mod(float a);
 
@@ -77,4 +76,4 @@ public:
 	void interp_angles(float* start, float* end, float* output, float frac);
 };
 
-#endif // MATHUTIL_H
+#endif

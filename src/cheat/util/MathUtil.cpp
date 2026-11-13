@@ -99,12 +99,12 @@ float CMath::approach_angle(float target, float value, float speed)
 
 	float delta = target - value;
 
-	// Speed is assumed to be positive
+
 	if (speed < 0)
 		speed = -speed;
 
 	if (delta < -180)
-		delta += 360;///
+		delta += 360;
 	else if (delta > 180)
 		delta -= 360;
 
@@ -140,7 +140,7 @@ float CMath::vec2yaw(const Vector& dir)
 	float flIdealYaw = atan2(dir.y, dir.x) * 180.0f / M_PI;
 	if (flIdealYaw < 0.0f)
 	{
-		flIdealYaw += 360.0f; // normalize
+		flIdealYaw += 360.0f;
 	}
 	return flIdealYaw;
 }
@@ -155,7 +155,7 @@ float CMath::angle_mod(float a)
 	{
 		a = a - 360 * ((int)(a / 360));
 	}
-	// a = (360.0/65536) * ((int)(a*(65536/360.0)) & 65535);
+
 	return a;
 }
 
@@ -170,9 +170,7 @@ void CMath::normalize_angles(float * angles)
 	}
 }
 
-// Interpolate Euler angles.
-// FIXME:  Use Quaternions to avoid discontinuities
-// Frac is 0.0 to 1.0 ( i.e., should probably be clamped, but doesn't have to be )
+
 void CMath::interp_angles(float* start, float* end, float* output, float frac)
 {
 	float ang1, ang2;

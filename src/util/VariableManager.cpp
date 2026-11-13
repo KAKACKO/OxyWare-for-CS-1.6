@@ -76,7 +76,7 @@ BaseCommand help(
 	}
 );
 
-#if 0 // tokenizer test
+#if 0
 BaseCommand tokenize(
 	"tokenize", "<token1> <token2> <token3>", "Debugging command to test the command tokenizer",
 	[&](BaseCommand* cmd, const CmdArgs& args)
@@ -122,7 +122,7 @@ public:
 	
 	bool initialize();
 
-	// variable and command lookups
+
 	BaseVariable* query_variable(const char* name);
 	BaseCommand* query_command(const char* name);
 
@@ -167,18 +167,13 @@ private:
 
 	m_hl_execute_cmd_pfn_t m_hl_execute_cmd_pfn;
 
-	// config I/O provider
+
 	void provide_cfg_load_export_callbacks();
 };
 
 CVariableManager g_variablemgr;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CVariableManager, IVariableManager, IVARIABLEMANAGER_INTERFACEID, g_variablemgr);
 
-//-------------------------------------------------------------------------------
-//
-// CVariableManager implementation
-//
-//-------------------------------------------------------------------------------
 
 CVariableManager::CVariableManager()
 {
@@ -227,7 +222,7 @@ BaseCommand* CVariableManager::query_command(const char* name)
 
 void CVariableManager::register_variables_and_commands_per_module(StaticVariableContainer* variable_container, StaticCommandContainer* command_container, const char* module_name)
 {
-	// variables
+
 	{
 		auto& list = variable_container->get_variable_list();
 
@@ -239,7 +234,7 @@ void CVariableManager::register_variables_and_commands_per_module(StaticVariable
 		{
 			CConsole::the().info("Registering {} variables from module {}...", list.size(), module_name);
 
-			// Merge vars from other modules into one continuous list.
+
 			for (BaseVariable* var : list)
 			{
 				register_single_variable(var);
@@ -247,7 +242,7 @@ void CVariableManager::register_variables_and_commands_per_module(StaticVariable
 		}
 	}
 
-	// commands
+
 	{
 		auto& list = command_container->get_command_list();
 
@@ -259,7 +254,7 @@ void CVariableManager::register_variables_and_commands_per_module(StaticVariable
 		{
 			CConsole::the().info("Registering {} commands from module {}...", list.size(), module_name);
 
-			// Merge cmds from other modules into one continuous list.
+
 			for (BaseCommand* cmd : list)
 			{
 				register_single_command(cmd);
@@ -277,7 +272,7 @@ void CVariableManager::register_single_variable(BaseVariable* var)
 
 	auto [iter, did_insert] = m_registered_variables.insert(var);
 
-	// same message is already inside BaseVariable.cpp, hence the "(2)"
+
 	assert(did_insert && "Failed to insert a variable because it's already in the list.. duplicated? (2)");
 
 	CConsole::the().info("Registered variable '{}'.", var->get_name());
@@ -292,7 +287,7 @@ void CVariableManager::register_single_command(BaseCommand* cmd)
 
 	auto [iter, did_insert] = m_registered_commands.insert(cmd);
 
-	// same message is already inside BaseVariable.cpp, hence the "(2)"
+
 	assert(did_insert && "Failed to insert a command because it's already in the list.. duplicated? (2)"); 
 
 	CConsole::the().info("Registered command '{}'.", cmd->get_name());
@@ -321,7 +316,7 @@ void CVariableManager::execute_command(const std::string& command_sequence, bool
 		return;
 	}
 
-	// collect individual commands separated by ';'
+
 	std::string current_command;
 	bool in_quotes = false;
 	for (size_t i = 0; i < command_sequence.length(); i++)
@@ -342,17 +337,17 @@ void CVariableManager::execute_command(const std::string& command_sequence, bool
 			}
 		}
 
-		if ((c == ';' && !in_quotes) || last) // the last case, too
+		if ((c == ';' && !in_quotes) || last)
 		{
 			if (last)
 			{
 				current_command.push_back(c);
 			}
 
-			// trim leading spaces, if any
+
 			current_command = CStringTools::the().ltrim(current_command);
 
-			// execute the command in place
+
 			execute_internal(current_command, silent);
 			
 			current_command.clear();
@@ -392,7 +387,7 @@ void CVariableManager::execute_internal(const std::string& command, bool silent)
 {
 	if (command.substr(0, 3) == "hl ")
 	{
-		execute_halflife_command(command.substr(3), silent); // pass in full command
+		execute_halflife_command(command.substr(3), silent);
 		return;
 	}
 
@@ -407,7 +402,7 @@ void CVariableManager::execute_internal(const std::string& command, bool silent)
 	auto cmd = query_command(cmd_name.c_str());
 	if (!cmd)
 	{
-		// try variable
+
 		auto var = query_variable(cmd_name.c_str());
 		if (!var)
 		{
@@ -430,7 +425,7 @@ void CVariableManager::execute_internal(const std::string& command, bool silent)
 			{
 				std::string value_raw = command.substr(cmd_name.length() + 1);
 
-				// erase quotes, they're useless here.
+
 				value_raw.erase(std::remove(value_raw.begin(), value_raw.end(), '"'), value_raw.end());
 				bool ok;
 				var->set_from_string(value_raw, ok);
@@ -463,7 +458,7 @@ void CVariableManager::execute_internal(const std::string& command, bool silent)
 void CVariableManager::execute_halflife_command(const std::string& full_hl_command, bool silent)
 {
 	const char* s = full_hl_command.c_str();
-	// hl command
+
 	if (!execute_hl_command(s))
 	{
 		if (!silent)
@@ -488,9 +483,6 @@ void CVariableManager::provide_cfg_load_export_callbacks()
 		return;
 	}
 
-	//
-	// provide config load function.
-	//
 
 	auto load_fn = [](nh::json& json)
 	{
@@ -510,9 +502,6 @@ void CVariableManager::provide_cfg_load_export_callbacks()
 
 	(*cheat_settings)->provide_load_fn(load_fn);
 
-	//
-	// provide config export function.
-	//
 
 	auto export_fn = [](nh::json& json)
 	{
@@ -533,9 +522,6 @@ void CVariableManager::provide_cfg_load_export_callbacks()
 	(*cheat_settings)->provide_export_fn(export_fn);
 }
 
-//--------------------------------------------------------------------------------------------------------------------
-// COMMAND PARSING
-// 
 
 void CVariableManager::tokenize_command(const std::string& command_buffer)
 {
@@ -544,7 +530,7 @@ void CVariableManager::tokenize_command(const std::string& command_buffer)
 	m_current_cmd_tokens.clear();
 
 	std::string current_token;
-	bool in_quotes = false; // ignore spaces and such
+	bool in_quotes = false;
 	for (size_t i = 0; i < command_buffer.length(); i++)
 	{
 		const char c = command_buffer[i];
@@ -561,11 +547,11 @@ void CVariableManager::tokenize_command(const std::string& command_buffer)
 			if (!last)
 			{
 				in_quotes = false;
-				continue; // look for ending quote
+				continue;
 			}
 		}
 
-		if ((c == ' ' && !in_quotes) || last) // the last case, too
+		if ((c == ' ' && !in_quotes) || last)
 		{
 			if (last && !in_quotes)
 			{

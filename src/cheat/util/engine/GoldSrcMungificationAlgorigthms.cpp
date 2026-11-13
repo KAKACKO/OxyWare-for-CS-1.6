@@ -26,14 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// GoldSrcMungificationAlgorithms.cpp -- reverse-engineered Mungification algorithms from the GoldSrc engine.
-// 
-// This encryption algorithms are used as "anti-proxy/aimbot obfuscation code", as stated in the 03 leak.
-// https://github.com/BlackRa1nFR/source-2003/blob/abb4ba70b1d3ad3f706ed71ac309e5b7e85f6103/src_main/engine/common.cpp#L1811
-// The code was taken from there. Although there are two more mungification functions, they are all the same and
-// the only difference is that they use different mungification table.
-// 
 
 #include "precompiled.h"
 
@@ -103,7 +95,6 @@ void GoldSrcMungificationAlgorithms::demungify3(unsigned char * data, int length
 	demungify_internal(mungify_table3, data, length, seq);
 }
 
-//---------------------------------------------------------------------------------------------------------------------------------
 
 void GoldSrcMungificationAlgorithms::enmungify_internal(const unsigned char* table, unsigned char* data, int length, int seq)
 {

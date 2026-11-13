@@ -42,4 +42,4 @@ public:
 	std::optional<double> scale_aspect();
 };
 
-#endif // ASPECTRATIOCHANGER_H
+#endif

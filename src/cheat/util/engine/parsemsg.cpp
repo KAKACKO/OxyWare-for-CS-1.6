@@ -26,9 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// TODO: Rewrite this shit
-//
 
 #include "precompiled.h"
 
@@ -138,7 +135,7 @@ float READ_FLOAT( void )
 	dat.b[3] = gpBuf[giRead+3];
 	giRead += 4;
 	
-//	dat.l = LittleLong (dat.l);
+
 
 	return dat.f;   
 }
@@ -154,7 +151,7 @@ char* READ_STRING( void )
 	do
 	{
 		if ( giRead+1 > giSize )
-			break; // no more characters
+			break;
 
 		c = READ_CHAR();
 		if (c == -1 || c == 0)

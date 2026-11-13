@@ -34,8 +34,6 @@ VarBoolean cmdfilter_print_every("cmdfilter_print_every", "Prints every command 
 VarBoolean cmdfilter_filter_all("cmdfilter_filter_all", "Block all commands send to you by the server", false);
 VarString cmdfilter_filtered_commands("cmdfilter_filtered_commands", "List of commands to be filtered separated by a \";\".", "fps_max; developer; fps_override");
 
-// enable this to measure in ms how long does it take to query through cvars and cmds when searching for the command
-//#define DEBUG_MSR_CMDCVAR_QUERY
 
 UIStatusWidget CStuffCmdFilter::m_status_widget = UIStatusWidget(k_StatusWidgetStandardLifeDur);
 
@@ -46,7 +44,7 @@ bool CStuffCmdFilter::allow_command_to_be_executed()
 		return true;
 	}
 
-	// see if we have some cmds to be filtered
+
 	std::string filtered_cmds = cmdfilter_filtered_commands.get_value_string();
 	if (filtered_cmds.empty())
 	{
@@ -59,7 +57,7 @@ bool CStuffCmdFilter::allow_command_to_be_executed()
 
 	std::string server_cmd_buffer = CHLNetMessageIO::the().read_string();
 
-	// erase newlines from the buffer, they make mess in our console
+
 	std::string server_cmd_buffer_formatted = server_cmd_buffer;
 	std::erase(server_cmd_buffer_formatted, '\n');
 
@@ -70,17 +68,7 @@ bool CStuffCmdFilter::allow_command_to_be_executed()
 	auto t1 = std::chrono::high_resolution_clock::now();
 #endif
 
-	//
-	// Note #1: We need to filter out only ingame cvars & commands, because the server can send other things
-	//			such as connection validation tokens, etc. This obviously won't get executed on the client, 
-	//			because it isn't a command nor cvar however, it is being forwarded back to the server using
-	//			Cmd_ForwardToServer() and some servers use this as a form of "validation". This is just an example
-	//			of such no-cvar/cmd stufftext we can get.
-	// 
-	// Note #2: This usually takes <1ms to query through even in debug mode. Fast enough..
-	//
 
-	// see for all cvars
 	auto cvar = CMemoryHookMgr::the().cl_enginefuncs()->pfnGetFirstCvarPtr();
 	while (cvar)
 	{
@@ -93,7 +81,7 @@ bool CStuffCmdFilter::allow_command_to_be_executed()
 		cvar = cvar->next;
 	}
 
-	// see for all commands
+
 	if (!found_cvar_or_cmd)
 	{
 		auto cmd = CMemoryHookMgr::the().cl_enginefuncs()->pfnGetFirstCmdFunctionHandle();
@@ -111,7 +99,7 @@ bool CStuffCmdFilter::allow_command_to_be_executed()
 
 	if (!found_cvar_or_cmd)
 	{
-		// the server can send nonexistent commands/cvars that are then sent back to it using Cmd_ForwardToServer().
+
 		nonexistent_cmd_or_cvar_from_server = true;
 	}
 
@@ -122,7 +110,7 @@ bool CStuffCmdFilter::allow_command_to_be_executed()
 						 std::chrono::duration<float, std::milli>(t2 - t1).count());
 #endif
 
-	// if we force to block some cmds, block only those that are actually valid.
+
 	bool forced_to_block = cmdfilter_filter_all.get_value() && found_cvar_or_cmd;
 
 	if (cmdfilter_print_every.get_value())
@@ -163,12 +151,12 @@ bool CStuffCmdFilter::allow_command_to_be_executed()
 				CConsole::the().info("Blocked command sequence '{}'", server_cmd_buffer_formatted);
 			}
 		}
-		// didn't allow something, don't restore the reading state, because we won't call the original function.
+
 		CHLNetMessageIO::the().end_silent_reading_no_restore();
 		return false;
 	}
 
-	// didn't find anything, pass the buffer to the engine.
+
 	CHLNetMessageIO::the().end_silent_reading();
 	return true;
 }
@@ -247,11 +235,11 @@ void CStuffCmdFilter::render_ui()
 				reclaim_focus_key = true;
 			};
 
-			// Auto-focus on window apparition
+
 			g_gui_widgets_i->set_item_default_focus();
 			if (reclaim_focus_key)
 			{
-				g_gui_widgets_i->set_keyboard_focus_here(-1); // Auto focus previous widget
+				g_gui_widgets_i->set_keyboard_focus_here(-1);
 			}
 
 			g_gui_widgets_i->table_next_column();
@@ -300,10 +288,10 @@ bool CStuffCmdFilter::is_buffer_valid(const char* buffer)
 	auto invalid_tokens = CGoldSrcCommandMgr::the().find_invalid_tokens_in_tokenized_buffer(tokens);
 	if (invalid_tokens.empty())
 	{
-		return true; // if it's empty, there aren't any invalid tokens.
+		return true;
 	}
 
-	// got some invalid tokens, add them to the message
+
 	std::string message = "Invalid commands: ";
 	uint32_t n = 0;
 	for (const auto& invalid : invalid_tokens)
@@ -329,8 +317,8 @@ bool CStuffCmdFilter::approve_server_cmdlist(const std::string& server_cmd)
 	{
 		if (server_cmd.find(token) != std::string::npos)
 		{
-			// if one of the blacklisted commands were found inside the buffer, don't allow the whole buffer.
-			// this is also the way engine does it.
+
+
 			m_block_victim = token;
 			return false;
 		}

@@ -26,34 +26,18 @@
 *	IN THE SOFTWARE.
 */
 
-//
-// ParticleManMiniMemEmulation.cpp -- Emulator for particleman.dll module CMiniMem class.
-// 
-//	The idea behind emulation is basically that it redirects all of the important function
-//	calls from the CMiniMem class into our artifical implementation of it. Using this tech-
-//	nique, we can mirror the same functionality while improving some of the limitations that
-//	the original class have, such as being slow or having low limits.
-// 
-// Why do we have to take the hard way? - detour so many things in order to accomplish that?
-// 
-//	Good question. Well, since the class is a singleton, almost all of the functions are not
-//	bound to a specific object, therefore these are treated as regular non-class functions.
-//	They're also not virtual, so we cannot just modify the vtable of that class. Therefore, 
-//	we need to take this complicated approach of hooking important class member functions and
-//	re-implementing them inside our own code.
-//
 
 #include "precompiled.h"
 
-// 30k memory - 1,875 particles for use
+
 #define VANILLA_PART_MEM	(30 * 1000)
 #define VANILLA_PART_LIMIT	((VANILLA_PART_MEM) / sizeof(hl::MemoryBlock))
 
-// 1M memory - 62,500 particles for use
+
 #define NEW_PART_MEM		(1000 * 1000)
 #define NEW_PART_LIMIT		((NEW_PART_MEM) / sizeof(hl::MemoryBlock))
 
-// static definitions
+
 hl::VectorOfMemoryBlocks CMiniMemEmulator::m_memory_pool;
 long CMiniMemEmulator::m_memory_block_size = 0;
 long CMiniMemEmulator::m_max_blocks = 0;
@@ -67,7 +51,7 @@ CMiniMemEmulator::CMiniMemEmulator(long memory_pool_size, long max_block_size)
 	m_memory_block_size = max_block_size;
 	m_max_blocks = memory_pool_size / sizeof(hl::MemoryBlock);
 
-	// allocate all blocks
+
 	for (int i = 0; i < m_max_blocks; i++)
 	{
 		hl::MemoryBlock* pNewBlock = new hl::MemoryBlock(m_memory_block_size);
@@ -112,7 +96,7 @@ char* CMiniMemEmulator::new_block()
 	char* p = alloc_free_block();
 	if (!p)
 	{
-//		gEngfuncs.pfnCon_DPrintf("Particleman is out of memory, too many particles");
+
 		return NULL;
 	}
 
@@ -152,17 +136,17 @@ static int particle_sort_fn(const void* p1, const void* p2)
 	hl::CCoreTriangleEffect* pParticle1 = ((hl::visibleparticles_t*)p1)->pVisibleParticle;
 	hl::CCoreTriangleEffect* pParticle2 = ((hl::visibleparticles_t*)p2)->pVisibleParticle;
 
-	// bigger distance
+
 	if (pParticle1->GetPlayerDistance() > pParticle2->GetPlayerDistance())
 	{
 		return -1;
 	}
-	// equal distance
+
 	else if (pParticle1->GetPlayerDistance() == pParticle2->GetPlayerDistance())
 	{
 		return 0;
 	}
-	// different distance
+
 	else
 	{
 		return 1;
@@ -190,7 +174,7 @@ void CMiniMemEmulator::process_all()
 	currentBlock = g_active_mem.Front();
 	while (currentBlock)
 	{
-		nextBlock = currentBlock->next; // can get deleted, so save into a variable
+		nextBlock = currentBlock->next;
 
 		pEffect = (hl::CCoreTriangleEffect*)currentBlock->Memory();
 		if (pEffect)
@@ -219,7 +203,7 @@ void CMiniMemEmulator::process_all()
 				pEffect->Think(time);
 			}
 
-			// check if dead
+
 			if (pEffect->m_flDieTime > 0.0f && pEffect->m_flDieTime <= time)
 			{
 				pEffect->Die();
@@ -230,7 +214,7 @@ void CMiniMemEmulator::process_all()
 		currentBlock = nextBlock;
 	}
 
-	// Sort it by distance between particle and player
+
 	qsort(m_allocated_visible_particles, m_parts_drawn, sizeof(hl::visibleparticles_t*), particle_sort_fn);
 
 	for (j = 0; j < m_parts_drawn; j++)
@@ -260,16 +244,14 @@ int CMiniMemEmulator::apply_force(Vector vOrigin, Vector vDirection, float flRad
 		pEffect = (hl::CCoreTriangleEffect*)currentBlock->Memory();
 		if (pEffect)
 		{
-			// don't apply any force on this one
+
 			if (pEffect->m_bAffectedByForce)
 			{
 				size = pEffect->m_flSize / 5.0f;
 				mins = pEffect->m_vOrigin - Vector(size, size, size);
 				maxs = pEffect->m_vOrigin + Vector(size, size, size);
 
-				//
-				// compute squared distance
-				//
+
 				flSQRDistance = 0.0f;
 				for (int i = 0; i < 3; i++)
 				{
@@ -340,7 +322,6 @@ void CMiniMemEmulator::reset()
 	}
 }
 
-//--------------------------------------------------------------------------------
 
 bool CParticlemanMiniMemEmulation::emulate()
 {
@@ -371,7 +352,7 @@ void CParticlemanMiniMemEmulation::restore_from_emulation()
 {
 	if (!m_emulated)
 	{
-		// don't restore emulation if we didn't establish it
+
 		return;
 	}
 
@@ -380,7 +361,7 @@ void CParticlemanMiniMemEmulation::restore_from_emulation()
 		CConsole::the().info("Removing particleman MiniMem emulation...");
 	}
 
-	// free memory
+
 	delete m_instance;
 	m_instance = nullptr;
 
@@ -392,22 +373,21 @@ void CParticlemanMiniMemEmulation::restore_from_emulation()
 
 	m_emulated = false;
 
-	// already emulated/restored from it for the first time.
+
 	m_first_time = false;
 }
 
 CMiniMemEmulator* CParticlemanMiniMemEmulation::instance()
 {
-	// create a singleton instance
+
 	if (!m_instance)
 	{
-		m_instance = new CMiniMemEmulator(NEW_PART_MEM, sizeof(hl::CCoreTriangleEffect) * 2); // this should be enough for any cstrike particle.
+		m_instance = new CMiniMemEmulator(NEW_PART_MEM, sizeof(hl::CCoreTriangleEffect) * 2);
 	}
 
 	return m_instance;
 }
 
-//--------------------------------------------------------------------------------
 
 bool CMiniMem___instance_MemoryHook::install()
 {
@@ -425,7 +405,6 @@ void CMiniMem___instance_MemoryHook::test_hook()
 		});
 }
 
-//--------------------------------------------------------------------------------
 
 bool g_flOldTime_MemoryHook::install()
 {
@@ -445,7 +424,6 @@ void g_flOldTime_MemoryHook::test_hook()
 		});
 }
 
-//--------------------------------------------------------------------------------
 
 bool CMiniMem__newBlock_FnDetour_t::install()
 {
@@ -458,7 +436,6 @@ char* CMiniMem__newBlock_FnDetour_t::CMiniMem__newBlock()
 	return CParticlemanMiniMemEmulation::the().instance()->new_block();
 }
 
-//--------------------------------------------------------------------------------
 
 bool CMiniMem__ProcessAll_FnDetour_t::install()
 {
@@ -470,15 +447,11 @@ void CMiniMem__ProcessAll_FnDetour_t::CMiniMem__ProcessAll()
 {
 	CParticlemanMiniMemEmulation::the().instance()->process_all();
 
-	// redirect the original instance to our own. This takes care of all of the CMiniMem members, 
-	// such as m_iTotalParticles or m_iParticlesDrawn, and therefore that automatically takes care
-	// or member functions: GetTotalParticles() and GetDrawnParticles(), because they return this data.
-	// Hence, we don't need to detour them.
+
 	(*CParticlemanMiniMemEmulation::the().CMiniMem___instance().get())->m_iParticlesDrawn = CParticlemanMiniMemEmulation::the().instance()->m_parts_drawn;
 	(*CParticlemanMiniMemEmulation::the().CMiniMem___instance().get())->m_iTotalParticles = CParticlemanMiniMemEmulation::the().instance()->m_total_parts;
 }
 
-//--------------------------------------------------------------------------------
 
 bool CMiniMem__ApplyForce_FnDetour_t::install()
 {
@@ -491,7 +464,6 @@ int CMiniMem__ApplyForce_FnDetour_t::CMiniMem__ApplyForce(Vector vOrigin, Vector
 	return CParticlemanMiniMemEmulation::the().instance()->apply_force(vOrigin, vDirection, flRadius, flStrength);
 }
 
-//--------------------------------------------------------------------------------
 
 bool CMiniMem__Reset_FnDetour_t::install()
 {
@@ -504,7 +476,6 @@ void CMiniMem__Reset_FnDetour_t::CMiniMem__Reset()
 	CParticlemanMiniMemEmulation::the().instance()->reset();
 }
 
-//--------------------------------------------------------------------------------
 
 bool CMiniMem__PercentUsed_FnDetour_t::install()
 {
@@ -516,5 +487,3 @@ long CMiniMem__PercentUsed_FnDetour_t::CMiniMem__PercentUsed()
 {
 	return CParticlemanMiniMemEmulation::the().instance()->percent_used();
 }
-
-//--------------------------------------------------------------------------------

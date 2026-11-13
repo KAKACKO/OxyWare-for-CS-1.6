@@ -50,7 +50,7 @@ void CUIConsole::on_render()
 			g_gui_widgets_i->add_console();
 		});
 
-	g_gui_widgets_i->pop_stylevar(); // padding
+	g_gui_widgets_i->pop_stylevar();
 }
 
 void CUIConsole::on_destroy()

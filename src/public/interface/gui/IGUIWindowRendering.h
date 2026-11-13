@@ -43,7 +43,7 @@ public:
 
 	virtual void render_line(ImDrawList* current, const Vector2D& from, const Vector2D& to, const CColor& color, float thicc = 1.0f) = 0;
 
-	// box without and with an outline
+
 	virtual void render_box(ImDrawList* current, const Vector2D& top_left, const Vector2D& bottom_right, const CColor& color, float rounding = 1.0f) = 0;
 	virtual void render_box_outline(ImDrawList* current, const Vector2D& top_left, const Vector2D& bottom_right, const CColor& color, float rounding = 1.0f,
 									const CColor& outline_color = {}, float outline_thickness = 1.0f) = 0;
@@ -58,4 +58,4 @@ extern IGUIWindowRendering* g_gui_window_rendering_i;
 
 #define IGUIWINDOWRENDERING_INTERFACEID "IGUIWindowRendering"
 
-#endif // IGUIWINDOWRENDERING_H
+#endif

@@ -32,12 +32,12 @@
 
 #define MAXIMAL_DESIRED_EDGE_DIST 36.0f
 
-// Spectator Movement modes (stored in pev->iuser1, so the physics code can get at them)
-#define OBS_NONE				0 // not spectator
+
+#define OBS_NONE				0
 #define OBS_CHASE_LOCKED		1
-#define OBS_CHASE_FREE			2 // third-person on the player
-#define OBS_ROAMING				3 // free look
-#define OBS_IN_EYE				4 // first person
+#define OBS_CHASE_FREE			2
+#define OBS_ROAMING				3
+#define OBS_IN_EYE				4
 #define OBS_MAP_FREE			5
 #define OBS_MAP_CHASE			6
 
@@ -56,39 +56,34 @@ public:
 	DECL_BASIC_CLASS(CGameUtil);
 
 public:
-	// returns true if we're active and if we're singleplayer/multiplayer
+
 	bool is_fully_connected();
 
-	// true if in singleplayer
+
 	bool is_sp();
 
-	// stop moving, shooting, etc.
+
 	void reset_all_in_states();
 
-	// convert world 3d coordinates to 2d screen coordinates
-	// retuns true if coordinates are clipped within main viewsport
+
 	bool world_to_screen(Vector world, Vector2D& screen);
 
-	// an equivalent to CL_IsPlayerIndex().
+
 	bool is_player_index(int index);
 
-	// -3 -> player is specator/unassigned
-	// -2 -> local or player is specator/unassigned
-	// -1 -> could not get local or player
-	// 0  -> isn't
-	// 1  -> is
+
 	int is_player_on_enemy_team(int index);
 
-	// accepts 1-based index
+
 	bool is_local_player(int index);
 
-	// returns current appid based on the -game launch parameter.
+
 	unsigned int get_current_app_id();
 
-	// returns __DATE__ strings from Host_Version_f()
+
 	const std::string& get_engine_compile_date() { locate_engine_compile_timestamp(); return m_engine_compile_date; }
 
-	// copy of the original engine's function 'build_num()'
+
 	int get_build_number();
 
 	bool is_spectator();
@@ -101,10 +96,10 @@ public:
 	float compute_distance_to_ground(const Vector& origin, float trace_distance = 4096.0f);
 	float compute_edge_distance(const Vector& origin, float edge_trace_distance = MAXIMAL_DESIRED_EDGE_DIST);
 
-	// replica of CL_RecordHUDCommand
+
 	void record_hud_command(const char* cmdname);
 
-	// equivalent to Cmd_TokenizeString()
+
 	std::vector<std::string> tokenize_goldsrc_command(const char* text);
 
 	Vector2D get_window_pos();
@@ -115,4 +110,4 @@ private:
 	std::string m_engine_compile_date;
 };
 
-#endif // GAMEUTIL_H
+#endif

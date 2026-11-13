@@ -26,7 +26,6 @@
 *	IN THE SOFTWARE.
 */
 
-// Note that this code was inspired by Tkz.. yikes.
 
 #include "precompiled.h"
 
@@ -83,12 +82,12 @@ void CMovementFastRun::faster_run()
 
 	if (CClientMovementPacket::the().is_in(IN_MOVELEFT) && CClientMovementPacket::the().is_in(IN_MOVERIGHT))
 	{
-		return; // stop
+		return;
 	}
 
 	if (CClientMovementPacket::the().is_in(IN_FORWARD) && CClientMovementPacket::the().is_in(IN_BACK))
 	{
-		return; // stop
+		return;
 	}
 
 	if (CClientMovementPacket::the().is_in(IN_FORWARD))
@@ -199,8 +198,7 @@ bool CMovementFastRun::fast_walk()
 
 	float vel_2d = CLocalState::the().get_local_velocity_2d();
 
-	// after 150 u/s, you start making stepping sounds however, for example when you turn
-	// your speed gets increased, so it eventually hits 150 and you make a sound.
+
 	if (vel_2d > movement_fastrun_fast_walk_max_speed.get_value() && in_speed)
 	{
 		return true;

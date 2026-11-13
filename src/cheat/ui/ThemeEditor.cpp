@@ -95,7 +95,7 @@ void CUIThemeEditor::search_for_configs()
 {
 	static uint32_t last_searched = GetTickCount();
 
-	// search each # amount of ms
+
 	static constexpr uint32_t interval_ms = 250;
 	if (GetTickCount() - last_searched > interval_ms)
 	{
@@ -133,7 +133,7 @@ void CUIThemeEditor::render_color_palette()
 					g_gui_thememgr_i->sync_colors_with_imgui();
 				}
 
-				// re-set both of the colors
+
 				current_theme->initialize_colors(id, color);
 			}
 		});
@@ -185,7 +185,7 @@ void CUIThemeEditor::render_file_list()
 		g_gui_widgets_i->end_columns();
 	}
 
-	g_gui_widgets_i->pop_stylevar(); // cell padding
+	g_gui_widgets_i->pop_stylevar();
 }
 
 void CUIThemeEditor::render_built_in_list()
@@ -227,7 +227,7 @@ void CUIThemeEditor::render_built_in_list()
 		g_gui_widgets_i->end_columns();
 	}
 
-	g_gui_widgets_i->pop_stylevar(); // cell padding
+	g_gui_widgets_i->pop_stylevar();
 }
 
 void CUIThemeEditor::render_actions()
@@ -267,7 +267,7 @@ void CUIThemeEditor::actions_export_current_theme_as()
 	create_dialog->provide_on_cancel_fn(
 		[&]()
 		{
-			// don't do nothing at all, just close the popup. this is in order to make the "close button to render"
+
 			strcpy(name_buffer, "");
 		});
 

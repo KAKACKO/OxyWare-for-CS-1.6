@@ -53,8 +53,8 @@ private:
 	int deduce_direction(hl::usercmd_t* cmd);
 
 private:
-	// 0 == left, 1 == right, 2 == forward
+
 	int m_mouse_direction = 0;
 };
 
-#endif // STRAFEHELPER_H
+#endif

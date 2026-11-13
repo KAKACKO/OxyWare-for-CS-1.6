@@ -5,8 +5,7 @@
 #include <filesystem>
 #include <string>
 
-// Prefer an explicit game argument. Custom launchers may omit it; in that
-// case identify the game from the client DLL actually loaded by the engine.
+
 inline std::wstring resolve_game_directory(const wchar_t* command_line,
                                            const std::filesystem::path& client_module)
 {

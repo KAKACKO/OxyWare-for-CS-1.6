@@ -32,4 +32,4 @@
 
 extern int build_number(const char* date);
 
-#endif // BUILDNUM_H
+#endif

@@ -54,4 +54,4 @@ extern IGLFWApp* g_glfw_app_i;
 
 #define IGLFWAPP_INTERFACEID "IGLFWApp"
 
-#endif // IGLFWAPP_H
+#endif

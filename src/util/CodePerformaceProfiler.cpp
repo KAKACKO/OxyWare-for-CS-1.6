@@ -57,10 +57,10 @@ public:
 private:
 	std::vector<ModuleProfileReport*> m_module_profile_reports;
 
-	// Collected samples from last snapshot
+
 	SampledProfileSnapshots m_profile_snapshot_entries;
 
-	// we have to first collect the data and then sort it separately.
+
 	std::set<ProfSnapshotEntry, ProfSnapshotEntry::less> m_sorted_snapshot_result;
 
 	float m_sum_ms = 0.0f;
@@ -73,11 +73,6 @@ private:
 CCodePerfProfiler g_code_perf_profiler;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CCodePerfProfiler, ICodePerfProfiler, ICODEPERFPROFILER_INTERFACEID, g_code_perf_profiler);
 
-//-------------------------------------------------------------------------------
-//
-// CCodePerfProfiler implementation
-//
-//-------------------------------------------------------------------------------
 
 CCodePerfProfiler::CCodePerfProfiler()
 {
@@ -126,7 +121,7 @@ void CCodePerfProfiler::stop_sample_collection()
 {
 	m_collection_stopped = true;
 
-	// inform all modules that are collecting data.
+
 	for (auto r : m_module_profile_reports)
 	{
 		CConsole::the().info("Stopping sample collection on module {}...", r->get_module());
@@ -138,7 +133,7 @@ void CCodePerfProfiler::resume_sample_collection()
 {
 	m_collection_stopped = false;
 
-	// inform all modules that are collecting data.
+
 	for (auto r : m_module_profile_reports)
 	{
 		CConsole::the().info("Resuming sample collection on module {}...", r->get_module());
@@ -150,7 +145,7 @@ void CCodePerfProfiler::reset_collected_samples()
 {
 	stop_sample_collection();
 
-	// inform all modules that are collecting data.
+
 	for (auto r : m_module_profile_reports)
 	{
 		CConsole::the().info("Resetting collected samples for module {}...", r->get_module());
@@ -187,13 +182,13 @@ void CCodePerfProfiler::create_profile_snapshot()
 
 	m_in_snapshot_creation = true;
 
-	// reset data
+
 	m_sum_ms = 0.0f;
 	m_sorted_snapshot_result.clear();
 
-	//CConsole::the().info("-----------------------------");
+
 	
-	// loop through all reported code profiles and perform a sample collection and sorting.
+
 	for (auto r : m_module_profile_reports)
 	{
 		for (auto& [key, profile_reports] : r->m_code_profile_reports)
@@ -208,12 +203,11 @@ void CCodePerfProfiler::create_profile_snapshot()
 				float add = report.get_milliseconds();
 				avg_ms += add;
 
-				//CConsole::the().info("{}: avg: {}ms", key, add);
 
 				loc = report.sourceloc;
 			}
 
-			// insert empty first, then initialize the data, if inserted. If already in the list, just keep updating the data.
+
 			ProfSnapshotEntry snap = {};
 
 			auto[iter, did_insert] = m_profile_snapshot_entries.insert(std::make_pair(key, snap));
@@ -227,14 +221,14 @@ void CCodePerfProfiler::create_profile_snapshot()
 			}
 			else
 			{
-				// aready exist, just update data
+
 				iter->second.m_num_samples += num_samples;
 				iter->second.m_avg_time_ms = avg_ms / (float)num_samples;
 			}
 		}
 	}
 
-	// now put them inside of a sorted vector.. I don't think that we can sort the map using data from value rather than from key.
+
 	for (const auto& [key, snap] : m_profile_snapshot_entries)
 	{
 		m_sum_ms += snap.m_avg_time_ms;
@@ -251,4 +245,3 @@ void CCodePerfProfiler::create_profile_snapshot()
 	}
 	*/
 }
-
